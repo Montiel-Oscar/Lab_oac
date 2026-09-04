@@ -3,63 +3,99 @@ Timing Analyzer Summary
 ------------------------------------------------------------
 
 Type  : Slow 1200mV 85C Model Setup 'clock'
-Slack : -1.519
-TNS   : -2.972
+Slack : -3.942
+TNS   : -72.715
 
-Type  : Slow 1200mV 85C Model Hold 'clock'
+Type  : Slow 1200mV 85C Model Setup 'div_frec:inst8|cuenta[24]'
+Slack : -0.785
+TNS   : -1.546
+
+Type  : Slow 1200mV 85C Model Hold 'div_frec:inst8|cuenta[24]'
 Slack : 0.393
 TNS   : 0.000
 
-Type  : Slow 1200mV 85C Model Recovery 'clock'
-Slack : -0.911
-TNS   : -2.739
+Type  : Slow 1200mV 85C Model Hold 'clock'
+Slack : 0.646
+TNS   : 0.000
 
-Type  : Slow 1200mV 85C Model Removal 'clock'
-Slack : 0.983
+Type  : Slow 1200mV 85C Model Recovery 'div_frec:inst8|cuenta[24]'
+Slack : -2.315
+TNS   : -8.588
+
+Type  : Slow 1200mV 85C Model Removal 'div_frec:inst8|cuenta[24]'
+Slack : 2.363
 TNS   : 0.000
 
 Type  : Slow 1200mV 85C Model Minimum Pulse Width 'clock'
 Slack : -3.000
-TNS   : -11.418
+TNS   : -42.284
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'div_frec:inst8|cuenta[24]'
+Slack : -1.403
+TNS   : -8.418
 
 Type  : Slow 1200mV 0C Model Setup 'clock'
-Slack : -1.423
-TNS   : -2.769
+Slack : -3.586
+TNS   : -64.667
 
-Type  : Slow 1200mV 0C Model Hold 'clock'
+Type  : Slow 1200mV 0C Model Setup 'div_frec:inst8|cuenta[24]'
+Slack : -0.722
+TNS   : -1.349
+
+Type  : Slow 1200mV 0C Model Hold 'div_frec:inst8|cuenta[24]'
 Slack : 0.355
 TNS   : 0.000
 
-Type  : Slow 1200mV 0C Model Recovery 'clock'
-Slack : -0.636
-TNS   : -1.790
+Type  : Slow 1200mV 0C Model Hold 'clock'
+Slack : 0.598
+TNS   : 0.000
 
-Type  : Slow 1200mV 0C Model Removal 'clock'
-Slack : 0.747
+Type  : Slow 1200mV 0C Model Recovery 'div_frec:inst8|cuenta[24]'
+Slack : -2.025
+TNS   : -7.480
+
+Type  : Slow 1200mV 0C Model Removal 'div_frec:inst8|cuenta[24]'
+Slack : 2.140
 TNS   : 0.000
 
 Type  : Slow 1200mV 0C Model Minimum Pulse Width 'clock'
 Slack : -3.000
-TNS   : -11.418
+TNS   : -42.284
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'div_frec:inst8|cuenta[24]'
+Slack : -1.403
+TNS   : -8.418
 
 Type  : Fast 1200mV 0C Model Setup 'clock'
-Slack : 0.221
+Slack : -1.397
+TNS   : -18.998
+
+Type  : Fast 1200mV 0C Model Setup 'div_frec:inst8|cuenta[24]'
+Slack : 0.265
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Hold 'div_frec:inst8|cuenta[24]'
+Slack : 0.027
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Hold 'clock'
-Slack : 0.170
+Slack : 0.250
 TNS   : 0.000
 
-Type  : Fast 1200mV 0C Model Recovery 'clock'
-Slack : -0.121
-TNS   : -0.263
+Type  : Fast 1200mV 0C Model Recovery 'div_frec:inst8|cuenta[24]'
+Slack : -0.694
+TNS   : -2.516
 
-Type  : Fast 1200mV 0C Model Removal 'clock'
-Slack : 0.693
+Type  : Fast 1200mV 0C Model Removal 'div_frec:inst8|cuenta[24]'
+Slack : 1.241
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Minimum Pulse Width 'clock'
 Slack : -3.000
-TNS   : -9.675
+TNS   : -31.952
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'div_frec:inst8|cuenta[24]'
+Slack : -1.000
+TNS   : -6.000
 
 ------------------------------------------------------------
