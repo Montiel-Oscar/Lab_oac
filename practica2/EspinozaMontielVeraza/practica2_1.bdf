@@ -41,7 +41,7 @@ on the Quartus Prime software download page.
 	(input)
 	(rect 632 8 800 24)
 	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
-	(text "go" (rect 5 0 18 11)(font "DejaVu Sans Condensed" ))
+	(text "go" (rect 5 0 17 11)(font "DejaVu Sans Condensed" ))
 	(pt 168 8)
 	(drawing
 		(line (pt 84 12)(pt 109 12))

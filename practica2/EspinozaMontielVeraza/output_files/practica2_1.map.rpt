@@ -1,5 +1,5 @@
 Analysis & Synthesis report for practica2_1
-Fri Sep  4 08:47:37 2026
+Fri Sep  4 14:23:45 2026
 Quartus Prime Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
 
 
@@ -43,15 +43,15 @@ on the Quartus Prime software download page.
 +--------------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                         ;
 +------------------------------------+-------------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Fri Sep  4 08:47:37 2026           ;
+; Analysis & Synthesis Status        ; Successful - Fri Sep  4 14:23:45 2026           ;
 ; Quartus Prime Version              ; 25.1std.0 Build 1129 10/21/2025 SC Lite Edition ;
 ; Revision Name                      ; practica2_1                                     ;
 ; Top-level Entity Name              ; practica2_1                                     ;
 ; Family                             ; MAX 10                                          ;
-; Total logic elements               ; 62                                              ;
-;     Total combinational functions  ; 62                                              ;
-;     Dedicated logic registers      ; 34                                              ;
-; Total registers                    ; 34                                              ;
+; Total logic elements               ; 10                                              ;
+;     Total combinational functions  ; 10                                              ;
+;     Dedicated logic registers      ; 6                                               ;
+; Total registers                    ; 6                                               ;
 ; Total pins                         ; 7                                               ;
 ; Total virtual pins                 ; 0                                               ;
 ; Total memory bits                  ; 0                                               ;
@@ -172,54 +172,52 @@ on the Quartus Prime software download page.
 ; File Name with User-Entered Path ; Used in Netlist ; File Type                          ; File Name with Absolute Path                                               ; Library ;
 +----------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------------+---------+
 ; practica2_1.bdf                  ; yes             ; User Block Diagram/Schematic File  ; /home/ivan/Desktop/Lab_oac/practica2/EspinozaMontielVeraza/practica2_1.bdf ;         ;
-; div_frec.vhd                     ; yes             ; User VHDL File                     ; /home/ivan/Desktop/Lab_oac/practica2/EspinozaMontielVeraza/div_frec.vhd    ;         ;
 ; 74193.bdf                        ; yes             ; Megafunction                       ; /home/ivan/altera_lite/25.1std/quartus/libraries/others/maxplus2/74193.bdf ;         ;
 ; 7474.bdf                         ; yes             ; Megafunction                       ; /home/ivan/altera_lite/25.1std/quartus/libraries/others/maxplus2/7474.bdf  ;         ;
 +----------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------------+---------+
 
 
-+-----------------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary               ;
-+---------------------------------------------+-------------+
-; Resource                                    ; Usage       ;
-+---------------------------------------------+-------------+
-; Estimated Total logic elements              ; 62          ;
-;                                             ;             ;
-; Total combinational functions               ; 62          ;
-; Logic element usage by number of LUT inputs ;             ;
-;     -- 4 input functions                    ; 21          ;
-;     -- 3 input functions                    ; 1           ;
-;     -- <=2 input functions                  ; 40          ;
-;                                             ;             ;
-; Logic elements by mode                      ;             ;
-;     -- normal mode                          ; 35          ;
-;     -- arithmetic mode                      ; 27          ;
-;                                             ;             ;
-; Total registers                             ; 34          ;
-;     -- Dedicated logic registers            ; 34          ;
-;     -- I/O registers                        ; 0           ;
-;                                             ;             ;
-; I/O pins                                    ; 7           ;
-;                                             ;             ;
-; Embedded Multiplier 9-bit elements          ; 0           ;
-;                                             ;             ;
-; Maximum fan-out node                        ; clock~input ;
-; Maximum fan-out                             ; 28          ;
-; Total fan-out                               ; 246         ;
-; Average fan-out                             ; 2.24        ;
-+---------------------------------------------+-------------+
++---------------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary                   ;
++---------------------------------------------+-----------------+
+; Resource                                    ; Usage           ;
++---------------------------------------------+-----------------+
+; Estimated Total logic elements              ; 10              ;
+;                                             ;                 ;
+; Total combinational functions               ; 10              ;
+; Logic element usage by number of LUT inputs ;                 ;
+;     -- 4 input functions                    ; 3               ;
+;     -- 3 input functions                    ; 1               ;
+;     -- <=2 input functions                  ; 6               ;
+;                                             ;                 ;
+; Logic elements by mode                      ;                 ;
+;     -- normal mode                          ; 10              ;
+;     -- arithmetic mode                      ; 0               ;
+;                                             ;                 ;
+; Total registers                             ; 6               ;
+;     -- Dedicated logic registers            ; 6               ;
+;     -- I/O registers                        ; 0               ;
+;                                             ;                 ;
+; I/O pins                                    ; 7               ;
+;                                             ;                 ;
+; Embedded Multiplier 9-bit elements          ; 0               ;
+;                                             ;                 ;
+; Maximum fan-out node                        ; 74193:inst11|26 ;
+; Maximum fan-out                             ; 6               ;
+; Total fan-out                               ; 51              ;
+; Average fan-out                             ; 1.70            ;
++---------------------------------------------+-----------------+
 
 
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                        ;
-+----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+-----------------------------+-------------+--------------+
-; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; UFM Blocks ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; ADC blocks ; Full Hierarchy Name         ; Entity Name ; Library Name ;
-+----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+-----------------------------+-------------+--------------+
-; |practica2_1               ; 62 (4)              ; 34 (0)                    ; 0           ; 0          ; 0            ; 0       ; 0         ; 7    ; 0            ; 0          ; |practica2_1                ; practica2_1 ; work         ;
-;    |74193:inst11|          ; 7 (7)               ; 4 (4)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |practica2_1|74193:inst11   ; 74193       ; work         ;
-;    |7474:inst3|            ; 0 (0)               ; 2 (2)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |practica2_1|7474:inst3     ; 7474        ; work         ;
-;    |div_frec:inst8|        ; 51 (51)             ; 28 (28)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |practica2_1|div_frec:inst8 ; div_frec    ; work         ;
-+----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+-----------------------------+-------------+--------------+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                      ;
++----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------------+-------------+--------------+
+; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; UFM Blocks ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; ADC blocks ; Full Hierarchy Name       ; Entity Name ; Library Name ;
++----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------------+-------------+--------------+
+; |practica2_1               ; 10 (3)              ; 6 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 7    ; 0            ; 0          ; |practica2_1              ; practica2_1 ; work         ;
+;    |74193:inst11|          ; 7 (7)               ; 4 (4)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |practica2_1|74193:inst11 ; 74193       ; work         ;
+;    |7474:inst3|            ; 0 (0)               ; 2 (2)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |practica2_1|7474:inst3   ; 7474        ; work         ;
++----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------------+-------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
 
@@ -228,7 +226,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 34    ;
+; Total registers                              ; 6     ;
 ; Number of registers using Synchronous Clear  ; 0     ;
 ; Number of registers using Synchronous Load   ; 0     ;
 ; Number of registers using Asynchronous Clear ; 4     ;
@@ -244,20 +242,18 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
 ; boundary_port         ; 7                           ;
-; cycloneiii_ff         ; 34                          ;
+; cycloneiii_ff         ; 6                           ;
 ;     CLR               ; 4                           ;
-;     plain             ; 30                          ;
-; cycloneiii_lcell_comb ; 62                          ;
-;     arith             ; 27                          ;
-;         2 data inputs ; 27                          ;
-;     normal            ; 35                          ;
-;         1 data inputs ; 5                           ;
-;         2 data inputs ; 8                           ;
+;     plain             ; 2                           ;
+; cycloneiii_lcell_comb ; 10                          ;
+;     normal            ; 10                          ;
+;         1 data inputs ; 4                           ;
+;         2 data inputs ; 2                           ;
 ;         3 data inputs ; 1                           ;
-;         4 data inputs ; 21                          ;
+;         4 data inputs ; 3                           ;
 ;                       ;                             ;
-; Max LUT depth         ; 4.50                        ;
-; Average LUT depth     ; 3.29                        ;
+; Max LUT depth         ; 2.00                        ;
+; Average LUT depth     ; 1.39                        ;
 +-----------------------+-----------------------------+
 
 
@@ -276,7 +272,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
-    Info: Processing started: Fri Sep  4 08:47:30 2026
+    Info: Processing started: Fri Sep  4 14:23:39 2026
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off practica2_1 -c practica2_1
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
@@ -290,18 +286,17 @@ Info (12128): Elaborating entity "74193" for hierarchy "74193:inst11"
 Info (12130): Elaborated megafunction instantiation "74193:inst11"
 Info (12128): Elaborating entity "7474" for hierarchy "7474:inst3"
 Info (12130): Elaborated megafunction instantiation "7474:inst3"
-Info (12128): Elaborating entity "div_frec" for hierarchy "div_frec:inst8"
 Info (286030): Timing-Driven Synthesis is running
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Info (21057): Implemented 69 device resources after synthesis - the final resource count might be different
+Info (21057): Implemented 17 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 2 input pins
     Info (21059): Implemented 5 output pins
-    Info (21061): Implemented 62 logic cells
+    Info (21061): Implemented 10 logic cells
 Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 1 warning
-    Info: Peak virtual memory: 448 megabytes
-    Info: Processing ended: Fri Sep  4 08:47:37 2026
-    Info: Elapsed time: 00:00:07
-    Info: Total CPU time (on all processors): 00:00:18
+    Info: Peak virtual memory: 453 megabytes
+    Info: Processing ended: Fri Sep  4 14:23:45 2026
+    Info: Elapsed time: 00:00:06
+    Info: Total CPU time (on all processors): 00:00:13
 
 
