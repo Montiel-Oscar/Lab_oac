@@ -296,11 +296,65 @@
 
     \section{Simulaciones}
 
-    \lipsum[1-3]
+    La verificación funcional se realizó en el editor de formas de onda de Quartus. Se definieron como entradas el reloj \texttt{clock} y la señal de inicio \texttt{go}; como salidas se observaron \texttt{A}, \texttt{B}, \texttt{C}, \texttt{D} y \texttt{done}. El reloj se aplicó de forma periódica y \texttt{go} se mantuvo en alto para solicitar la operación del circuito. Esta configuración permite observar de manera continua la transición de la máquina de estados, el conteo y la indicación de terminación.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\linewidth]{img/simulacion_0.png}
+        \caption{Condiciones iniciales de la simulación. Antes de propagarse la inicialización, las salidas se muestran como valores indefinidos.}
+        \label{fig:simulacion-inicial}
+    \end{figure}
+
+    En la Figura~\ref{fig:simulacion-inicial} se aprecia el estado previo a la evaluación del diseño: las salidas aparecen como \texttt{X} porque todavía no se ha establecido un estado lógico válido para los elementos secuenciales. Este comportamiento es normal en una simulación temporal cuando no se ha aplicado aún un flanco de reloj que propague las condiciones de inicio. A partir de los flancos activos del reloj, la máquina de estados abandona esta condición y las señales toman valores binarios definidos.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\linewidth]{img/simulacion_1.png}
+        \caption{Simulación funcional completa con \texttt{go = 1}.}
+        \label{fig:simulacion-completa}
+    \end{figure}
+
+    La Figura~\ref{fig:simulacion-completa} confirma el comportamiento esperado del contador de cuatro bits. La salida \texttt{A} cambia de estado con mayor frecuencia, \texttt{B} lo hace cada dos cambios de \texttt{A}, \texttt{C} cada cuatro y \texttt{D} cada ocho; por tanto, en conjunto forman la secuencia binaria ascendente de \texttt{0000} a \texttt{1111}. Esta relación de frecuencias muestra que cada salida representa un bit de distinta ponderación del conteo. Al alcanzarse el conteo terminal, la lógica de detección genera un pulso en \texttt{done}; dicho pulso es breve y aparece sincronizado con el evento de fin de cuenta.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\linewidth]{img/simulacion_2.png}
+        \caption{Vista ampliada de la secuencia de conteo y del pulso \texttt{done}.}
+        \label{fig:simulacion-ampliada}
+    \end{figure}
+
+    En la vista ampliada de la Figura~\ref{fig:simulacion-ampliada} se distinguen con claridad los cambios simultáneos de los bits al pasar entre valores consecutivos. La señal \texttt{done} sólo se activa cuando la combinación de las salidas cumple la condición de cuenta final; inmediatamente después, el circuito vuelve a una condición de conteo válida y el ciclo se repite mientras \texttt{go} permanezca activo. Con ello se comprueba que la salida de terminación no permanece habilitada durante todo el ciclo, sino que funciona como una notificación de un periodo de reloj.
 
     \section{Resultados}
 
-    Para la verificación del funcionamiento del contador de 4 bits, se cargo el diseño digital a la tarjeta FPGA, para ello se seleccionó la opción \textit{Tools $\rightarrow$ Programmer}. Es importante mencionar que se debe de cargar el diseño que contiene el bloque del divisor de frecuencia, esto para poder visualizar el contador de 4 bits.
+    El diseño se implementó como un circuito jerárquico compuesto por un divisor de frecuencia, una máquina de estados construida con flip-flops tipo D, lógica combinacional y un contador de cuatro bits. Para la verificación física se cargó el diseño en la tarjeta FPGA mediante \textit{Tools $\rightarrow$ Programmer}. El divisor de frecuencia es indispensable para reducir la frecuencia del reloj de la tarjeta a una velocidad apreciable en las salidas del contador.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\linewidth]{img/diagrama_bloques_1.png}
+        \caption{Diagrama de bloques completo implementado en Quartus.}
+        \label{fig:diagrama-completo}
+    \end{figure}
+
+    En la Figura~\ref{fig:diagrama-completo} se muestra la integración final. La entrada \texttt{clock} llega al bloque \texttt{div\_frec}; su salida temporizada alimenta tanto los flip-flops 7474 como el contador 74193. La entrada \texttt{go} inicia la secuencia de la máquina de estados. Las señales de estado controlan las entradas del contador, mientras que las salidas \texttt{A}, \texttt{B}, \texttt{C} y \texttt{D} se conectan a los pines de salida de la FPGA. La compuerta AND detecta la condición de cuenta final y genera la realimentación \texttt{fc}; su complemento también se utiliza en la lógica de transición. La señal \texttt{done} se obtiene del estado correspondiente de la máquina.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{img/diagrama_bloques_2.png}
+        \caption{Detalle de la sección de control: divisor de frecuencia, lógica combinacional y flip-flops D 7474.}
+        \label{fig:diagrama-control}
+    \end{figure}
+
+    La Figura~\ref{fig:diagrama-control} corresponde a la sección que implementa la carta ASM. Los dos flip-flops D almacenan las variables de estado $Q_1$ y $Q_0$. Las compuertas AND y OR materializan las ecuaciones simplificadas mediante los mapas de Karnaugh, y sus salidas determinan el siguiente estado en cada flanco de reloj. De esta forma, el circuito pasa del estado de espera al estado de reinicio y posteriormente al estado de término según los valores de \texttt{go} y \texttt{fc}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\linewidth]{img/diagrama_bloques_3.png}
+        \caption{Detalle de la sección de conteo y detección de cuenta final.}
+        \label{fig:diagrama-conteo}
+    \end{figure}
+
+    En la Figura~\ref{fig:diagrama-conteo}, el contador 74193 entrega los cuatro bits de salida. La compuerta AND de cuatro entradas reconoce el valor máximo del contador al recibir simultáneamente \texttt{A}, \texttt{B}, \texttt{C} y \texttt{D} en alto; así se forma la señal \texttt{fc}. El inversor produce \texttt{fc\_neg}, necesaria para la lógica de control. Esta conexión permite cerrar el ciclo: se cuenta mientras no se haya alcanzado la condición final y, al detectarla, la máquina de estados genera \texttt{done} y prepara el reinicio del proceso.
 
     \newpage
 
@@ -376,18 +430,18 @@
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.55\linewidth]{img/cont_rst.png}
+        \includegraphics[width=0.55\linewidth]{img/cont_0000.png}
         \caption{Contador de 4 bits cuando \texttt{reset = 1}. (\texttt{0000})}
         \label{fig:cont_rst}
     \end{figure}
 
     \section{Conclusión}
 
-    \textbf{Percival Ulises Espinoza Matamoros:} \lipsum[1]
+    \textbf{Percival Ulises Espinoza Matamoros:} La práctica permitió relacionar la carta ASM con su implementación física. A partir de las tablas de transición y de salida se obtuvieron ecuaciones que pueden llevarse directamente a compuertas y flip-flops. Esto mostró que una máquina de estados no es sólo una descripción abstracta: sus estados y transiciones se materializan en señales que pueden observarse y verificarse.
 
-    \textbf{Oscar Iván Montiel Juárez:} \lipsum[1]
+    \textbf{Oscar Iván Montiel Juárez:} La simulación fue fundamental para validar el diseño antes de programar la FPGA. Las formas de onda confirmaron la secuencia binaria del contador, la diferencia de frecuencia entre sus bits y la generación puntual de \texttt{done} al llegar a la cuenta terminal. Además, observar los valores indefinidos al inicio permitió reconocer la importancia de inicializar y sincronizar adecuadamente los elementos secuenciales.
 
-    \textbf{Amy Valentina Veraza García:} \lipsum[1]
+    \textbf{Amy Valentina Veraza García:} La integración del divisor de frecuencia hizo posible trasladar el diseño de simulación a la tarjeta FPGA de forma observable. El resultado final combina control secuencial, lógica combinacional y conteo en un sistema funcional. La práctica reforzó el uso de Quartus y VHDL como herramientas para diseñar, simular e implementar circuitos digitales de manera ordenada.
 
     % --- Referencias ---
     \nocite{*} 
