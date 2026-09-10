@@ -184,12 +184,12 @@
 
     \section{Desarrollo}
 
-    A partir dela carta ASM que se proporciona en la práctica (Figura [\ref{fig:carta_asm}]) se solicita obtener su circuito secuencial utilizando flip-flops tipo D. Ademas se debe de implementar el circuito en el ambiente de desarrollo Quartus.
+    Para la primera parte de la práctica se solicita implementar el circuito secuencial de la carta ASM proporcionada (Figura [\ref{fig:carta_asm}]) usando Flip-Flops tipo D. El circuito secuencial obtenido se debe de implementar en el ambiente de desarrollo Quartus. Adicionalmente se debe conectar el circuito secuencial con el contador de 4 bits, esto con la finalidad que el circuito secuencial pueda controlar el conteo del contador. 
 
     \begin{figure}[H]
         \centering
         \begin{tikzpicture}[
-            scale=1.0, transform shape,
+            scale=0.93, transform shape,
             % Estilos de los nodos
             state/.style={rectangle, draw, minimum width=3cm, minimum height=1.5cm, align=center},
             decision/.style={diamond, draw, aspect=1.5, minimum width=2.5cm, minimum height=2.5cm, align=center},
@@ -220,7 +220,7 @@
         \label{fig:carta_asm}
     \end{figure}
 
-    Para obtener el circuito secuencial a partir de la carta ASM, se debe de realizar la tabla de transición de estados y la tabla de salida:
+    Para poder obtener el circuito secuencial, lo primero que se realizó fue etiquetar cada estado de la carta ASM con un código binario, una vez ya con los estados codificados, se procedió a realizar la tabla de transición de estados (Tabla [\ref{tab:transicion}])  considerando las entradas (GO, FC) y salidas del circuito secuencial (RESET, DONE).
 
     \begin{table}[h]
         \centering
@@ -237,6 +237,8 @@
         \caption{Tabla de Transición de Estados}
         \label{tab:transicion}
     \end{table}
+
+    A partir de la tabla de transición de estados, se obtuvieron las ecuaciones de salida y transición de estados, dado que se tienen 4 variables, se decidió utilizar el método de mapas de Karnaugh para simplificar las ecuaciones, obteniendo las siguientes ecuaciones:
 
     Obteniendo las ecuaciones por medio de mapas de Karnaugh, se obtiene lo siguiente:
 
@@ -258,9 +260,9 @@
     \textbf{Reducción por medio de Mapas de Karnaugh: ${Q_1}^+$}
     \begin{center}
         \begin{karnaugh-map}[4][4][1][$Q_1 Q_0$][$GO \: FC$]
-            \minterms{2,3,4,6}
+            \minterms{5,7}
              % Don't Care
-            \terms{12,13,14,15}{$X$} 
+            \terms{8,9,10,11,12,13,14,15}{$X$} 
             \autoterms[0]
             \implicant{5}{15}
         \end{karnaugh-map}
@@ -281,6 +283,8 @@
     \vspace{-7mm}
     \[{RESET} = Q_0 \]  
 
+    \newpage
+
     \textbf{Reducción por medio de Mapas de Karnaugh: $DONE$}
     \begin{center}
         \begin{karnaugh-map}[4][4][1][$Q_1 Q_0$][$GO \: FC$]
@@ -294,9 +298,21 @@
     \vspace{-7mm}
     \[{DONE} = Q_1 \]  
 
+    Obteniendo asi las siguientes ecuaciones para representar la carta ASM en un circuito secuencial:
+
+    \[{{Q_0}^+} = Q_0 \: \overline{FC} + \overline{Q_1} \: Q_0 \: GO \]   
+    \[{{Q_1}^+} = Q_0 + FC \]  
+    \[{RESET} = Q_0 \]  
+    \[{DONE} = Q_1 \]  
+
+    Para que el circuito secuencial controle correctamente al controlador de 4 bits, se considera el funcionamiento del circuito secuencial. El comportamiento del circuito consiste en que mientras la señal de entrada \texttt{GO} no se encuentre activa, el circuito secuencial se encuentra en el estado de espera (Edo0), cuando la señal de entrada \texttt{GO} se encuentra activa, el circuito secuencial pasa al estado de reinicio (Edo1), donde se activa la salida \texttt{RESET}, esta salida se conecta a la entrada de reinicio del contador de 4 bits (\texttt{CLR}). Estando en el estado Edo1 la única manera de pasar al siguiente estado es que la señal de entrada \texttt{FC} se encuentre activa, cuando el contador de 4 bits llega a su valor máximo (1111), la señal de salida \texttt{FC} se activa, haciendo que el circuito secuencial pase al estado de conteo (Edo2), en este estado se activa la salida \texttt{DONE} para indicar que el conteo ha finalizado, posteriormente el circuito secuencial pasa nuevamente al estado de espera (Edo0) donde si la señal de entrada \texttt{GO} se encuentra activa, el circuito secuencial vuelve a pasar al estado de reinicio (Edo1) y el ciclo se repite.
+
+    \newpage
+
+
     \section{Simulaciones}
 
-    La verificación funcional se realizó en el editor de formas de onda de Quartus. Se definieron como entradas el reloj \texttt{clock} y la señal de inicio \texttt{go}; como salidas se observaron \texttt{A}, \texttt{B}, \texttt{C}, \texttt{D} y \texttt{done}. El reloj se aplicó de forma periódica y \texttt{go} se mantuvo en alto para solicitar la operación del circuito. Esta configuración permite observar de manera continua la transición de la máquina de estados, el conteo y la indicación de terminación.
+    La verificación funcional se realizó en el editor de formas de onda de Quartus (\textit{Simulation Waveform Editor}). Se definieron como entradas el reloj \texttt{clock} y la señal de inicio \texttt{go}; como salidas se observaron \texttt{A}, \texttt{B}, \texttt{C}, \texttt{D} y \texttt{done}. El reloj se aplicó de forma periódica y \texttt{go} se mantuvo en alto para solicitar la operación del circuito. Esta configuración permite observar de manera continua la transición de la máquina de estados, el conteo y la indicación de terminación.
 
     \begin{figure}[H]
         \centering
@@ -305,7 +321,7 @@
         \label{fig:simulacion-inicial}
     \end{figure}
 
-    En la Figura~\ref{fig:simulacion-inicial} se aprecia el estado previo a la evaluación del diseño: las salidas aparecen como \texttt{X} porque todavía no se ha establecido un estado lógico válido para los elementos secuenciales. Este comportamiento es normal en una simulación temporal cuando no se ha aplicado aún un flanco de reloj que propague las condiciones de inicio. A partir de los flancos activos del reloj, la máquina de estados abandona esta condición y las señales toman valores binarios definidos.
+    En la Figura[\ref{fig:simulacion-inicial}] se aprecia el estado previo a la evaluación del diseño: las salidas aparecen como \texttt{X} porque todavía no se ha establecido un estado lógico válido para los elementos secuenciales. Este comportamiento es normal, para una simulación temporal cuando no se ha aplicado aún un flanco de reloj que propague las condiciones de inicio. A partir de los flancos activos del reloj, la máquina de estados abandona esta condición y las señales toman valores binarios definidos.
 
     \begin{figure}[H]
         \centering
@@ -314,7 +330,7 @@
         \label{fig:simulacion-completa}
     \end{figure}
 
-    La Figura~\ref{fig:simulacion-completa} confirma el comportamiento esperado del contador de cuatro bits. La salida \texttt{A} cambia de estado con mayor frecuencia, \texttt{B} lo hace cada dos cambios de \texttt{A}, \texttt{C} cada cuatro y \texttt{D} cada ocho; por tanto, en conjunto forman la secuencia binaria ascendente de \texttt{0000} a \texttt{1111}. Esta relación de frecuencias muestra que cada salida representa un bit de distinta ponderación del conteo. Al alcanzarse el conteo terminal, la lógica de detección genera un pulso en \texttt{done}; dicho pulso es breve y aparece sincronizado con el evento de fin de cuenta.
+    La Figura[\ref{fig:simulacion-completa}] confirma el comportamiento esperado del contador de cuatro bits. La salida \texttt{A} cambia de estado con mayor frecuencia, \texttt{B} lo hace cada dos cambios de \texttt{A}, \texttt{C} cada cuatro y \texttt{D} cada ocho; por tanto, en conjunto forman la secuencia binaria ascendente de \texttt{0000} a \texttt{1111}. Esta relación de frecuencias muestra que cada salida representa un bit cada vez más significativo. Al alcanzarse el conteo terminal, la lógica de detección genera un pulso en \texttt{done}; dicho pulso es breve y aparece sincronizado con el evento de fin de cuenta (FC).
 
     \begin{figure}[H]
         \centering
@@ -323,11 +339,11 @@
         \label{fig:simulacion-ampliada}
     \end{figure}
 
-    En la vista ampliada de la Figura~\ref{fig:simulacion-ampliada} se distinguen con claridad los cambios simultáneos de los bits al pasar entre valores consecutivos. La señal \texttt{done} sólo se activa cuando la combinación de las salidas cumple la condición de cuenta final; inmediatamente después, el circuito vuelve a una condición de conteo válida y el ciclo se repite mientras \texttt{go} permanezca activo. Con ello se comprueba que la salida de terminación no permanece habilitada durante todo el ciclo, sino que funciona como una notificación de un periodo de reloj.
+    En la vista ampliada de la Figura~\ref{fig:simulacion-ampliada} se puede apreciar los cambios simultáneos de los bits al pasar entre valores consecutivos. La señal \texttt{done} sólo se activa cuando la combinación de las salidas cumple la condición de cuenta final; inmediatamente después, el circuito vuelve a una condición de conteo válida y el ciclo se repite mientras \texttt{go} permanezca activo. Con ello se comprueba que la salida de terminación no permanece habilitada durante todo el ciclo, sino que funciona como una bandera para indicar un periodo del reloj.
 
     \section{Resultados}
 
-    El diseño se implementó como un circuito jerárquico compuesto por un divisor de frecuencia, una máquina de estados construida con flip-flops tipo D, lógica combinacional y un contador de cuatro bits. Para la verificación física se cargó el diseño en la tarjeta FPGA mediante \textit{Tools $\rightarrow$ Programmer}. El divisor de frecuencia es indispensable para reducir la frecuencia del reloj de la tarjeta a una velocidad apreciable en las salidas del contador.
+    El diseño se implementó como un circuito jerárquico compuesto por un divisor de frecuencia, una máquina de estados construida con flip-flops tipo D, lógica combinacional y un contador de cuatro bits. Para la verificación física se cargó el diseño en la tarjeta FPGA mediante \textit{Tools $\rightarrow$ Programmer}. Donde como en practicas anteriores, se hizo uso de un divisor de frecuencia para poder observar el funcionamiento del circuito en tiempo real.
 
     \begin{figure}[H]
         \centering
@@ -336,7 +352,7 @@
         \label{fig:diagrama-completo}
     \end{figure}
 
-    En la Figura~\ref{fig:diagrama-completo} se muestra la integración final. La entrada \texttt{clock} llega al bloque \texttt{div\_frec}; su salida temporizada alimenta tanto los flip-flops 7474 como el contador 74193. La entrada \texttt{go} inicia la secuencia de la máquina de estados. Las señales de estado controlan las entradas del contador, mientras que las salidas \texttt{A}, \texttt{B}, \texttt{C} y \texttt{D} se conectan a los pines de salida de la FPGA. La compuerta AND detecta la condición de cuenta final y genera la realimentación \texttt{fc}; su complemento también se utiliza en la lógica de transición. La señal \texttt{done} se obtiene del estado correspondiente de la máquina.
+    En la Figura[\ref{fig:diagrama-completo}] se muestra la integración final. La entrada \texttt{clock} llega al bloque \texttt{div\_frec}, su salida temporizada alimenta tanto los flip-flops 7474 como el contador 74193. La entrada \texttt{go} inicia la secuencia de la máquina de estados. Las señales de estado controlan las entradas del contador, mientras que las salidas \texttt{A}, \texttt{B}, \texttt{C} y \texttt{D} se conectan a los pines de salida de la FPGA. La compuerta AND detecta la condición de cuenta final y genera la realimentación \texttt{fc}. La señal \texttt{done} se obtiene del estado correspondiente de la máquina.
 
     \begin{figure}[H]
         \centering
@@ -345,7 +361,7 @@
         \label{fig:diagrama-control}
     \end{figure}
 
-    La Figura~\ref{fig:diagrama-control} corresponde a la sección que implementa la carta ASM. Los dos flip-flops D almacenan las variables de estado $Q_1$ y $Q_0$. Las compuertas AND y OR materializan las ecuaciones simplificadas mediante los mapas de Karnaugh, y sus salidas determinan el siguiente estado en cada flanco de reloj. De esta forma, el circuito pasa del estado de espera al estado de reinicio y posteriormente al estado de término según los valores de \texttt{go} y \texttt{fc}.
+    La Figura[\ref{fig:diagrama-control}] corresponde a la sección que implementa la carta ASM. Los dos flip-flops D almacenan las variables de estado $Q_1$ y $Q_0$. Las compuertas AND y OR materializan las ecuaciones simplificadas mediante los mapas de Karnaugh, y sus salidas determinan el siguiente estado en cada flanco de reloj. De esta forma, el circuito pasa del estado de espera al estado de reinicio y posteriormente al estado de término según los valores de \texttt{go} y \texttt{fc}.
 
     \begin{figure}[H]
         \centering
@@ -354,11 +370,11 @@
         \label{fig:diagrama-conteo}
     \end{figure}
 
-    En la Figura~\ref{fig:diagrama-conteo}, el contador 74193 entrega los cuatro bits de salida. La compuerta AND de cuatro entradas reconoce el valor máximo del contador al recibir simultáneamente \texttt{A}, \texttt{B}, \texttt{C} y \texttt{D} en alto; así se forma la señal \texttt{fc}. El inversor produce \texttt{fc\_neg}, necesaria para la lógica de control. Esta conexión permite cerrar el ciclo: se cuenta mientras no se haya alcanzado la condición final y, al detectarla, la máquina de estados genera \texttt{done} y prepara el reinicio del proceso.
+    En la Figura[\ref{fig:diagrama-conteo}], el contador 74193 entrega los cuatro bits de salida. La compuerta AND de cuatro entradas reconoce el valor máximo del contador al recibir simultáneamente \texttt{A}, \texttt{B}, \texttt{C} y \texttt{D} en alto, formando asi la señal \texttt{fc}. La compuerta NOT produce \texttt{fc\_neg}, necesaria para la lógica de control. Esta conexión permite cerrar el ciclo, ya que se cuenta mientras no se haya alcanzado la condición final y, al detectarla, la máquina de estados genera \texttt{done} y prepara el reinicio del proceso.
 
     \newpage
 
-    \textbf{Contador de 4 bits cuando \texttt{reset = 0}}
+    \textbf{Contador de 4 bits cuando \texttt{reset = 0} y \texttt{go = 1}}
 
     \begin{figure}[H]
         \centering
@@ -422,7 +438,7 @@
             \label{fig:img8}
         \end{subfigure}
         
-        \caption{Algunos valores del Contador de 4 bits cuando reset = 0.}
+        \caption{Algunos valores del Contador de 4 bits cuando reset = 0 y go = 1.}
         \label{fig:grid8}
     \end{figure}
 
@@ -437,7 +453,7 @@
 
     \section{Conclusión}
 
-    \textbf{Percival Ulises Espinoza Matamoros:} La práctica permitió relacionar la carta ASM con su implementación física. A partir de las tablas de transición y de salida se obtuvieron ecuaciones que pueden llevarse directamente a compuertas y flip-flops. Esto mostró que una máquina de estados no es sólo una descripción abstracta: sus estados y transiciones se materializan en señales que pueden observarse y verificarse.
+    \textbf{Percival Ulises Espinoza Matamoros:} A partir de la realización de la práctica pude reafirmar conocimientos previos sobre el diseño de circuitos secuenciales, maquinas de estados, métodos de simplificación de ecuaciones booleanas así como la interpretación y lectura de las carta ASM. La carta que se implemento para esta primera parte de la práctica me permitió comprender la importancia de las maquinas de estados para el control de sistemas secuenciales. Adicionalmente al implementarlo en la tarjeta FPGA y por medio de simulaciones pude corroborar el correcto funcionamiento del diseño observando de manera clara las transiciones de estados y la secuencia de conteo del contador de 4 bits.
 
     \textbf{Oscar Iván Montiel Juárez:} La simulación fue fundamental para validar el diseño antes de programar la FPGA. Las formas de onda confirmaron la secuencia binaria del contador, la diferencia de frecuencia entre sus bits y la generación puntual de \texttt{done} al llegar a la cuenta terminal. Además, observar los valores indefinidos al inicio permitió reconocer la importancia de inicializar y sincronizar adecuadamente los elementos secuenciales.
 

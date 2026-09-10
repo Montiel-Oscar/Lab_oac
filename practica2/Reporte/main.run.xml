@@ -51,10 +51,6 @@
     </requires>
     <requires type="static">
       <file>blx-dm.def</file>
-<<<<<<< HEAD
-=======
-      <file>blx-unicode.def</file>
->>>>>>> f6737b45c7fb0ecd90060392dbebf4c41e016eea
       <file>blx-compat.def</file>
       <file>biblatex.def</file>
       <file>standard.bbx</file>
