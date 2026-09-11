@@ -1,0 +1,154 @@
+m255
+K4
+z2
+!s11e vcom 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/ivan/Documents/FI/Lab_oac/practica2_2/practica2_2_EMV_POA/simulation/qsim
+Ehard_block
+Z1 w1789148765
+Z2 DPx4 ieee 16 vital_primitives 0 22 G>kiXP8Q9dRClKfK1Zn7j1
+Z3 DPx11 fiftyfivenm 21 fiftyfivenm_atom_pack 0 22 ]LY<>e3?`4Wb8dl1GV_X90
+Z4 DPx4 ieee 12 vital_timing 0 22 J>EBealN09f8GzldA[z2>3
+Z5 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z6 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
+Z7 DPx11 fiftyfivenm 22 fiftyfivenm_components 0 22 `f]nQdYHZLbCG_>oYeZOo2
+!i122 6
+R0
+Z8 8practica2_2.vho
+Z9 Fpractica2_2.vho
+l0
+L35 1
+Vhj[i;a0dD85B`o1JPT^cg2
+!s100 3A]XnMhF<;9mKUe5mn3aM1
+Z10 OV;C;2020.1;71
+32
+Z11 !s110 1789148766
+!i10b 1
+Z12 !s108 1789148766.000000
+Z13 !s90 -work|work|practica2_2.vho|
+Z14 !s107 practica2_2.vho|
+!i113 1
+Z15 o-work work
+Z16 tExplicit 1 CvgOpt 0
+Astructure
+R2
+R3
+R4
+R5
+R6
+R7
+DEx4 work 10 hard_block 0 22 hj[i;a0dD85B`o1JPT^cg2
+!i122 6
+l76
+L54 28
+Va5ClDYec`9chO`Ne0M1NL2
+!s100 >:Wi^nX[YiN=@>>JC6K_83
+R10
+32
+R11
+!i10b 1
+R12
+R13
+R14
+!i113 1
+R15
+R16
+Epractica2_2
+R1
+R3
+R7
+R2
+Z17 DPx6 altera 11 dffeas_pack 0 22 H5F:RRfLz82T3`4>@b7mS3
+R4
+R5
+R6
+Z18 DPx6 altera 28 altera_primitives_components 0 22 VSD=32;3391kSOd?PDZYj3
+!i122 6
+R0
+R8
+R9
+l0
+L91 1
+Vc27A9n]]XjgiSbfl;2dRA0
+!s100 H2bB^om8[>9ao`Q3i0eG]0
+R10
+32
+R11
+!i10b 1
+R12
+R13
+R14
+!i113 1
+R15
+R16
+Astructure
+R3
+R7
+R2
+R17
+R4
+R5
+R6
+R18
+DEx4 work 11 practica2_2 0 22 c27A9n]]XjgiSbfl;2dRA0
+!i122 6
+l186
+L118 699
+V@[L8f9<EG08]<<D`XW[j<1
+!s100 i8Wahj:Nk><GmaFiP1@;b2
+R10
+32
+R11
+!i10b 1
+R12
+R13
+R14
+!i113 1
+R15
+R16
+Epractica2_2_vhd_vec_tst
+Z19 w1789148764
+R5
+R6
+!i122 7
+R0
+Z20 8Waveform.vwf.vht
+Z21 FWaveform.vwf.vht
+l0
+L32 1
+VYTX1QAIn>7?aZbc9>5W`g1
+!s100 8kzjJSm:C8KQ2h5X7=MVO0
+R10
+32
+R11
+!i10b 1
+R12
+Z22 !s90 -work|work|Waveform.vwf.vht|
+Z23 !s107 Waveform.vwf.vht|
+!i113 1
+R15
+R16
+Apractica2_2_arch
+R5
+R6
+Z24 DEx4 work 23 practica2_2_vhd_vec_tst 0 22 YTX1QAIn>7?aZbc9>5W`g1
+!i122 7
+l59
+Z25 L34 66
+Z26 VhKm<fF3aQNb?j4dLb93Ac0
+Z27 !s100 mX^9b8X[_hbnY6i:bJcE42
+R10
+32
+R11
+!i10b 1
+R12
+R22
+R23
+!i113 1
+R15
+R16

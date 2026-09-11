@@ -1,0 +1,14 @@
+library iEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity clk_button is
+	port (
+		clk:in std_logic;
+		button: in std_logic;
+		div_clk: out std_logic;
+	);
+end clk_button
+
+architecture Behavioral of clk_button is

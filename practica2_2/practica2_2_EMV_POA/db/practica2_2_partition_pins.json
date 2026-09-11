@@ -1,0 +1,45 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "A",
+					"strict" : false
+				},
+				{
+					"name" : "B",
+					"strict" : false
+				},
+				{
+					"name" : "C",
+					"strict" : false
+				},
+				{
+					"name" : "D",
+					"strict" : false
+				},
+				{
+					"name" : "done",
+					"strict" : false
+				},
+				{
+					"name" : "edo_presente[1]",
+					"strict" : false
+				},
+				{
+					"name" : "edo_presente[0]",
+					"strict" : false
+				},
+				{
+					"name" : "clk",
+					"strict" : false
+				},
+				{
+					"name" : "go",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

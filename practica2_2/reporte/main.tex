@@ -1,0 +1,178 @@
+\documentclass[letterpaper,12pt]{article}
+\usepackage[spanish,mexico]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx,float,subcaption,xcolor,array,enumitem}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\usepackage{listings}
+\usepackage[left=25mm,right=25mm,top=35mm,bottom=30mm,headheight=15pt,papersize={21.59cm,27.94cm}]{geometry}
+\usepackage{parskip,fancyhdr,hyperref}
+
+\graphicspath{{img/}{portada_img/}}
+\newcommand{\materia}{Laboratorio de Organización y Arquitectura de Computadoras}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\textsc{\materia}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.8pt}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=cyan}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{keyword}{rgb}{0.0,0.2,0.6}
+\definecolor{comment}{rgb}{0.25,0.5,0.35}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\lstdefinestyle{estiloVHDL}{
+  language=VHDL,basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{codebg},commentstyle=\color{comment}\itshape,
+  keywordstyle=\color{keyword}\bfseries,numbers=left,
+  numberstyle=\tiny\color{codegray},frame=single,breaklines=true,
+  keepspaces=true,showstringspaces=false,tabsize=4,
+  morekeywords={library,use,all,entity,is,port,in,out,architecture,of,begin,end,signal,constant,process,if,then,else,elsif,case,when,others,std_logic,std_logic_vector}
+}
+
+\begin{document}
+\input{portada.tex}
+\newpage
+
+\section{Objetivo}
+
+Implementar en VHDL una máquina de estados que controle un contador de cuatro bits en una FPGA, sustituyendo el avance automático por un pulso de reloj generado mediante un botón. Verificar el diseño mediante simulación funcional e identificar la relación entre la carta ASM, el código VHDL y el diagrama de bloques sintetizado en Quartus.
+
+\section{Desarrollo}
+
+En esta segunda parte se conservó el comportamiento general de la práctica anterior: una máquina de estados controla el reinicio, el conteo y la señal de término de un contador de cuatro bits. La diferencia principal consiste en que la lógica de control se describió con VHDL y el reloj de avance ya no se aplica de manera automática. Cada pulsación del botón genera un único evento de reloj útil, por lo que el contador puede observarse paso a paso en la tarjeta FPGA.
+
+El diseño se dividió en dos módulos. El módulo \texttt{clk\_buttom} recibe el reloj de la tarjeta y la señal del botón; espera la pulsación, cuenta 25 millones de ciclos del reloj base y produce la señal \texttt{div\_clk}. Este intervalo evita que los rebotes mecánicos del botón se traduzcan en múltiples avances. El módulo \texttt{state\_machine} implementa los estados \texttt{ED0}, \texttt{ED1} y \texttt{ED2}, y produce las salidas \texttt{reset}, \texttt{done} y \texttt{edo\_p}.
+
+\subsection{Carta ASM del generador de pulso manual}
+
+La Figura~\ref{fig:carta-asm} representa la lógica del módulo que transforma una pulsación en un flanco de reloj. La decisión \texttt{Button} determina si existe una solicitud de avance. Mientras no se presione el botón, el sistema permanece en espera. Al detectarlo, se habilita \texttt{div\_clk} y se incrementa el contador interno. La decisión \texttt{max} comprueba que se hayan alcanzado los 25 millones de ciclos; al cumplirse, se termina el pulso y el sistema vuelve al estado de espera. Así, una pulsación produce un solo flanco ascendente de \texttt{div\_clk} para la máquina principal.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    scale=0.84, transform shape,
+    state/.style={rectangle,rounded corners=3pt,draw,minimum width=3.8cm,minimum height=1.0cm,align=center},
+    decision/.style={diamond,draw,aspect=1.65,minimum width=2.6cm,minimum height=1.5cm,align=center},
+    arrow/.style={->,>=Stealth,semithick}
+  ]
+    \node[state] (wait) {Espera};
+    \node[decision,below=0.7cm of wait] (button) {\texttt{Button}};
+    \node[state,below=0.75cm of button] (divclk) {\texttt{div\_clk = 1}\\Contar ciclos};
+    \node[decision,below=0.75cm of divclk] (max) {\texttt{max}};
+    \node[state,below=0.75cm of max] (finish) {Finalizar pulso\\\texttt{div\_clk = 0}};
+    \draw[arrow] (wait) -- (button);
+    \draw[arrow] (button) -- node[left] {sí} (divclk);
+    \draw[arrow] (divclk) -- (max);
+    \draw[arrow] (max) -- node[left] {sí} (finish);
+    \draw[arrow] (finish.south) -- ++(0,-0.55) -| ($(wait.west)+(-2.0,0)$) -- (wait.west);
+    \draw[arrow] (button.east) -- node[above,near start] {no} ++(2.1,0) |- (wait.east);
+    \draw[arrow] (max.east) -- node[above,near start] {no} ++(2.1,0) |- (divclk.east);
+  \end{tikzpicture}
+  \caption{Carta ASM del generador de pulso manual. Las decisiones son \texttt{Button} y \texttt{max}; \texttt{div\_clk} es la señal habilitada durante el conteo interno.}
+  \label{fig:carta-asm}
+\end{figure}
+
+\subsection{Descripción VHDL}
+
+La descripción VHDL permite expresar directamente los estados, las transiciones y las salidas sin recurrir a mapas de Karnaugh. En el primer módulo, \texttt{STATE\_START} espera la pulsación, \texttt{STATE\_COUNT} acumula los ciclos y mantiene activa \texttt{div\_clk}, mientras que \texttt{STATE\_DONE} restablece el proceso. En el segundo módulo, \texttt{ED0} espera \texttt{go}; \texttt{ED1} mantiene activo \texttt{reset} hasta que se detecta \texttt{fc}; finalmente, \texttt{ED2} activa \texttt{done} durante un ciclo y retorna al estado inicial.
+
+\lstinputlisting[style=estiloVHDL,caption={Módulo VHDL que genera el pulso de reloj a partir del botón.},label={lst:clk-button}]{code/clk_button.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Máquina de estados principal en VHDL.},label={lst:state-machine}]{code/state_machine.vhd}
+
+\section{Simulaciones}
+
+La verificación se realizó en el \textit{Simulation Waveform Editor} de Quartus. Se observaron las salidas del contador \texttt{A}, \texttt{B}, \texttt{C} y \texttt{D}, la bandera \texttt{done}, el vector \texttt{edo\_presente}, y las entradas \texttt{go}, \texttt{button} y \texttt{clk}. En simulación, el reloj base permanece periódico, pero el avance del sistema sólo ocurre cuando el módulo del botón genera el pulso \texttt{div\_clk}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/simulacion_0.png}
+  \caption{Condición inicial de la simulación. Las salidas sin una transición previa de reloj aparecen como valores indefinidos.}
+  \label{fig:simulacion-inicial}
+\end{figure}
+
+En la Figura~\ref{fig:simulacion-inicial}, las señales de salida aparecen como \texttt{X} antes de que la máquina haya propagado su primer estado válido. Este resultado es normal para las salidas registradas que todavía no han sido actualizadas por un flanco efectivo. La presencia de \texttt{go}, \texttt{button} y \texttt{clk} permite establecer las condiciones que activarán el circuito durante la simulación.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/simulacion_1.png}
+  \caption{Evolución de las salidas del contador y del estado presente después de aplicar pulsos válidos.}
+  \label{fig:simulacion-conteo}
+\end{figure}
+
+La Figura~\ref{fig:simulacion-conteo} muestra que las salidas se estabilizan en valores binarios y que cada bit cambia a una frecuencia relativa distinta. \texttt{A} es el bit menos significativo y presenta la mayor tasa de cambio; \texttt{B}, \texttt{C} y \texttt{D} cambian cada dos, cuatro y ocho incrementos, respectivamente. El vector de estado se mantiene en \texttt{01} durante el conteo, lo que corresponde al estado \texttt{ED1} de la máquina principal.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/simulacion_2.png}
+  \caption{Simulación completa: conteo de cuatro bits, estado presente y pulsos de término.}
+  \label{fig:simulacion-completa}
+\end{figure}
+
+En la Figura~\ref{fig:simulacion-completa} se reconoce la secuencia de conteo y la activación puntual de \texttt{done}. Al alcanzar la combinación máxima, la detección de cuenta final \texttt{fc} provoca la transición hacia \texttt{ED2}; la salida \texttt{done} se activa durante un ciclo y la máquina vuelve al estado de espera. El uso del generador de pulso manual hace que estas transiciones dependan de la pulsación del botón y no de un reloj automático visible para el usuario.
+
+\section{Resultados}
+
+La Figura~\ref{fig:diagrama-completo} muestra el sistema integrado en Quartus. El reloj de la tarjeta entra por el pin P11 y el botón por B8; la señal del botón se invierte antes de ingresar al módulo \texttt{clk\_buttom}, pues en la tarjeta se utiliza lógica activa en bajo. La salida \texttt{div\_clk} alimenta a la máquina de estados y al contador 74193. La entrada \texttt{go} se asigna al pin C10, \texttt{done} al pin B11 y las cuatro salidas del contador se conectan a A8, A9, A10 y B10.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/diagrama_bloques_1.png}
+  \caption{Diagrama de bloques completo del diseño implementado en Quartus.}
+  \label{fig:diagrama-completo}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/diagrama_bloques_2.png}
+  \caption{Detalle de la interfaz de reloj manual y de la máquina de estados.}
+  \label{fig:diagrama-control}
+\end{figure}
+
+En la Figura~\ref{fig:diagrama-control} se aprecia la ruta de control. El bloque \texttt{clk\_buttom} filtra temporalmente la pulsación y entrega \texttt{div\_clk}; de esta forma, una pulsación física produce sólo un avance lógico. La máquina principal recibe \texttt{go} y \texttt{fc}, y emite \texttt{reset}, \texttt{done} y el indicador \texttt{edo\_p}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\linewidth]{img/diagrama_bloques_3.png}
+  \caption{Detalle del contador, la detección de la cuenta final y las salidas de la FPGA.}
+  \label{fig:diagrama-conteo}
+\end{figure}
+
+En la Figura~\ref{fig:diagrama-conteo}, la compuerta AND de cuatro entradas reconoce el valor \texttt{1111} del contador y genera \texttt{fc}. La salida \texttt{reset} se invierte para adecuarse a la entrada de borrado del contador. Con esta realimentación, el sistema puede reiniciar el contador al comenzar una nueva secuencia y emitir \texttt{done} al finalizarla.
+
+\subsection{Evidencia en tarjeta FPGA}
+
+Las fotografías de la implementación física se agregarán cuando se cuente con ellas. Se reservan los espacios mostrados en la Figura~\ref{fig:evidencia-fpga} para documentar la conexión de la tarjeta, el estado inicial del contador y una secuencia de avance al presionar el botón.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.31\textwidth}
+    \centering
+    \fbox{\parbox[c][4.2cm][c]{0.9\linewidth}{\centering\small Fotografía pendiente\\Conexión y asignación de pines}}
+    \caption{Montaje de la tarjeta.}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.31\textwidth}
+    \centering
+    \fbox{\parbox[c][4.2cm][c]{0.9\linewidth}{\centering\small Fotografía pendiente\\Estado inicial del contador}}
+    \caption{Estado inicial.}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.31\textwidth}
+    \centering
+    \fbox{\parbox[c][4.2cm][c]{0.9\linewidth}{\centering\small Fotografía pendiente\\Avance con el botón}}
+    \caption{Conteo paso a paso.}
+  \end{subfigure}
+  \caption{Espacios reservados para la evidencia experimental en la FPGA.}
+  \label{fig:evidencia-fpga}
+\end{figure}
+
+\section{Conclusión}
+
+\textbf{Percival Ulises Espinoza Matamoros:} La práctica permitió trasladar una solución de lógica secuencial desde un diagrama de bloques a una descripción VHDL estructurada en módulos. El uso de estados con nombres explícitos facilitó relacionar la carta ASM con las transiciones implementadas en el código. Además, el control manual hizo más clara la observación de cada etapa del contador.
+
+\textbf{Oscar Iván Montiel Juárez:} La generación de \texttt{div\_clk} mediante el botón mostró la importancia de acondicionar las entradas físicas antes de usarlas como señales de control. El conteo interno de 25 millones de ciclos evita que una pulsación o sus rebotes provoquen varios avances. Las formas de onda permitieron verificar el estado presente, el conteo binario y el pulso de \texttt{done} antes de programar la FPGA.
+
+\textbf{Amy Valentina Veraza García:} Se comprobó que VHDL permite describir y reutilizar de manera ordenada tanto una máquina de estados como un generador de pulsos. La integración con el contador y la detección de la cuenta máxima produjo un sistema funcional en el que cada pulsación controla el avance. La evidencia física pendiente complementará la validación obtenida en simulación.
+
+\end{document}
