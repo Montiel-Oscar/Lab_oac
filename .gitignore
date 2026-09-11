@@ -1,4 +1,4 @@
 practica1/
-.aux
-.log
-.gz
+*.aux
+*.log
+*.gz
