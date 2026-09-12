@@ -1,8 +1,7 @@
 |practica2_2
 A <= 74193:inst3.QA
-clk => state_machine:inst2.clk
-clk => 74193:inst3.UP
 clk => clk_buttom:inst.clk
+button => inst5.IN0
 go => state_machine:inst2.go
 B <= 74193:inst3.QB
 C <= 74193:inst3.QC
@@ -10,7 +9,6 @@ D <= 74193:inst3.QD
 done <= state_machine:inst2.done
 edo_presente[0] <= state_machine:inst2.edo_p[0]
 edo_presente[1] <= state_machine:inst2.edo_p[1]
-button => inst5.IN0
 
 
 |practica2_2|74193:inst3

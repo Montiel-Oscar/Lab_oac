@@ -2,3 +2,6 @@ practica1/
 *.aux
 *.log
 *.gz
+*.bbl
+*bcf
+*out

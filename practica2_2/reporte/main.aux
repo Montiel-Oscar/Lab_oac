@@ -9,15 +9,15 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1}Objetivo}{2}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Desarrollo}{2}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Carta ASM del generador de pulso manual}{2}{subsection.2.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Carta ASM del generador de pulso manual. Las decisiones son \texttt  {Button} y \texttt  {max}; \texttt  {div\_clk} es la señal habilitada durante el conteo interno.}}{3}{figure.caption.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Carta ASM del generador de pulso manual. Los rectángulos vacíos representan los estados 00, 01 y 10; las ramas se etiquetan con los valores lógicos de las decisiones \texttt  {Button} y \texttt  {max}.}}{3}{figure.caption.1}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:carta-asm}{{1}{3}{Carta ASM del generador de pulso manual. Las decisiones son \texttt {Button} y \texttt {max}; \texttt {div\_clk} es la señal habilitada durante el conteo interno}{figure.caption.1}{}}
+\newlabel{fig:carta-asm}{{1}{3}{Carta ASM del generador de pulso manual. Los rectángulos vacíos representan los estados 00, 01 y 10; las ramas se etiquetan con los valores lógicos de las decisiones \texttt {Button} y \texttt {max}}{figure.caption.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Descripción VHDL}{3}{subsection.2.2}\protected@file@percent }
-\newlabel{lst:clk-button}{{1}{4}{Módulo VHDL que genera el pulso de reloj a partir del botón}{lstlisting.1}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}{\ignorespaces Módulo VHDL que genera el pulso de reloj a partir del botón.}}{4}{lstlisting.1}\protected@file@percent }
-\newlabel{lst:state-machine}{{2}{5}{Máquina de estados principal en VHDL}{lstlisting.2}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}{\ignorespaces Máquina de estados principal en VHDL.}}{5}{lstlisting.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Simulaciones}{7}{section.3}\protected@file@percent }
+\newlabel{lst:clk-button}{{1}{4}{Código 1: módulo que genera el pulso de reloj a partir del botón}{lstlisting.1}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}{\ignorespaces Código 1: módulo que genera el pulso de reloj a partir del botón.}}{4}{lstlisting.1}\protected@file@percent }
+\newlabel{lst:state-machine}{{2}{5}{Código 2: máquina de estados principal en VHDL}{lstlisting.2}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}{\ignorespaces Código 2: máquina de estados principal en VHDL.}}{5}{lstlisting.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Simulaciones}{6}{section.3}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Condición inicial de la simulación. Las salidas sin una transición previa de reloj aparecen como valores indefinidos.}}{7}{figure.caption.2}\protected@file@percent }
 \newlabel{fig:simulacion-inicial}{{2}{7}{Condición inicial de la simulación. Las salidas sin una transición previa de reloj aparecen como valores indefinidos}{figure.caption.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Evolución de las salidas del contador y del estado presente después de aplicar pulsos válidos.}}{7}{figure.caption.3}\protected@file@percent }
@@ -32,7 +32,13 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Detalle del contador, la detección de la cuenta final y las salidas de la FPGA.}}{9}{figure.caption.7}\protected@file@percent }
 \newlabel{fig:diagrama-conteo}{{7}{9}{Detalle del contador, la detección de la cuenta final y las salidas de la FPGA}{figure.caption.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Evidencia en tarjeta FPGA}{9}{subsection.4.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Espacios reservados para la evidencia experimental en la FPGA.}}{10}{figure.caption.8}\protected@file@percent }
-\newlabel{fig:evidencia-fpga}{{8}{10}{Espacios reservados para la evidencia experimental en la FPGA}{figure.caption.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusión}{10}{section.5}\protected@file@percent }
-\gdef \@abspage@last{10}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Estado 00: condición inicial del contador (\texttt  {0000}).}}{10}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:estado-00}{{8}{10}{Estado 00: condición inicial del contador (\texttt {0000})}{figure.caption.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Estado 01: primera parte de la secuencia de conteo controlada por el botón.}}{10}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:estado-01a}{{9}{10}{Estado 01: primera parte de la secuencia de conteo controlada por el botón}{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Estado 01: segunda parte de la secuencia de conteo hasta alcanzar \texttt  {1111}.}}{11}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:estado-01b}{{10}{11}{Estado 01: segunda parte de la secuencia de conteo hasta alcanzar \texttt {1111}}{figure.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Estado 10: el conteo terminó y la señal \texttt  {done} está encendida.}}{11}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:estado-10}{{11}{11}{Estado 10: el conteo terminó y la señal \texttt {done} está encendida}{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusión}{11}{section.5}\protected@file@percent }
+\gdef \@abspage@last{12}

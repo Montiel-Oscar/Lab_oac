@@ -32,11 +32,15 @@
 					"strict" : false
 				},
 				{
-					"name" : "clk",
+					"name" : "go",
 					"strict" : false
 				},
 				{
-					"name" : "go",
+					"name" : "button",
+					"strict" : false
+				},
+				{
+					"name" : "clk",
 					"strict" : false
 				}
 			]

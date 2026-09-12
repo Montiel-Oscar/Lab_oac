@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025/Debian) (preloaded format=xelatex 2026.7.11)  11 SEP 2026 12:18
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025/Debian) (preloaded format=xelatex 2026.7.11)  11 SEP 2026 20:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -744,7 +744,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip71
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 19.
+Package hyperref Info: Option `colorlinks' set `true' on input line 20.
 
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 File: l3backend-xetex.def 2025-10-09 L3 backend support: XeTeX
@@ -760,28 +760,28 @@ Package babel Info: 'spanish' activates 'spanish' shorthands.
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Info: Redefining \. on input line 34.
-LaTeX Info: Redefining \% on input line 34.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Info: Redefining \. on input line 35.
+LaTeX Info: Redefining \% on input line 35.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
@@ -822,7 +822,7 @@ Package caption Info: End \AtBeginDocument code.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring ON on input line 34.
+Package hyperref Info: Link coloring ON on input line 35.
 (./main.out) (./main.out)
 \@outlinefile=\write4
 \openout4 = `main.out'.
@@ -846,23 +846,30 @@ File: portada_img/escudofi_negro.jpg Graphic file (type bmp)
 
 ]
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 4
-6.
+7.
 
 (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [2] [3]
+) [2]
+Overfull \hbox (2.04765pt too wide) in paragraph at lines 86--87
+[]\T1/lmr/m/n/12 El pri-mer pro-ce-so ac-tua-li-za \T1/lmtt/m/n/12 state \T1/lm
+r/m/n/12 úni-ca-men-te en el flan-co as-cen-den-te de \T1/lmtt/m/n/12 clk\T1/lm
+r/m/n/12 . En \T1/lmtt/m/n/12 STATE_START
+ []
+
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 )
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 93.
-
+nput line 88.
+ [3]
 (./code/clk_button.vhd
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1.
- [4]) (./code/state_machine.vhd [5] [6])
+ [4]) (./code/state_machine.vhd [5])
 File: img/simulacion_0.png Graphic file (type bmp)
 <img/simulacion_0.png>
+ [6]
 File: img/simulacion_1.png Graphic file (type bmp)
 <img/simulacion_1.png>
 File: img/simulacion_2.png Graphic file (type bmp)
@@ -875,8 +882,44 @@ File: img/diagrama_bloques_2.png Graphic file (type bmp)
  [8]
 File: img/diagrama_bloques_3.png Graphic file (type bmp)
 <img/diagrama_bloques_3.png>
+File: img/count_0000.jpg Graphic file (type bmp)
+<img/count_0000.jpg>
  [9]
-[10] (./main.aux
+File: img/count_0001.jpg Graphic file (type bmp)
+<img/count_0001.jpg>
+File: img/count_0010.jpg Graphic file (type bmp)
+<img/count_0010.jpg>
+File: img/count_0011.jpg Graphic file (type bmp)
+<img/count_0011.jpg>
+File: img/count_0100.jpg Graphic file (type bmp)
+<img/count_0100.jpg>
+File: img/count_0101.jpg Graphic file (type bmp)
+<img/count_0101.jpg>
+File: img/count_0110.jpg Graphic file (type bmp)
+<img/count_0110.jpg>
+File: img/count_0111.jpg Graphic file (type bmp)
+<img/count_0111.jpg>
+File: img/count_1000.jpg Graphic file (type bmp)
+<img/count_1000.jpg>
+File: img/count_1001.jpg Graphic file (type bmp)
+<img/count_1001.jpg>
+File: img/count_1010.jpg Graphic file (type bmp)
+<img/count_1010.jpg>
+File: img/count_1011.jpg Graphic file (type bmp)
+<img/count_1011.jpg>
+File: img/count_1100.jpg Graphic file (type bmp)
+<img/count_1100.jpg>
+File: img/count_1101.jpg Graphic file (type bmp)
+<img/count_1101.jpg>
+File: img/count_1110.jpg Graphic file (type bmp)
+<img/count_1110.jpg>
+File: img/count_1111.jpg Graphic file (type bmp)
+<img/count_1111.jpg>
+
+[10]
+File: img/edo_10_done_1.jpg Graphic file (type bmp)
+<img/edo_10_done_1.jpg>
+ [11] [12] (./main.aux
 LaTeX Info: Redefining \. on input line 8.
 LaTeX Info: Redefining \% on input line 8.
 )
@@ -888,12 +931,12 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: DE8CF90E6A68AC54AB186A9687F762F7;1072.
  ) 
 Here is how much of TeX's memory you used:
- 26631 strings out of 468173
- 490847 string characters out of 5435520
- 1554712 words of memory out of 5000000
- 54935 multiletter control sequences out of 15000+600000
- 680066 words of font info for 79 fonts, out of 8000000 for 9000
+ 26800 strings out of 468173
+ 494674 string characters out of 5435520
+ 1499272 words of memory out of 5000000
+ 55087 multiletter control sequences out of 15000+600000
+ 680385 words of font info for 80 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 84i,12n,94p,642b,2034s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,12n,94p,634b,2034s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (10 pages).
+Output written on main.pdf (12 pages).

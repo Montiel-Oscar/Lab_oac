@@ -11,6 +11,7 @@
 
 \graphicspath{{img/}{portada_img/}}
 \newcommand{\materia}{Laboratorio de Organización y Arquitectura de Computadoras}
+\newcommand{\fpgaimg}[2][]{\rotatebox{180}{\includegraphics[#1]{#2}}}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[R]{\textsc{\materia}}
@@ -57,42 +58,40 @@ La Figura~\ref{fig:carta-asm} representa la lógica del módulo que transforma u
     decision/.style={diamond,draw,aspect=1.65,minimum width=2.6cm,minimum height=1.5cm,align=center},
     arrow/.style={->,>=Stealth,semithick}
   ]
-    \node[state] (wait) {Espera};
+    \node[state,label={[yshift=4mm]left:{Estado 00}}] (wait) {};
     \node[decision,below=0.7cm of wait] (button) {\texttt{Button}};
-    \node[state,below=0.75cm of button] (divclk) {\texttt{div\_clk = 1}\\Contar ciclos};
+    \node[state,label=left:{Estado 01},below=0.75cm of button] (divclk) {};
     \node[decision,below=0.75cm of divclk] (max) {\texttt{max}};
-    \node[state,below=0.75cm of max] (finish) {Finalizar pulso\\\texttt{div\_clk = 0}};
+    \node[state,label=left:{Estado 10},below=0.75cm of max] (finish) {};
     \draw[arrow] (wait) -- (button);
-    \draw[arrow] (button) -- node[left] {sí} (divclk);
+    \draw[arrow] (button) -- (divclk);
+    \node[anchor=east,xshift=-4pt] at ($(button.south)!0.5!(divclk.north)$) {1};
     \draw[arrow] (divclk) -- (max);
-    \draw[arrow] (max) -- node[left] {sí} (finish);
+    \draw[arrow] (max) -- (finish);
+    \node[anchor=east,xshift=-4pt] at ($(max.south)!0.5!(finish.north)$) {1};
     \draw[arrow] (finish.south) -- ++(0,-0.55) -| ($(wait.west)+(-2.0,0)$) -- (wait.west);
-    \draw[arrow] (button.east) -- node[above,near start] {no} ++(2.1,0) |- (wait.east);
-    \draw[arrow] (max.east) -- node[above,near start] {no} ++(2.1,0) |- (divclk.east);
+    \draw[arrow] (button.east) -- node[above,near start] {0} ++(2.1,0) |- (wait.east);
+    \draw[arrow] (max.east) -- node[above,near start] {0} ++(2.1,0) |- (divclk.east);
   \end{tikzpicture}
-  \caption{Carta ASM del generador de pulso manual. Las decisiones son \texttt{Button} y \texttt{max}; \texttt{div\_clk} es la señal habilitada durante el conteo interno.}
+  \caption{Carta ASM del generador de pulso manual. Los rectángulos vacíos representan los estados 00, 01 y 10; las ramas se etiquetan con los valores lógicos de las decisiones \texttt{Button} y \texttt{max}.}
   \label{fig:carta-asm}
 \end{figure}
 
 \subsection{Descripción VHDL}
 
-La descripción VHDL permite expresar directamente los estados, las transiciones y las salidas sin recurrir a mapas de Karnaugh. Cada archivo se divide en una \textit{entity}, que declara la interfaz del bloque, y una \textit{architecture}, que define su comportamiento. Los tipos \texttt{std\_logic} y \texttt{std\_logic\_vector} representan, respectivamente, una señal binaria y un conjunto ordenado de bits. La biblioteca \texttt{IEEE.STD\_LOGIC\_1164} proporciona dichos tipos y las operaciones básicas empleadas por los dos módulos.
+La descripción VHDL permite expresar directamente los estados, las transiciones y las salidas sin recurrir a mapas de Karnaugh. Cada archivo se divide en una \textit{entity}, que declara la interfaz del bloque, y una \textit{architecture}, que define su comportamiento. Los tipos \texttt{std\_logic} y \texttt{std\_logic\_vector} representan, respectivamente, una señal binaria y un conjunto ordenado de bits.
 
-En el Listado~\ref{lst:clk-button}, la entidad \texttt{clk\_buttom} recibe \texttt{clk}, el reloj de alta frecuencia de la tarjeta, y \texttt{buttom}, la señal del botón ya invertida en el diagrama de bloques. La salida \texttt{div\_clk} es el reloj lento o pulso válido que se utiliza para avanzar el circuito principal. El nombre \texttt{buttom} se conserva tal como fue declarado en el archivo VHDL, aunque semánticamente representa al botón.
+\textbf{Explicación del código 1.} El módulo \texttt{clk\_buttom} recibe \texttt{clk}, el reloj de alta frecuencia de la tarjeta, y \texttt{buttom}, la señal del botón ya invertida en el diagrama de bloques. La salida \texttt{div\_clk} es el pulso válido que hará avanzar el circuito principal. Las constantes \texttt{STATE\_START}, \texttt{STATE\_COUNT} y \texttt{STATE\_DONE} codifican los estados 00, 01 y 10. La señal \texttt{state} conserva el estado actual, mientras que \texttt{cuenta} es un contador interno de 28 bits; \texttt{MAX\_CLK\_COUNT = X\"17D7840\"} equivale a 25 millones.
 
-Las constantes \texttt{STATE\_START}, \texttt{STATE\_COUNT} y \texttt{STATE\_DONE} codifican los tres estados del generador de pulso como \texttt{00}, \texttt{01} y \texttt{10}. La señal \texttt{state} almacena el estado actual. Por otra parte, \texttt{cuenta} es un vector de 28 bits que funciona como contador interno; \texttt{MAX\_CLK\_COUNT = X\"17D7840\"} equivale a 25 millones en hexadecimal. Al emplear un valor grande se introduce un retardo suficiente para que una pulsación física no origine varios avances debido al rebote mecánico.
+El primer proceso actualiza \texttt{state} únicamente en el flanco ascendente de \texttt{clk}. En \texttt{STATE\_START} espera \texttt{buttom = '1'}; después pasa a \texttt{STATE\_COUNT}. En ese estado, el segundo proceso incrementa \texttt{cuenta}. Cuando se alcanza el máximo, el primer proceso selecciona \texttt{STATE\_DONE}; en el siguiente flanco vuelve al estado inicial. El tercer proceso asigna \texttt{div\_clk = '1'} sólo mientras el sistema está contando. El intervalo de 25 millones de ciclos evita múltiples avances causados por el rebote mecánico del botón.
 
-El primer proceso es secuencial, pues sólo modifica \texttt{state} en el flanco ascendente de \texttt{clk}, indicado por \texttt{rising\_edge(clk)}. El bloque \texttt{case} describe las transiciones: en \texttt{STATE\_START} se espera que \texttt{buttom = '1'}; al ocurrir, se pasa a \texttt{STATE\_COUNT}. En este último estado se verifica continuamente si \texttt{cuenta} alcanzó el límite. Cuando esto sucede, se pasa a \texttt{STATE\_DONE}; en el siguiente flanco se regresa a \texttt{STATE\_START}. La cláusula \texttt{when others} asigna un estado seguro si ocurriera una codificación no prevista.
+\lstinputlisting[style=estiloVHDL,caption={Código 1: módulo que genera el pulso de reloj a partir del botón.},label={lst:clk-button}]{code/clk_button.vhd}
 
-El segundo proceso incrementa \texttt{cuenta} únicamente cuando \texttt{state = STATE\_COUNT}; fuera de ese estado lo reinicia a cero. Finalmente, el tercer proceso es combinacional: asigna \texttt{div\_clk = '1'} mientras se está contando y \texttt{div\_clk = '0'} en los demás estados. Por ello, el cambio de nivel de \texttt{div\_clk} queda asociado a una única pulsación aceptada y proporciona el flanco que dispara la máquina principal.
+\textbf{Explicación del código 2.} El módulo \texttt{state\_machine} controla el contador de cuatro bits. Sus entradas son \texttt{clk}, \texttt{go} y \texttt{fc}; sus salidas son \texttt{reset}, \texttt{done} y \texttt{edo\_p}. La señal \texttt{fc} se genera al detectar el valor \texttt{1111} del contador. El vector \texttt{edo\_p} muestra el estado presente para poder comprobarlo en la simulación.
 
-El Listado~\ref{lst:state-machine} contiene la máquina que controla el contador de cuatro bits. Sus entradas son \texttt{clk}, \texttt{go} y \texttt{fc}; sus salidas son \texttt{reset}, \texttt{done} y \texttt{edo\_p}. La señal \texttt{fc} es generada por la compuerta AND de cuatro entradas cuando el contador vale \texttt{1111}. El vector \texttt{edo\_p} permite observar desde fuera el estado presente y facilita la verificación en simulación.
+En \texttt{ED0}, la máquina desactiva \texttt{reset} y \texttt{done}, y espera a que \texttt{go} sea uno. En \texttt{ED1}, activa \texttt{reset} y permanece en ese estado hasta que \texttt{fc} llega a uno. Entonces pasa a \texttt{ED2}; allí \texttt{done} se activa durante un ciclo y después se retorna a \texttt{ED0}. Así, el pulso derivado de cada pulsación gobierna una transición sincronizada y el contador sólo avanza bajo el control de la máquina de estados.
 
-En \texttt{ED0} se desactivan \texttt{reset} y \texttt{done}; si \texttt{go} se encuentra en alto, el siguiente estado es \texttt{ED1}. En \texttt{ED1}, \texttt{reset} se activa y se mantiene hasta que aparece \texttt{fc}; entonces se selecciona \texttt{ED2}. En \texttt{ED2}, \texttt{done} toma el valor uno durante un ciclo de reloj y la máquina vuelve a \texttt{ED0}. De este modo, cada pulso generado a partir del botón gobierna una transición sincronizada y el contador sólo avanza bajo el control definido por la máquina de estados.
-
-\lstinputlisting[style=estiloVHDL,caption={Módulo VHDL que genera el pulso de reloj a partir del botón.},label={lst:clk-button}]{code/clk_button.vhd}
-
-\lstinputlisting[style=estiloVHDL,caption={Máquina de estados principal en VHDL.},label={lst:state-machine}]{code/state_machine.vhd}
+\lstinputlisting[style=estiloVHDL,caption={Código 2: máquina de estados principal en VHDL.},label={lst:state-machine}]{code/state_machine.vhd}
 
 \section{Simulaciones}
 
@@ -156,27 +155,47 @@ En la Figura~\ref{fig:diagrama-conteo}, la compuerta AND de cuatro entradas reco
 
 \subsection{Evidencia en tarjeta FPGA}
 
-Las fotografías de la implementación física se agregarán cuando se cuente con ellas. Se reservan los espacios mostrados en la Figura~\ref{fig:evidencia-fpga} para documentar la conexión de la tarjeta, el estado inicial del contador y una secuencia de avance al presionar el botón.
+Las fotografías siguientes muestran la implementación física. El estado 00 corresponde a la condición inicial; durante el estado 01 se observa el conteo progresivo en las salidas; finalmente, en el estado 10 la señal \texttt{done} se enciende al concluir el conteo.
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[b]{0.31\textwidth}
-    \centering
-    \fbox{\parbox[c][4.2cm][c]{0.9\linewidth}{\centering\small Fotografía pendiente\\Conexión y asignación de pines}}
-    \caption{Montaje de la tarjeta.}
-  \end{subfigure}\hfill
-  \begin{subfigure}[b]{0.31\textwidth}
-    \centering
-    \fbox{\parbox[c][4.2cm][c]{0.9\linewidth}{\centering\small Fotografía pendiente\\Estado inicial del contador}}
-    \caption{Estado inicial.}
-  \end{subfigure}\hfill
-  \begin{subfigure}[b]{0.31\textwidth}
-    \centering
-    \fbox{\parbox[c][4.2cm][c]{0.9\linewidth}{\centering\small Fotografía pendiente\\Avance con el botón}}
-    \caption{Conteo paso a paso.}
-  \end{subfigure}
-  \caption{Espacios reservados para la evidencia experimental en la FPGA.}
-  \label{fig:evidencia-fpga}
+  \fpgaimg[width=0.62\linewidth]{img/count_0000.jpg}
+  \caption{Estado 00: condición inicial del contador (\texttt{0000}).}
+  \label{fig:estado-00}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_0001.jpg}\caption{\texttt{0001}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_0010.jpg}\caption{\texttt{0010}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_0011.jpg}\caption{\texttt{0011}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_0100.jpg}\caption{\texttt{0100}}\end{subfigure}\\[3mm]
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_0101.jpg}\caption{\texttt{0101}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_0110.jpg}\caption{\texttt{0110}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_0111.jpg}\caption{\texttt{0111}}\end{subfigure}
+  \caption{Estado 01: primera parte de la secuencia de conteo controlada por el botón.}
+  \label{fig:estado-01a}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_1000.jpg}\caption{\texttt{1000}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_1001.jpg}\caption{\texttt{1001}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_1010.jpg}\caption{\texttt{1010}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_1011.jpg}\caption{\texttt{1011}}\end{subfigure}\\[3mm]
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_1100.jpg}\caption{\texttt{1100}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_1101.jpg}\caption{\texttt{1101}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_1110.jpg}\caption{\texttt{1110}}\end{subfigure}\hfill
+  \begin{subfigure}[b]{0.22\textwidth}\centering\fpgaimg[width=\linewidth]{img/count_1111.jpg}\caption{\texttt{1111}}\end{subfigure}
+  \caption{Estado 01: segunda parte de la secuencia de conteo hasta alcanzar \texttt{1111}.}
+  \label{fig:estado-01b}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \fpgaimg[width=0.62\linewidth]{img/edo_10_done_1.jpg}
+  \caption{Estado 10: el conteo terminó y la señal \texttt{done} está encendida.}
+  \label{fig:estado-10}
 \end{figure}
 
 \section{Conclusión}
