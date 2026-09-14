@@ -1,0 +1,536 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{cmsis-nvic}{manual}{}{}
+      \name{author}{1}{}{%
+        {{hash=d8c59dfa75014dab2a6b898b0ba1b5e9}{%
+           family={{ARM Limited}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{d8c59dfa75014dab2a6b898b0ba1b5e9}
+      \strng{fullhash}{d8c59dfa75014dab2a6b898b0ba1b5e9}
+      \strng{fullhashraw}{d8c59dfa75014dab2a6b898b0ba1b5e9}
+      \strng{bibnamehash}{d8c59dfa75014dab2a6b898b0ba1b5e9}
+      \strng{authorbibnamehash}{d8c59dfa75014dab2a6b898b0ba1b5e9}
+      \strng{authornamehash}{d8c59dfa75014dab2a6b898b0ba1b5e9}
+      \strng{authorfullhash}{d8c59dfa75014dab2a6b898b0ba1b5e9}
+      \strng{authorfullhashraw}{d8c59dfa75014dab2a6b898b0ba1b5e9}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{subtitle}{API de control del Nested Vectored Interrupt Controller}
+      \field{title}{CMSIS-Core (Cortex-M): Interrupts and Exceptions (NVIC)}
+      \field{urlday}{8}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://arm-software.github.io/CMSIS_6/v6.0.0/Core/group__NVIC__gr.html
+      \endverb
+      \verb{url}
+      \verb https://arm-software.github.io/CMSIS_6/v6.0.0/Core/group__NVIC__gr.html
+      \endverb
+    \endentry
+    \entry{memfault-cortexm}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=42ed17cf220c6d932ad8acaeb8eeb6b6}{%
+           family={Tsang},
+           familyi={T\bibinitperiod},
+           given={Chris},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Memfault Interrupt Blog}%
+      }
+      \strng{namehash}{42ed17cf220c6d932ad8acaeb8eeb6b6}
+      \strng{fullhash}{42ed17cf220c6d932ad8acaeb8eeb6b6}
+      \strng{fullhashraw}{42ed17cf220c6d932ad8acaeb8eeb6b6}
+      \strng{bibnamehash}{42ed17cf220c6d932ad8acaeb8eeb6b6}
+      \strng{authorbibnamehash}{42ed17cf220c6d932ad8acaeb8eeb6b6}
+      \strng{authornamehash}{42ed17cf220c6d932ad8acaeb8eeb6b6}
+      \strng{authorfullhash}{42ed17cf220c6d932ad8acaeb8eeb6b6}
+      \strng{authorfullhashraw}{42ed17cf220c6d932ad8acaeb8eeb6b6}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{A Practical guide to ARM Cortex-M Exception Handling}
+      \field{urlday}{8}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2019}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://interrupt.memfault.com/blog/arm-cortex-m-exceptions-and-nvic
+      \endverb
+      \verb{url}
+      \verb https://interrupt.memfault.com/blog/arm-cortex-m-exceptions-and-nvic
+      \endverb
+    \endentry
+    \entry{arm-latency}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=79904612cced76d47cd93d46f752710a}{%
+           family={Yiu},
+           familyi={Y\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {ARM Community}%
+      }
+      \strng{namehash}{79904612cced76d47cd93d46f752710a}
+      \strng{fullhash}{79904612cced76d47cd93d46f752710a}
+      \strng{fullhashraw}{79904612cced76d47cd93d46f752710a}
+      \strng{bibnamehash}{79904612cced76d47cd93d46f752710a}
+      \strng{authorbibnamehash}{79904612cced76d47cd93d46f752710a}
+      \strng{authornamehash}{79904612cced76d47cd93d46f752710a}
+      \strng{authorfullhash}{79904612cced76d47cd93d46f752710a}
+      \strng{authorfullhashraw}{79904612cced76d47cd93d46f752710a}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Beginner Guide on Interrupt Latency and Interrupt Latency of the Arm Cortex-M Processors}
+      \field{urlday}{8}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2016}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://developer.arm.com/community/arm-community-blogs/b/architectures-and-processors-blog/posts/beginner-guide-on-interrupt-latency-and-interrupt-latency-of-the-arm-cortex-m-processors
+      \endverb
+      \verb{url}
+      \verb https://developer.arm.com/community/arm-community-blogs/b/architectures-and-processors-blog/posts/beginner-guide-on-interrupt-latency-and-interrupt-latency-of-the-arm-cortex-m-processors
+      \endverb
+    \endentry
+    \entry{micropython-isr-rules}{manual}{}{}
+      \name{author}{1}{}{%
+        {{hash=6a540b7d22b073d35506ac9de47a3d8e}{%
+           family={{MicroPython Developers}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{fullhash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{fullhashraw}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{bibnamehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authorbibnamehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authornamehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authorfullhash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authorfullhashraw}{6a540b7d22b073d35506ac9de47a3d8e}
+      \field{extraname}{1}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{subtitle}{Reglas y buenas prácticas para escribir ISR en MicroPython}
+      \field{title}{Writing Interrupt Handlers}
+      \field{urlday}{8}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://docs.micropython.org/en/latest/reference/isr_rules.html
+      \endverb
+      \verb{url}
+      \verb https://docs.micropython.org/en/latest/reference/isr_rules.html
+      \endverb
+    \endentry
+    \entry{micropython-pin}{manual}{}{}
+      \name{author}{1}{}{%
+        {{hash=6a540b7d22b073d35506ac9de47a3d8e}{%
+           family={{MicroPython Developers}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{fullhash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{fullhashraw}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{bibnamehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authorbibnamehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authornamehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authorfullhash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authorfullhashraw}{6a540b7d22b073d35506ac9de47a3d8e}
+      \field{extraname}{2}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{subtitle}{Documentación oficial de la clase machine.Pin}
+      \field{title}{Class Pin – control I/O pins}
+      \field{urlday}{8}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://docs.micropython.org/en/latest/library/machine.Pin.html
+      \endverb
+      \verb{url}
+      \verb https://docs.micropython.org/en/latest/library/machine.Pin.html
+      \endverb
+    \endentry
+    \entry{micropython-rp2}{manual}{}{}
+      \name{author}{1}{}{%
+        {{hash=6a540b7d22b073d35506ac9de47a3d8e}{%
+           family={{MicroPython Developers}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{fullhash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{fullhashraw}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{bibnamehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authorbibnamehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authornamehash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authorfullhash}{6a540b7d22b073d35506ac9de47a3d8e}
+      \strng{authorfullhashraw}{6a540b7d22b073d35506ac9de47a3d8e}
+      \field{extraname}{3}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{subtitle}{Referencia rápida del puerto MicroPython para RP2040 y RP2350}
+      \field{title}{Quick Reference for the RP2}
+      \field{urlday}{8}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://docs.micropython.org/en/latest/rp2/quickref.html
+      \endverb
+      \verb{url}
+      \verb https://docs.micropython.org/en/latest/rp2/quickref.html
+      \endverb
+    \endentry
+    \entry{samek-priorities}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=45b95c3ce3b418e40f40794511b688df}{%
+           family={Samek},
+           familyi={S\bibinitperiod},
+           given={Miro},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Embedded Related}%
+      }
+      \strng{namehash}{45b95c3ce3b418e40f40794511b688df}
+      \strng{fullhash}{45b95c3ce3b418e40f40794511b688df}
+      \strng{fullhashraw}{45b95c3ce3b418e40f40794511b688df}
+      \strng{bibnamehash}{45b95c3ce3b418e40f40794511b688df}
+      \strng{authorbibnamehash}{45b95c3ce3b418e40f40794511b688df}
+      \strng{authornamehash}{45b95c3ce3b418e40f40794511b688df}
+      \strng{authorfullhash}{45b95c3ce3b418e40f40794511b688df}
+      \strng{authorfullhashraw}{45b95c3ce3b418e40f40794511b688df}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Cutting Through the Confusion with ARM Cortex-M Interrupt Priorities}
+      \field{urlday}{8}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2016}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://www.embeddedrelated.com/showarticle/923.php
+      \endverb
+      \verb{url}
+      \verb https://www.embeddedrelated.com/showarticle/923.php
+      \endverb
+    \endentry
+    \entry{upesy-pico-irq}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=60ac04a7f7e65aad61d0cf67d22ce152}{%
+           family={{uPesy Electronics}},
+           familyi={u\bibinitperiod}}}%
+      }
+      \strng{namehash}{60ac04a7f7e65aad61d0cf67d22ce152}
+      \strng{fullhash}{60ac04a7f7e65aad61d0cf67d22ce152}
+      \strng{fullhashraw}{60ac04a7f7e65aad61d0cf67d22ce152}
+      \strng{bibnamehash}{60ac04a7f7e65aad61d0cf67d22ce152}
+      \strng{authorbibnamehash}{60ac04a7f7e65aad61d0cf67d22ce152}
+      \strng{authornamehash}{60ac04a7f7e65aad61d0cf67d22ce152}
+      \strng{authorfullhash}{60ac04a7f7e65aad61d0cf67d22ce152}
+      \strng{authorfullhashraw}{60ac04a7f7e65aad61d0cf67d22ce152}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{subtitle}{Tutorial sobre interrupciones de hardware en MicroPython}
+      \field{title}{Interrupts on RPi Pico in MicroPython: React to Events}
+      \field{urlday}{8}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2023}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://www.upesy.com/blogs/tutorials/hardware-interrupts-rpi-pico-on-micropython
+      \endverb
+      \verb{url}
+      \verb https://www.upesy.com/blogs/tutorials/hardware-interrupts-rpi-pico-on-micropython
+      \endverb
+    \endentry
+    \entry{valvano-interrupts}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=7a167a5ebdfd9ef44a53e256538a578e}{%
+           family={Valvano},
+           familyi={V\bibinitperiod},
+           given={Jonathan\bibnamedelima W.},
+           giveni={J\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {The University of Texas at Austin}%
+      }
+      \strng{namehash}{7a167a5ebdfd9ef44a53e256538a578e}
+      \strng{fullhash}{7a167a5ebdfd9ef44a53e256538a578e}
+      \strng{fullhashraw}{7a167a5ebdfd9ef44a53e256538a578e}
+      \strng{bibnamehash}{7a167a5ebdfd9ef44a53e256538a578e}
+      \strng{authorbibnamehash}{7a167a5ebdfd9ef44a53e256538a578e}
+      \strng{authornamehash}{7a167a5ebdfd9ef44a53e256538a578e}
+      \strng{authorfullhash}{7a167a5ebdfd9ef44a53e256538a578e}
+      \strng{authorfullhashraw}{7a167a5ebdfd9ef44a53e256538a578e}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Embedded Systems: Introduction to ARM Cortex-M Microcontrollers — Chapter 12: Interrupts}
+      \field{urlday}{8}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2020}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://users.ece.utexas.edu/~valvano/Volume1/E-Book/C12_Interrupts.htm
+      \endverb
+      \verb{url}
+      \verb https://users.ece.utexas.edu/~valvano/Volume1/E-Book/C12_Interrupts.htm
+      \endverb
+    \endentry
+    \entry{rp2350-datasheet}{manual}{}{}
+      \name{author}{1}{}{%
+        {{hash=abdff8c3bc7ac1a29e4f7edc008fe26b}{%
+           family={{Raspberry Pi Ltd}},
+           familyi={R\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Raspberry Pi Ltd}%
+      }
+      \strng{namehash}{abdff8c3bc7ac1a29e4f7edc008fe26b}
+      \strng{fullhash}{abdff8c3bc7ac1a29e4f7edc008fe26b}
+      \strng{fullhashraw}{abdff8c3bc7ac1a29e4f7edc008fe26b}
+      \strng{bibnamehash}{abdff8c3bc7ac1a29e4f7edc008fe26b}
+      \strng{authorbibnamehash}{abdff8c3bc7ac1a29e4f7edc008fe26b}
+      \strng{authornamehash}{abdff8c3bc7ac1a29e4f7edc008fe26b}
+      \strng{authorfullhash}{abdff8c3bc7ac1a29e4f7edc008fe26b}
+      \strng{authorfullhashraw}{abdff8c3bc7ac1a29e4f7edc008fe26b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{RP2350 Datasheet: A Secure, Connected Microcontroller}
+      \field{urlday}{12}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://pip-assets.raspberrypi.com/categories/1214-rp2350/documents/RP-008373-DS-2-rp2350-datasheet.pdf
+      \endverb
+      \verb{url}
+      \verb https://pip-assets.raspberrypi.com/categories/1214-rp2350/documents/RP-008373-DS-2-rp2350-datasheet.pdf
+      \endverb
+    \endentry
+    \entry{pico2-uelectronics}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=6aa00de88f934bbb4d0c901b19fc3435}{%
+           family={{UNIT Electronics}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {UNIT Electronics}%
+      }
+      \strng{namehash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{fullhash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{fullhashraw}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{bibnamehash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{authorbibnamehash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{authornamehash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{authorfullhash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{authorfullhashraw}{6aa00de88f934bbb4d0c901b19fc3435}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Raspberry Pi Pico 2W RP2350}
+      \field{urlday}{12}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://uelectronics.com/producto/raspberry-pi-pico-2-rp2350/
+      \endverb
+      \verb{url}
+      \verb https://uelectronics.com/producto/raspberry-pi-pico-2-rp2350/
+      \endverb
+    \endentry
+    \entry{lm35-hetpro}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=0dc0894ef74ec141bf044801bbf5f463}{%
+           family={Marmolejo},
+           familyi={M\bibinitperiod},
+           given={Rubén\bibnamedelima E.},
+           giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {HeTPro-Tutoriales}%
+      }
+      \strng{namehash}{0dc0894ef74ec141bf044801bbf5f463}
+      \strng{fullhash}{0dc0894ef74ec141bf044801bbf5f463}
+      \strng{fullhashraw}{0dc0894ef74ec141bf044801bbf5f463}
+      \strng{bibnamehash}{0dc0894ef74ec141bf044801bbf5f463}
+      \strng{authorbibnamehash}{0dc0894ef74ec141bf044801bbf5f463}
+      \strng{authornamehash}{0dc0894ef74ec141bf044801bbf5f463}
+      \strng{authorfullhash}{0dc0894ef74ec141bf044801bbf5f463}
+      \strng{authorfullhashraw}{0dc0894ef74ec141bf044801bbf5f463}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{25}
+      \field{month}{11}
+      \field{title}{LM35 - El sensor de temperatura más popular}
+      \field{urlday}{12}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2017}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://hetpro-store.com/TUTORIALES/lm35/
+      \endverb
+      \verb{url}
+      \verb https://hetpro-store.com/TUTORIALES/lm35/
+      \endverb
+    \endentry
+    \entry{shunt-tecsolda}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=bcc5caaa0294887c73a95356e5368f35}{%
+           family={{Tecsolda}},
+           familyi={T\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Tecsolda}%
+      }
+      \strng{namehash}{bcc5caaa0294887c73a95356e5368f35}
+      \strng{fullhash}{bcc5caaa0294887c73a95356e5368f35}
+      \strng{fullhashraw}{bcc5caaa0294887c73a95356e5368f35}
+      \strng{bibnamehash}{bcc5caaa0294887c73a95356e5368f35}
+      \strng{authorbibnamehash}{bcc5caaa0294887c73a95356e5368f35}
+      \strng{authornamehash}{bcc5caaa0294887c73a95356e5368f35}
+      \strng{authorfullhash}{bcc5caaa0294887c73a95356e5368f35}
+      \strng{authorfullhashraw}{bcc5caaa0294887c73a95356e5368f35}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Qué son las resistencias shunts, cómo funcionan y por qué debes conocerlas}
+      \field{urlday}{12}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://tecsolda.com/que-son-las-resistencias-shunts-como-funcionan-y-por-que-debes-conocerlas/
+      \endverb
+      \verb{url}
+      \verb https://tecsolda.com/que-son-las-resistencias-shunts-como-funcionan-y-por-que-debes-conocerlas/
+      \endverb
+    \endentry
+    \entry{oled-uelectronics}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=6aa00de88f934bbb4d0c901b19fc3435}{%
+           family={{UNIT Electronics}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {UNIT Electronics}%
+      }
+      \strng{namehash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{fullhash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{fullhashraw}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{bibnamehash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{authorbibnamehash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{authornamehash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{authorfullhash}{6aa00de88f934bbb4d0c901b19fc3435}
+      \strng{authorfullhashraw}{6aa00de88f934bbb4d0c901b19fc3435}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Display OLED Azul y Blanco 128x64 0.96" I2C SSD1306}
+      \field{urlday}{12}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://uelectronics.com/producto/display-oled-azul-y-blanco-128x64-0-96-i2c-ssd1306/
+      \endverb
+      \verb{url}
+      \verb https://uelectronics.com/producto/display-oled-azul-y-blanco-128x64-0-96-i2c-ssd1306/
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
