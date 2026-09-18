@@ -1,0 +1,61 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "edo_p[2]",
+					"strict" : false
+				},
+				{
+					"name" : "edo_p[1]",
+					"strict" : false
+				},
+				{
+					"name" : "edo_p[0]",
+					"strict" : false
+				},
+				{
+					"name" : "VBPM[3]",
+					"strict" : false
+				},
+				{
+					"name" : "VBPM[2]",
+					"strict" : false
+				},
+				{
+					"name" : "VBPM[1]",
+					"strict" : false
+				},
+				{
+					"name" : "VBPM[0]",
+					"strict" : false
+				},
+				{
+					"name" : "entradas[1]",
+					"strict" : false
+				},
+				{
+					"name" : "entradas[0]",
+					"strict" : false
+				},
+				{
+					"name" : "entradas[2]",
+					"strict" : false
+				},
+				{
+					"name" : "reset",
+					"strict" : false
+				},
+				{
+					"name" : "buttom",
+					"strict" : false
+				},
+				{
+					"name" : "clk",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

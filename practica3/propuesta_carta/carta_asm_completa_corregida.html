@@ -1,259 +1,328 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Carta ASM completa - 6 estados, 3 entradas y 4 salidas</title>
-<style>
-@page { size: Letter; margin: 12mm 11mm 14mm; }
-:root{--ink:#152033;--muted:#5d6b7d;--blue:#155eef;--cyan:#0e7490;--green:#138a52;--orange:#c35b00;--red:#b42318;--line:#d6deea;--soft:#f5f8fc;--dark:#101828;}
-*{box-sizing:border-box} body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);margin:0;background:#fff;line-height:1.35;font-size:10.2pt} h1{font-size:22pt;margin:0 0 7px;color:var(--dark)} h2{font-size:15pt;margin:22px 0 9px;border-bottom:2px solid var(--blue);padding-bottom:4px} h3{font-size:12pt;margin:15px 0 6px;color:#173b73} p{margin:5px 0 9px} .lead{font-size:11.3pt;color:var(--muted);max-width:92%}.hero{padding:16px 18px;border:1px solid var(--line);border-left:6px solid var(--blue);border-radius:10px;background:linear-gradient(135deg,#f8fbff,#eef5ff);margin-bottom:16px}.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.chip{background:#fff;border:1px solid #cbd8ef;border-radius:999px;padding:3px 8px;font-size:8.8pt}.note{padding:9px 11px;border-left:4px solid var(--orange);background:#fff8ed;margin:10px 0;border-radius:5px}.ok{border-left-color:var(--green);background:#eefbf4}.eq{font-family:"Courier New",monospace;font-size:10.1pt;padding:7px 9px;background:#f6f8fb;border:1px solid #e0e6ef;border-radius:6px;margin:6px 0;white-space:normal}.eq strong{color:#0b4aa2}.diagram{font-family:"Courier New",monospace;font-size:7.1pt;line-height:1.15;white-space:pre;overflow:hidden;background:#101828;color:#f7f9fc;padding:10px;border-radius:8px;margin:8px 0 12px}.small{font-size:8.7pt;color:var(--muted)} table{border-collapse:collapse;width:100%;margin:7px 0 12px;font-size:8.4pt} th{background:#173b73;color:#fff;font-weight:700} th,td{border:1px solid #cfd8e6;padding:3px 4px;text-align:center;vertical-align:middle} tr:nth-child(even) td{background:#f8fafc}.left{text-align:left}.state{font-weight:700;color:#173b73}.neg{color:var(--red);font-weight:700}.pos{color:var(--green);font-weight:700}.pagebreak{break-before:page}.avoid{break-inside:avoid}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.formula-card{padding:8px;border:1px solid var(--line);border-radius:8px;background:#fff;break-inside:avoid}.formula-card h3{margin-top:0}.footer-note{margin-top:16px;font-size:8.2pt;color:var(--muted);border-top:1px solid var(--line);padding-top:7px}.qm-step{border:1px solid var(--line);border-radius:7px;padding:8px 10px;margin:7px 0;break-inside:avoid}.qm-step code{font-family:"Courier New",monospace}.check{font-size:8.6pt;color:var(--green);font-weight:700}.nowrap{white-space:nowrap}
-@media print{a{color:inherit;text-decoration:none}.hero{box-shadow:none}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carta ASM Recursiva</title>
+  <style>
+    :root{
+      --bg:#f5f8ff;
+      --panel:#ffffff;
+      --line:#22324d;
+      --state:#dfeeff;
+      --decision:#fff2c9;
+      --cond:#d8f8e6;
+      --text:#17243a;
+      --muted:#5a6a84;
+      --accent:#2b6cff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#f7faff 0%,#eef4ff 100%);
+      color:var(--text);
+    }
+    .wrap{
+      max-width:1500px;
+      margin:24px auto;
+      padding:0 18px;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid #e7eef8;
+      border-radius:20px;
+      padding:22px;
+      box-shadow:0 10px 30px rgba(28,49,87,.10);
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:30px;
+    }
+    p{
+      margin:0 0 14px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+    .legend{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .legend span{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#f8fbff;
+      border:1px solid #e7eef8;
+    }
+    .tag{
+      width:14px;
+      height:14px;
+      border-radius:4px;
+      border:1px solid rgba(0,0,0,.12);
+      display:inline-block;
+    }
+    svg{
+      width:100%;
+      height:auto;
+      border:1px solid #edf2fa;
+      border-radius:18px;
+      background:#fcfdff;
+    }
+    .state{
+      fill:var(--state);
+      stroke:var(--line);
+      stroke-width:2.3;
+      rx:18;
+      ry:18;
+    }
+    .decision{
+      fill:var(--decision);
+      stroke:var(--line);
+      stroke-width:2.3;
+    }
+    .cond{
+      fill:var(--cond);
+      stroke:var(--line);
+      stroke-width:2;
+      rx:12;
+      ry:12;
+    }
+    .edge{
+      stroke:var(--line);
+      stroke-width:2.6;
+      fill:none;
+      marker-end:url(#arrow);
+      stroke-linejoin:round;
+      stroke-linecap:round;
+    }
+    .soft{stroke-width:2.2}
+    .title{
+      font-size:20px;
+      font-weight:800;
+      fill:var(--text);
+      text-anchor:middle;
+    }
+    .subtitle{
+      font-size:12px;
+      fill:var(--muted);
+      text-anchor:middle;
+    }
+    .box-title{
+      font-size:20px;
+      font-weight:800;
+      fill:var(--text);
+      text-anchor:middle;
+    }
+    .box-text{
+      font-size:14px;
+      fill:var(--text);
+      text-anchor:middle;
+    }
+    .decision-text{
+      font-size:18px;
+      font-weight:800;
+      fill:var(--text);
+      text-anchor:middle;
+    }
+    .cond-text{
+      font-size:14px;
+      font-weight:800;
+      fill:#125135;
+      text-anchor:middle;
+    }
+    .label{
+      font-size:15px;
+      font-weight:800;
+      fill:var(--accent);
+    }
+  </style>
 </head>
 <body>
-<section class="hero">
-<h1>Carta ASM completa</h1>
-<p class="lead">Diseño con 6 estados, 3 entradas y 4 salidas; incluye lógica positiva y negada, decisiones múltiples, salidas condicionales, tabla de transición completa y minimización por Quine-McCluskey.</p>
-<div class="chips"><span class="chip">6 estados</span><span class="chip">3 entradas: A, B, C</span><span class="chip">4 salidas</span><span class="chip">Y1, Y2 positivas</span><span class="chip">Ȳ3, Ȳ4 activas en 0</span><span class="chip">Flip-flops D</span></div>
-</section>
+  <div class="wrap">
+    <div class="card">
+      <h1>Carta ASM recursiva</h1>
+      <p>
+        Máquina ASM de 6 estados, 3 entradas y 4 salidas. El flujo es recursivo:
+        el estado final regresa al estado inicial y varios estados intermedios vuelven a <strong>S0</strong>
+        bajo ciertas condiciones.
+      </p>
 
-<h2>1. Codificación de estados</h2>
-<p>Se requieren <b>3 bits</b> porque ⌈log<sub>2</sub>(6)⌉ = 3. Los estados no usados 110 y 111 se aprovechan como <i>don't care</i> en la minimización.</p>
-<table style="width:55%"><tr><th>Estado</th><th>Q2 Q1 Q0</th></tr>
-<tr><td class="state">S0</td><td>000</td></tr><tr><td class="state">S1</td><td>001</td></tr><tr><td class="state">S2</td><td>010</td></tr><tr><td class="state">S3</td><td>011</td></tr><tr><td class="state">S4</td><td>100</td></tr><tr><td class="state">S5</td><td>101</td></tr></table>
+      <div class="legend">
+        <span><i class="tag" style="background:#dfeeff"></i> Estado</span>
+        <span><i class="tag" style="background:#fff2c9"></i> Decisión</span>
+        <span><i class="tag" style="background:#d8f8e6"></i> Salida condicional</span>
+        <span><strong>Y3_n</strong> y <strong>Y4_n</strong> están en lógica negada</span>
+      </div>
 
-<h2>2. Carta ASM propuesta</h2>
-<p>La carta se muestra por <b>bloques de estado</b> para evitar cruces de líneas. Cada bloque conserva la notación ASM estándar: <b>rectángulo = estado</b>, <b>rombo = decisión</b>, <b>rectángulo redondeado = salida condicional</b> y <b>etiqueta final = siguiente estado</b>.</p>
+      <svg viewBox="0 0 1500 1320" aria-label="Carta ASM recursiva">
+        <defs>
+          <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+            <path d="M0 0 L12 6 L0 12 Z" fill="#22324d"></path>
+          </marker>
+        </defs>
 
-<style>
-.asm-wrap{margin:10px 0 14px;border:1px solid #cfd8e6;border-radius:12px;background:#f8fbff;padding:10px;overflow-x:auto}
-.asm-wrap svg{width:100%;height:auto;display:block;min-width:900px}
-.asm-legend{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:8px 0 12px;padding:8px 10px;background:#fff;border:1px solid #dce4ef;border-radius:8px;font-size:8.8pt}
-.asm-leg{display:flex;align-items:center;gap:6px}.asm-box{width:24px;height:14px;border:2px solid #155eef;background:#eaf2ff;border-radius:2px}.asm-diamond{width:16px;height:16px;border:2px solid #c35b00;background:#fff4e5;transform:rotate(45deg);margin:0 4px}.asm-cond{width:27px;height:14px;border:2px solid #138a52;background:#ecfdf3;border-radius:7px}.asm-next{padding:1px 7px;border:1px solid #98a2b3;border-radius:10px;background:#fff;color:#344054;font-weight:700}
-@media print{.asm-wrap{overflow:visible;padding:5px}.asm-wrap svg{min-width:0}}
-</style>
+        <text x="750" y="36" class="title">Diagrama ASM completo</text>
+        <text x="750" y="60" class="subtitle">Entradas: A, B, C • Salidas: Y1, Y2, Y3_n, Y4_n</text>
 
-<div class="asm-legend">
-  <span class="asm-leg"><span class="asm-box"></span> Estado</span>
-  <span class="asm-leg"><span class="asm-diamond"></span> Decisión</span>
-  <span class="asm-leg"><span class="asm-cond"></span> Salida condicional</span>
-  <span class="asm-leg"><span class="asm-next">Sx</span> Siguiente estado</span>
-</div>
+        <!-- S0 -->
+        <rect x="585" y="90" width="330" height="100" class="state"/>
+        <text x="750" y="128" class="box-title">S0 (000)</text>
+        <text x="750" y="155" class="box-text">Y1=0, Y2=0, Y3_n=1, Y4_n=1</text>
 
-<div class="asm-wrap">
-<svg viewBox="0 0 1180 1130" role="img" aria-label="Carta ASM de seis estados">
-<defs>
-  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 z" fill="#475467"/></marker>
-  <style>
-    .card{fill:#fff;stroke:#d0d9e6;stroke-width:2}.title{font:700 20px Arial;fill:#173b73}.code{font:700 14px Arial;fill:#667085}
-    .statebox{fill:#eaf2ff;stroke:#155eef;stroke-width:3}.decision{fill:#fff4e5;stroke:#c35b00;stroke-width:3}.cond{fill:#ecfdf3;stroke:#138a52;stroke-width:3}
-    .negcond{fill:#fff1f0;stroke:#b42318;stroke-width:3}.next{fill:#f9fafb;stroke:#98a2b3;stroke-width:2}.line{stroke:#475467;stroke-width:2.5;fill:none;marker-end:url(#arrow)}
-    .plain{stroke:#475467;stroke-width:2.5;fill:none}.txt{font:700 17px Arial;fill:#101828;text-anchor:middle;dominant-baseline:middle}.smalltxt{font:700 14px Arial;fill:#344054;text-anchor:middle;dominant-baseline:middle}
-    .branch{font:700 14px Arial;fill:#b54708}.posout{font:700 15px Arial;fill:#087443}.negout{font:700 15px Arial;fill:#b42318}.hint{font:600 13px Arial;fill:#667085}
-  </style>
-</defs>
+        <!-- A? -->
+        <path d="M750 190 L810 245 L750 300 L690 245 Z" class="decision"/>
+        <text x="750" y="252" class="decision-text">A ?</text>
 
-<!-- S0 -->
-<g transform="translate(20,20)">
- <rect class="card" x="0" y="0" width="550" height="300" rx="14"/>
- <text class="title" x="24" y="32">S0</text><text class="code" x="70" y="32">000</text>
- <rect class="statebox" x="200" y="38" width="150" height="54" rx="4"/><text class="txt" x="275" y="65">S0 · 000</text>
- <path class="line" d="M275 92 L275 126"/>
- <polygon class="decision" points="275,126 325,166 275,206 225,166"/><text class="txt" x="275" y="166">A ?</text>
- <path class="plain" d="M225 166 L120 166 L120 232"/><path class="line" d="M120 232 L120 248"/>
- <text class="branch" x="170" y="154">0</text>
- <path class="plain" d="M325 166 L430 166 L430 232"/><path class="line" d="M430 232 L430 248"/>
- <text class="branch" x="378" y="154">1</text>
- <rect class="next" x="72" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="120" y="265">→ S0</text>
- <rect class="next" x="382" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="430" y="265">→ S1</text>
-</g>
+        <!-- S1 -->
+        <rect x="170" y="360" width="300" height="100" class="state"/>
+        <text x="320" y="398" class="box-title">S1 (001)</text>
+        <text x="320" y="425" class="box-text">Y1=0, Y2=0, Y3_n=1, Y4_n=1</text>
 
-<!-- S1 -->
-<g transform="translate(610,20)">
- <rect class="card" x="0" y="0" width="550" height="380" rx="14"/>
- <text class="title" x="24" y="32">S1</text><text class="code" x="70" y="32">001 · dos decisiones</text>
- <rect class="statebox" x="200" y="38" width="150" height="54" rx="4"/><text class="txt" x="275" y="65">S1 · 001</text>
- <path class="line" d="M275 92 L275 122"/>
- <polygon class="decision" points="275,122 325,162 275,202 225,162"/><text class="txt" x="275" y="162">B ?</text>
- <path class="plain" d="M225 162 L105 162 L105 232"/><path class="line" d="M105 232 L105 248"/>
- <text class="branch" x="165" y="150">0</text>
- <rect class="next" x="57" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="105" y="265">→ S2</text>
- <path class="line" d="M325 162 L370 162 L370 218"/><text class="branch" x="345" y="150">1</text>
- <polygon class="decision" points="370,218 418,255 370,292 322,255"/><text class="txt" x="370" y="255">C ?</text>
- <path class="plain" d="M322 255 L250 255 L250 326"/><path class="line" d="M250 326 L250 342"/>
- <text class="branch" x="285" y="244">0</text>
- <rect class="next" x="202" y="342" width="96" height="30" rx="15"/><text class="smalltxt" x="250" y="357">→ S3</text>
- <path class="plain" d="M418 255 L485 255 L485 300"/><text class="branch" x="448" y="244">1</text>
- <rect class="cond" x="430" y="300" width="110" height="34" rx="12"/><text class="posout" x="485" y="321" text-anchor="middle">Y1 = 1</text>
- <path class="line" d="M485 334 L485 342"/>
- <rect class="next" x="437" y="342" width="96" height="30" rx="15"/><text class="smalltxt" x="485" y="357">→ S4</text>
-</g>
+        <!-- S2 -->
+        <rect x="1030" y="360" width="300" height="100" class="state"/>
+        <text x="1180" y="398" class="box-title">S2 (010)</text>
+        <text x="1180" y="425" class="box-text">Y1=0, Y2=0, Y3_n=1, Y4_n=1</text>
 
-<!-- S2 -->
-<g transform="translate(20,420)">
- <rect class="card" x="0" y="0" width="550" height="300" rx="14"/>
- <text class="title" x="24" y="32">S2</text><text class="code" x="70" y="32">010</text>
- <rect class="statebox" x="200" y="38" width="150" height="54" rx="4"/><text class="txt" x="275" y="65">S2 · 010</text>
- <path class="line" d="M275 92 L275 126"/>
- <polygon class="decision" points="275,126 325,166 275,206 225,166"/><text class="txt" x="275" y="166">C ?</text>
- <path class="plain" d="M225 166 L115 166 L115 232"/><path class="line" d="M115 232 L115 248"/><text class="branch" x="168" y="154">0</text>
- <rect class="next" x="67" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="115" y="265">→ S2</text>
- <path class="plain" d="M325 166 L425 166 L425 210"/><text class="branch" x="375" y="154">1</text>
- <rect class="negcond" x="365" y="210" width="120" height="34" rx="12"/><text class="negout" x="425" y="231" text-anchor="middle">Ȳ3 = 0</text>
- <path class="line" d="M425 244 L425 248"/><rect class="next" x="377" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="425" y="265">→ S5</text>
-</g>
+        <!-- B? under S1 -->
+        <path d="M320 460 L380 515 L320 570 L260 515 Z" class="decision"/>
+        <text x="320" y="522" class="decision-text">B ?</text>
 
-<!-- S3 -->
-<g transform="translate(610,420)">
- <rect class="card" x="0" y="0" width="550" height="300" rx="14"/>
- <text class="title" x="24" y="32">S3</text><text class="code" x="70" y="32">011 · salida de estado Y1 = 1</text>
- <rect class="statebox" x="185" y="38" width="180" height="62" rx="4"/><text class="txt" x="275" y="62">S3 · 011</text><text class="posout" x="275" y="84" text-anchor="middle">Y1 = 1</text>
- <path class="line" d="M275 100 L275 128"/>
- <polygon class="decision" points="275,128 325,168 275,208 225,168"/><text class="txt" x="275" y="168">A ?</text>
- <path class="plain" d="M225 168 L115 168 L115 232"/><path class="line" d="M115 232 L115 248"/><text class="branch" x="168" y="156">0</text>
- <rect class="next" x="67" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="115" y="265">→ S0</text>
- <path class="plain" d="M325 168 L425 168 L425 210"/><text class="branch" x="375" y="156">1</text>
- <rect class="cond" x="370" y="210" width="110" height="34" rx="12"/><text class="posout" x="425" y="231" text-anchor="middle">Y2 = 1</text>
- <path class="line" d="M425 244 L425 248"/><rect class="next" x="377" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="425" y="265">→ S4</text>
-</g>
+        <!-- C? under S2 -->
+        <path d="M1180 460 L1240 515 L1180 570 L1120 515 Z" class="decision"/>
+        <text x="1180" y="522" class="decision-text">C ?</text>
 
-<!-- S4 -->
-<g transform="translate(20,740)">
- <rect class="card" x="0" y="0" width="550" height="300" rx="14"/>
- <text class="title" x="24" y="32">S4</text><text class="code" x="70" y="32">100</text>
- <rect class="statebox" x="200" y="38" width="150" height="54" rx="4"/><text class="txt" x="275" y="65">S4 · 100</text>
- <path class="line" d="M275 92 L275 126"/>
- <polygon class="decision" points="275,126 325,166 275,206 225,166"/><text class="txt" x="275" y="166">B ?</text>
- <path class="plain" d="M225 166 L115 166 L115 210"/><text class="branch" x="168" y="154">0</text>
- <rect class="negcond" x="55" y="210" width="120" height="34" rx="12"/><text class="negout" x="115" y="231" text-anchor="middle">Ȳ4 = 0</text>
- <path class="line" d="M115 244 L115 248"/><rect class="next" x="67" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="115" y="265">→ S5</text>
- <path class="plain" d="M325 166 L425 166 L425 232"/><path class="line" d="M425 232 L425 248"/><text class="branch" x="375" y="154">1</text>
- <rect class="next" x="377" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="425" y="265">→ S1</text>
-</g>
+        <!-- S3 -->
+        <rect x="170" y="680" width="300" height="100" class="state"/>
+        <text x="320" y="718" class="box-title">S3 (011)</text>
+        <text x="320" y="745" class="box-text">Y1=1, Y2=0, Y3_n=1, Y4_n=1</text>
 
-<!-- S5 -->
-<g transform="translate(610,740)">
- <rect class="card" x="0" y="0" width="550" height="300" rx="14"/>
- <text class="title" x="24" y="32">S5</text><text class="code" x="70" y="32">101 · salida de estado Y2 = 1</text>
- <rect class="statebox" x="185" y="38" width="180" height="62" rx="4"/><text class="txt" x="275" y="62">S5 · 101</text><text class="posout" x="275" y="84" text-anchor="middle">Y2 = 1</text>
- <path class="line" d="M275 100 L275 128"/>
- <polygon class="decision" points="275,128 325,168 275,208 225,168"/><text class="txt" x="275" y="168">C ?</text>
- <path class="plain" d="M225 168 L115 168 L115 232"/><path class="line" d="M115 232 L115 248"/><text class="branch" x="168" y="156">0</text>
- <rect class="next" x="67" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="115" y="265">→ S0</text>
- <path class="plain" d="M325 168 L425 168 L425 232"/><path class="line" d="M425 232 L425 248"/><text class="branch" x="375" y="156">1</text>
- <rect class="next" x="377" y="248" width="96" height="34" rx="17"/><text class="smalltxt" x="425" y="265">→ S5</text>
-</g>
+        <!-- S4 -->
+        <rect x="1030" y="680" width="300" height="100" class="state"/>
+        <text x="1180" y="718" class="box-title">S4 (100)</text>
+        <text x="1180" y="745" class="box-text">Y1=0, Y2=0, Y3_n=1, Y4_n=1</text>
 
-<text class="hint" x="20" y="1090">Lectura: comienza en el rectángulo azul del estado, sigue el rombo según el valor 0/1, aplica cualquier salida condicional y termina en el estado indicado por la etiqueta “→ Sx”.</text>
-</svg>
-</div>
+        <!-- A? under S3 -->
+        <path d="M320 780 L380 835 L320 890 L260 835 Z" class="decision"/>
+        <text x="320" y="842" class="decision-text">A ?</text>
 
-<div class="note"><b>Punto clave:</b> en <b>S1</b> primero se evalúa <b>B</b>. Si B=0 se pasa directamente a S2. Si B=1 aparece una segunda decisión sobre <b>C</b>: C=0 lleva a S3 y C=1 activa condicionalmente <b>Y1=1</b> antes de pasar a S4.</div>
+        <!-- B? under S4 -->
+        <path d="M1180 780 L1240 835 L1180 890 L1120 835 Z" class="decision"/>
+        <text x="1180" y="842" class="decision-text">B ?</text>
 
-<h2>3. Tabla ASM resumida</h2>
-<table><tr><th>Estado</th><th>Condición</th><th>Siguiente estado</th><th>Salidas</th></tr>
-<tr><td>S0</td><td>A=0</td><td>S0</td><td>-</td></tr><tr><td>S0</td><td>A=1</td><td>S1</td><td>-</td></tr>
-<tr><td>S1</td><td>B=0</td><td>S2</td><td>-</td></tr><tr><td>S1</td><td>B=1, C=0</td><td>S3</td><td>-</td></tr><tr><td>S1</td><td>B=1, C=1</td><td>S4</td><td class="pos">Y1=1 condicional</td></tr>
-<tr><td>S2</td><td>C=0</td><td>S2</td><td>-</td></tr><tr><td>S2</td><td>C=1</td><td>S5</td><td class="neg">Ȳ3=0 condicional</td></tr>
-<tr><td>S3</td><td>A=0</td><td>S0</td><td>Y1=1</td></tr><tr><td>S3</td><td>A=1</td><td>S4</td><td>Y1=1, Y2=1</td></tr>
-<tr><td>S4</td><td>B=0</td><td>S5</td><td class="neg">Ȳ4=0 condicional</td></tr><tr><td>S4</td><td>B=1</td><td>S1</td><td>-</td></tr>
-<tr><td>S5</td><td>C=0</td><td>S0</td><td>Y2=1</td></tr><tr><td>S5</td><td>C=1</td><td>S5</td><td>Y2=1</td></tr></table>
-<p class="small">En lógica negada, una salida está activa cuando vale 0: Ȳ3=0 y Ȳ4=0.</p>
+        <!-- second decision under S2 -->
+        <path d="M1180 600 L1240 655 L1180 710 L1120 655 Z" class="decision"/>
+        <text x="1180" y="662" class="decision-text">B ?</text>
 
-<div class="pagebreak"></div>
-<h2>4. Tabla de verdad / transición completa</h2>
-<p>Q2Q1Q0 representa el estado actual y D2D1D0 el próximo estado. Se asume implementación con tres flip-flops tipo D.</p>
-<table><tr><th>Estado actual</th><th>A</th><th>B</th><th>C</th><th>D2D1D0</th><th>Y1</th><th>Y2</th><th>Ȳ3</th><th>Ȳ4</th></tr>
-<tr><td class="state">S0 000</td><td>0</td><td>0</td><td>0</td><td>000</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S0 000</td><td>0</td><td>0</td><td>1</td><td>000</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S0 000</td><td>0</td><td>1</td><td>0</td><td>000</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S0 000</td><td>0</td><td>1</td><td>1</td><td>000</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S0 000</td><td>1</td><td>0</td><td>0</td><td>001</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S0 000</td><td>1</td><td>0</td><td>1</td><td>001</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S0 000</td><td>1</td><td>1</td><td>0</td><td>001</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S0 000</td><td>1</td><td>1</td><td>1</td><td>001</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S1 001</td><td>0</td><td>0</td><td>0</td><td>010</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S1 001</td><td>0</td><td>0</td><td>1</td><td>010</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S1 001</td><td>0</td><td>1</td><td>0</td><td>011</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S1 001</td><td>0</td><td>1</td><td>1</td><td>100</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S1 001</td><td>1</td><td>0</td><td>0</td><td>010</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S1 001</td><td>1</td><td>0</td><td>1</td><td>010</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S1 001</td><td>1</td><td>1</td><td>0</td><td>011</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S1 001</td><td>1</td><td>1</td><td>1</td><td>100</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S2 010</td><td>0</td><td>0</td><td>0</td><td>010</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S2 010</td><td>0</td><td>0</td><td>1</td><td>101</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
-<tr><td class="state">S2 010</td><td>0</td><td>1</td><td>0</td><td>010</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S2 010</td><td>0</td><td>1</td><td>1</td><td>101</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
-<tr><td class="state">S2 010</td><td>1</td><td>0</td><td>0</td><td>010</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S2 010</td><td>1</td><td>0</td><td>1</td><td>101</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
-<tr><td class="state">S2 010</td><td>1</td><td>1</td><td>0</td><td>010</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S2 010</td><td>1</td><td>1</td><td>1</td><td>101</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
-<tr><td class="state">S3 011</td><td>0</td><td>0</td><td>0</td><td>000</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S3 011</td><td>0</td><td>0</td><td>1</td><td>000</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S3 011</td><td>0</td><td>1</td><td>0</td><td>000</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S3 011</td><td>0</td><td>1</td><td>1</td><td>000</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S3 011</td><td>1</td><td>0</td><td>0</td><td>100</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S3 011</td><td>1</td><td>0</td><td>1</td><td>100</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S3 011</td><td>1</td><td>1</td><td>0</td><td>100</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S3 011</td><td>1</td><td>1</td><td>1</td><td>100</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S4 100</td><td>0</td><td>0</td><td>0</td><td>101</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
-<tr><td class="state">S4 100</td><td>0</td><td>0</td><td>1</td><td>101</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
-<tr><td class="state">S4 100</td><td>0</td><td>1</td><td>0</td><td>001</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S4 100</td><td>0</td><td>1</td><td>1</td><td>001</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S4 100</td><td>1</td><td>0</td><td>0</td><td>101</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
-<tr><td class="state">S4 100</td><td>1</td><td>0</td><td>1</td><td>101</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
-<tr><td class="state">S4 100</td><td>1</td><td>1</td><td>0</td><td>001</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S4 100</td><td>1</td><td>1</td><td>1</td><td>001</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S5 101</td><td>0</td><td>0</td><td>0</td><td>000</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S5 101</td><td>0</td><td>0</td><td>1</td><td>101</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S5 101</td><td>0</td><td>1</td><td>0</td><td>000</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S5 101</td><td>0</td><td>1</td><td>1</td><td>101</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S5 101</td><td>1</td><td>0</td><td>0</td><td>000</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S5 101</td><td>1</td><td>0</td><td>1</td><td>101</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S5 101</td><td>1</td><td>1</td><td>0</td><td>000</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td class="state">S5 101</td><td>1</td><td>1</td><td>1</td><td>101</td><td>0</td><td>1</td><td>1</td><td>1</td></tr></table>
-<div class="note ok"><b>Estados 110 y 111:</b> se consideran estados no utilizados. Para Quine-McCluskey, sus combinaciones se toman como don't care: d(48,49,...,63).</div>
+        <!-- S5 -->
+        <rect x="585" y="1010" width="330" height="100" class="state"/>
+        <text x="750" y="1048" class="box-title">S5 (101)</text>
+        <text x="750" y="1075" class="box-text">Y1=0, Y2=1, Y3_n=1, Y4_n=1</text>
 
-<div class="pagebreak"></div>
-<h2>5. Método numérico de Quine-McCluskey</h2>
-<p>Orden de variables utilizado:</p>
-<div class="eq"><strong>Q2, Q1, Q0, A, B, C</strong></div>
-<p>Ejemplo: Q2Q1Q0ABC = 001011₂ = 11₁₀. Los estados 110 y 111 generan:</p>
-<div class="eq">d = Σd(48-63)</div>
+        <!-- C? under S5 -->
+        <path d="M750 1110 L810 1165 L750 1220 L690 1165 Z" class="decision"/>
+        <text x="750" y="1172" class="decision-text">C ?</text>
 
-<div class="qm-step"><h3>5.1 D2</h3><p>Minterms:</p><div class="eq">D2 = Σm(11,15,17,19,21,23,28,29,30,31,32,33,36,37,41,43,45,47)</div><p>Con d = Σd(48-63), la combinación y selección de implicantes primos produce:</p><div class="eq"><strong>D2 = A Q0 Q1 + C Q1 Q̄0 + C Q2 B̄ + Q2 B̄ Q̄0 + B C Q0 Q̄1</strong></div></div>
+        <!-- Conditional output boxes -->
+        <rect x="1270" y="615" width="135" height="52" class="cond"/>
+        <text x="1337" y="647" class="cond-text">Y1 = 1</text>
 
-<div class="qm-step"><h3>5.2 D1</h3><p>Minterms:</p><div class="eq">D1 = Σm(8,9,10,12,13,14,16,18,20,22)</div>
-<p>Combinaciones representativas:</p>
-<div class="eq">010000, 010010, 010100, 010110 → 010--0 → Q1 Q̄0 C̄</div>
-<div class="eq">001000, 001001, 001100, 001101 → 001-0- → Q0 Q̄1 Q̄2 B̄</div>
-<div class="eq">001000, 001010, 001100, 001110 → 001--0 → Q0 Q̄1 Q̄2 C̄</div>
-<div class="eq"><strong>D1 = Q1 Q̄0 C̄ + Q0 Q̄1 Q̄2 B̄ + Q0 Q̄1 Q̄2 C̄</strong></div></div>
+        <rect x="410" y="905" width="135" height="52" class="cond"/>
+        <text x="477" y="937" class="cond-text">Y2 = 1</text>
 
-<div class="qm-step"><h3>5.3 D0</h3><div class="eq">D0 = Σm(4,5,6,7,10,14,17,19,21,23,32,33,34,35,36,37,38,39,41,43,45,47)</div><p>Con d = Σd(48-63):</p><div class="eq"><strong>D0 = C Q2 + Q2 Q̄0 + C Q1 Q̄0 + A Q̄0 Q̄1 + B Q0 C̄ Q̄1 Q̄2</strong></div></div>
+        <rect x="1260" y="905" width="145" height="52" class="cond"/>
+        <text x="1332" y="937" class="cond-text">Y3_n = 0</text>
 
-<h2>6. Minimización de las salidas</h2>
-<div class="two">
-<div class="formula-card"><h3>Y1 - lógica positiva</h3><div class="eq">Y1 = Σm(11,15,24,25,26,27,28,29,30,31)</div><div class="eq"><strong>Y1 = Q0 Q1 + B C Q0 Q̄2</strong></div></div>
-<div class="formula-card"><h3>Y2 - lógica positiva</h3><div class="eq">Y2 = Σm(28,29,30,31,40,41,42,43,44,45,46,47)</div><div class="eq"><strong>Y2 = Q0 Q2 + A Q0 Q1</strong></div></div>
-<div class="formula-card"><h3>Ȳ3 - lógica negada</h3><p>Activa en S2=010 cuando C=1.</p><div class="eq">Y3(activa) = Q1 Q̄0 C</div><div class="eq"><strong>Ȳ3 = Q0 + Q̄1 + C̄</strong></div></div>
-<div class="formula-card"><h3>Ȳ4 - lógica negada</h3><p>Activa en S4=100 cuando B=0.</p><div class="eq">Y4(activa) = Q2 Q̄1 Q̄0 B̄</div><div class="eq"><strong>Ȳ4 = B + Q0 + Q̄2</strong></div></div>
-</div>
+        <rect x="965" y="1138" width="145" height="52" class="cond"/>
+        <text x="1037" y="1170" class="cond-text">Y4_n = 0</text>
 
-<h2>7. Resultado final</h2>
-<div class="eq"><strong>D2</strong> = A Q0 Q1 + C Q1 Q̄0 + C Q2 B̄ + Q2 B̄ Q̄0 + B C Q0 Q̄1</div>
-<div class="eq"><strong>D1</strong> = Q1 Q̄0 C̄ + Q0 Q̄1 Q̄2 B̄ + Q0 Q̄1 Q̄2 C̄</div>
-<div class="eq"><strong>D0</strong> = C Q2 + Q2 Q̄0 + C Q1 Q̄0 + A Q̄0 Q̄1 + B Q0 C̄ Q̄1 Q̄2</div>
-<div class="eq"><strong>Y1</strong> = Q0 Q1 + B C Q0 Q̄2</div>
-<div class="eq"><strong>Y2</strong> = Q0 Q2 + A Q0 Q1</div>
-<div class="eq"><strong>Ȳ3</strong> = Q0 + Q̄1 + C̄</div>
-<div class="eq"><strong>Ȳ4</strong> = B + Q0 + Q̄2</div>
+        <!-- Connections -->
+        <!-- S0 to A? -->
+        <path d="M750 190 L750 245" class="edge"/>
 
-<div class="note ok"><span class="check">VERIFICADO:</span> las ecuaciones minimizadas fueron comprobadas contra las 48 combinaciones válidas de la tabla de transición, usando 110 y 111 como don't care.</div>
+        <!-- A=0 to S1 -->
+        <path d="M690 245 C540 245, 410 280, 320 360" class="edge"/>
+        <text x="540" y="255" class="label">0</text>
 
-<h2>8. Comprobación de requisitos</h2>
-<table style="width:72%"><tr><th>Requisito</th><th>Implementación</th></tr><tr><td>Estados mínimos: 6</td><td>6 estados: S0-S5</td></tr><tr><td>Entradas mínimas: 3</td><td>A, B, C</td></tr><tr><td>Salidas mínimas: 4</td><td>Y1, Y2, Ȳ3, Ȳ4</td></tr><tr><td>2 salidas positivas</td><td>Y1, Y2</td></tr><tr><td>2 salidas negadas</td><td>Ȳ3, Ȳ4</td></tr><tr><td>Estado con 2 decisiones</td><td>S1: B y luego C</td></tr><tr><td>Salidas condicionales</td><td>Y1, Y2, Ȳ3 y Ȳ4 aparecen en ramas condicionales</td></tr><tr><td>Quine-McCluskey</td><td>Aplicado a D2, D1, D0 y salidas</td></tr></table>
+        <!-- A=1 to S2 -->
+        <path d="M810 245 C960 245, 1090 280, 1180 360" class="edge"/>
+        <text x="945" y="255" class="label">1</text>
 
-<p class="footer-note">Documento generado como material académico de apoyo. Convención: barra superior o símbolo ̄ indica complemento lógico; las salidas Ȳ3 y Ȳ4 son activas en nivel bajo.</p>
-</body></html>
+        <!-- S1 to B? -->
+        <path d="M320 460 L320 515" class="edge"/>
+
+        <!-- B=0 to S3 -->
+        <path d="M320 570 L320 680" class="edge"/>
+        <text x="332" y="632" class="label">0</text>
+
+        <!-- B=1 back to S0 -->
+        <path d="M260 515 C120 515, 110 140, 585 140" class="edge soft"/>
+        <text x="140" y="500" class="label">1</text>
+
+        <!-- S2 to C? -->
+        <path d="M1180 460 L1180 515" class="edge"/>
+
+        <!-- C=0 to S4 -->
+        <path d="M1120 515 C1070 515, 1060 610, 1180 680" class="edge"/>
+        <text x="1088" y="540" class="label">0</text>
+
+        <!-- C=1 to B? -->
+        <path d="M1180 570 L1180 600" class="edge"/>
+        <text x="1195" y="590" class="label">1</text>
+
+        <!-- second B=0 to Y1 cond then S5 -->
+        <path d="M1240 655 L1337 655" class="edge"/>
+        <text x="1262" y="642" class="label">0</text>
+        <path d="M1337 667 L1337 920 L915 920 L915 1010" class="edge"/>
+
+        <!-- second B=1 back to S0 -->
+        <path d="M1120 655 C980 655, 980 140, 915 140" class="edge soft"/>
+        <text x="1040" y="640" class="label">1</text>
+
+        <!-- S3 to A? -->
+        <path d="M320 780 L320 835" class="edge"/>
+
+        <!-- A=0 to S5 -->
+        <path d="M380 835 C520 835, 640 900, 750 1010" class="edge"/>
+        <text x="505" y="824" class="label">0</text>
+
+        <!-- A=1 to Y2 cond then S0 -->
+        <path d="M320 890 L320 931 L410 931" class="edge"/>
+        <text x="334" y="906" class="label">1</text>
+        <path d="M545 931 C620 931, 620 220, 690 220" class="edge"/>
+
+        <!-- S4 to B? -->
+        <path d="M1180 780 L1180 835" class="edge"/>
+
+        <!-- B=0 to Y3_n cond then S5 -->
+        <path d="M1240 835 L1332 835 L1332 905" class="edge"/>
+        <text x="1265" y="824" class="label">0</text>
+        <path d="M1332 957 L1332 980 L915 980 L915 1010" class="edge"/>
+
+        <!-- B=1 back to S0 -->
+        <path d="M1120 835 C980 835, 980 190, 915 190" class="edge soft"/>
+        <text x="1042" y="820" class="label">1</text>
+
+        <!-- S5 to C? -->
+        <path d="M750 1110 L750 1165" class="edge"/>
+
+        <!-- C=0 to S0 -->
+        <path d="M690 1165 C500 1165, 470 220, 585 220" class="edge"/>
+        <text x="550" y="1150" class="label">0</text>
+
+        <!-- C=1 to Y4_n cond then S0 -->
+        <path d="M810 1165 L900 1165 L965 1165" class="edge"/>
+        <text x="840" y="1150" class="label">1</text>
+        <path d="M1110 1165 C1230 1165, 1230 220, 915 220" class="edge"/>
+
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

@@ -5,4 +5,7 @@ practica1/
 *.bbl
 *bcf
 *out
-
+*.bcf-SAVE-ERROR
+*.fdb*
+*.fls*
+*.bbl*
