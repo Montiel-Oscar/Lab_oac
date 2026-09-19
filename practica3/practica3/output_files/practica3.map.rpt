@@ -1,6 +1,6 @@
 Analysis & Synthesis report for practica3
-Fri Sep 18 08:46:58 2026
-Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
+Fri Sep 18 20:03:53 2026
+Quartus Prime Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
 
 
 ---------------------
@@ -24,43 +24,43 @@ Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
 ----------------
 ; Legal Notice ;
 ----------------
-Copyright (C) 2023  Intel Corporation. All rights reserved.
-Your use of Intel Corporation's design tools, logic functions 
+Copyright (C) 2025  Altera Corporation. All rights reserved.
+Your use of Altera Corporation's design tools, logic functions 
 and other software and tools, and any partner logic 
 functions, and any output files from any of the foregoing 
 (including device programming or simulation files), and any 
 associated documentation or information are expressly subject 
-to the terms and conditions of the Intel Program License 
-Subscription Agreement, the Intel Quartus Prime License Agreement,
-the Intel FPGA IP License Agreement, or other applicable license
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, the Altera Quartus Prime License Agreement,
+the Altera IP License Agreement, or other applicable license
 agreement, including, without limitation, that your use is for
 the sole purpose of programming logic devices manufactured by
-Intel and sold by Intel or its authorized distributors.  Please
-refer to the applicable agreement for further details, at
-https://fpgasoftware.intel.com/eula.
+Altera and sold by Altera or its authorized distributors.  Please
+refer to the Altera Software License Subscription Agreements 
+on the Quartus Prime software download page.
 
 
 
-+-------------------------------------------------------------------------------------+
-; Analysis & Synthesis Summary                                                        ;
-+------------------------------------+------------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Fri Sep 18 08:46:58 2026          ;
-; Quartus Prime Version              ; 23.1std.0 Build 991 11/28/2023 SC Lite Edition ;
-; Revision Name                      ; practica3                                      ;
-; Top-level Entity Name              ; practica3                                      ;
-; Family                             ; MAX 10                                         ;
-; Total logic elements               ; 55                                             ;
-;     Total combinational functions  ; 55                                             ;
-;     Dedicated logic registers      ; 33                                             ;
-; Total registers                    ; 33                                             ;
-; Total pins                         ; 13                                             ;
-; Total virtual pins                 ; 0                                              ;
-; Total memory bits                  ; 0                                              ;
-; Embedded Multiplier 9-bit elements ; 0                                              ;
-; Total PLLs                         ; 0                                              ;
-; UFM blocks                         ; 0                                              ;
-; ADC blocks                         ; 0                                              ;
-+------------------------------------+------------------------------------------------+
++--------------------------------------------------------------------------------------+
+; Analysis & Synthesis Summary                                                         ;
++------------------------------------+-------------------------------------------------+
+; Analysis & Synthesis Status        ; Successful - Fri Sep 18 20:03:53 2026           ;
+; Quartus Prime Version              ; 25.1std.0 Build 1129 10/21/2025 SC Lite Edition ;
+; Revision Name                      ; practica3                                       ;
+; Top-level Entity Name              ; practica3                                       ;
+; Family                             ; MAX 10                                          ;
+; Total logic elements               ; 55                                              ;
+;     Total combinational functions  ; 55                                              ;
+;     Dedicated logic registers      ; 33                                              ;
+; Total registers                    ; 33                                              ;
+; Total pins                         ; 13                                              ;
+; Total virtual pins                 ; 0                                               ;
+; Total memory bits                  ; 0                                               ;
+; Embedded Multiplier 9-bit elements ; 0                                               ;
+; Total PLLs                         ; 0                                               ;
+; UFM blocks                         ; 0                                               ;
+; ADC blocks                         ; 0                                               ;
++------------------------------------+-------------------------------------------------+
 
 
 +------------------------------------------------------------------------------------------------------------+
@@ -162,22 +162,23 @@ https://fpgasoftware.intel.com/eula.
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processors 2-4         ;   0.0%      ;
+;     Processor 2            ;   0.0%      ;
+;     Processors 3-4         ;   0.0%      ;
 +----------------------------+-------------+
 
 
-+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Source Files Read                                                                                                                                      ;
-+----------------------------------+-----------------+------------------------------------+-------------------------------------------------------------------------+---------+
-; File Name with User-Entered Path ; Used in Netlist ; File Type                          ; File Name with Absolute Path                                            ; Library ;
-+----------------------------------+-----------------+------------------------------------+-------------------------------------------------------------------------+---------+
-; practica3.bdf                    ; yes             ; User Block Diagram/Schematic File  ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/practica3.bdf    ;         ;
-; registro.vhd                     ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/registro.vhd     ;         ;
-; concatenador.vhd                 ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/concatenador.vhd ;         ;
-; rom.vhd                          ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/rom.vhd          ;         ;
-; div_datos.vhd                    ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/div_datos.vhd    ;         ;
-; clk_buttom.vhd                   ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/clk_buttom.vhd   ;         ;
-+----------------------------------+-----------------+------------------------------------+-------------------------------------------------------------------------+---------+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                                                   ;
++----------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------+---------+
+; File Name with User-Entered Path ; Used in Netlist ; File Type                          ; File Name with Absolute Path                                         ; Library ;
++----------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------+---------+
+; practica3.bdf                    ; yes             ; User Block Diagram/Schematic File  ; /home/ivan/Documents/FI/Lab_oac/practica3/practica3/practica3.bdf    ;         ;
+; registro.vhd                     ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica3/practica3/registro.vhd     ;         ;
+; concatenador.vhd                 ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica3/practica3/concatenador.vhd ;         ;
+; rom.vhd                          ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica3/practica3/rom.vhd          ;         ;
+; div_datos.vhd                    ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica3/practica3/div_datos.vhd    ;         ;
+; clk_buttom.vhd                   ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica3/practica3/clk_buttom.vhd   ;         ;
++----------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------+---------+
 
 
 +-----------------------------------------------------------------------+
@@ -245,7 +246,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +--------------------+-----------+---------------+----------------------+------------------------+------------+--------------------------------------+
 ; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output           ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+--------------------------------------+
-; 6:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |practica3|clk_buttom:inst4|state[0] ;
+; 6:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |practica3|clk_buttom:inst4|state[1] ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+--------------------------------------+
 
 
@@ -287,35 +288,35 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +-------------------------------+
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
-    Info: Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
-    Info: Processing started: Fri Sep 18 08:46:51 2026
+    Info: Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
+    Info: Processing started: Fri Sep 18 20:03:46 2026
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off practica3 -c practica3
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
 Info (12021): Found 1 design units, including 1 entities, in source file practica3.bdf
     Info (12023): Found entity 1: practica3
 Info (12021): Found 2 design units, including 1 entities, in source file registro.vhd
-    Info (12022): Found design unit 1: registro-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/registro.vhd Line: 15
-    Info (12023): Found entity 1: registro File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/registro.vhd Line: 6
+    Info (12022): Found design unit 1: registro-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/registro.vhd Line: 15
+    Info (12023): Found entity 1: registro File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/registro.vhd Line: 6
 Info (12021): Found 2 design units, including 1 entities, in source file concatenador.vhd
-    Info (12022): Found design unit 1: concatenador-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/concatenador.vhd Line: 14
-    Info (12023): Found entity 1: concatenador File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/concatenador.vhd Line: 6
+    Info (12022): Found design unit 1: concatenador-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/concatenador.vhd Line: 14
+    Info (12023): Found entity 1: concatenador File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/concatenador.vhd Line: 6
 Info (12021): Found 2 design units, including 1 entities, in source file rom.vhd
-    Info (12022): Found design unit 1: rom-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/rom.vhd Line: 13
-    Info (12023): Found entity 1: rom File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/rom.vhd Line: 6
+    Info (12022): Found design unit 1: rom-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/rom.vhd Line: 13
+    Info (12023): Found entity 1: rom File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/rom.vhd Line: 6
 Info (12021): Found 2 design units, including 1 entities, in source file div_datos.vhd
-    Info (12022): Found design unit 1: div_datos-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/div_datos.vhd Line: 14
-    Info (12023): Found entity 1: div_datos File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/div_datos.vhd Line: 6
+    Info (12022): Found design unit 1: div_datos-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/div_datos.vhd Line: 14
+    Info (12023): Found entity 1: div_datos File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/div_datos.vhd Line: 6
 Info (12021): Found 2 design units, including 1 entities, in source file clk_buttom.vhd
-    Info (12022): Found design unit 1: clk_buttom-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/clk_buttom.vhd Line: 14
-    Info (12023): Found entity 1: clk_buttom File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/clk_buttom.vhd Line: 6
+    Info (12022): Found design unit 1: clk_buttom-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/clk_buttom.vhd Line: 14
+    Info (12023): Found entity 1: clk_buttom File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/clk_buttom.vhd Line: 6
 Info (12127): Elaborating entity "practica3" for the top level hierarchy
 Info (12128): Elaborating entity "registro" for hierarchy "registro:inst"
 Info (12128): Elaborating entity "clk_buttom" for hierarchy "clk_buttom:inst4"
 Info (12128): Elaborating entity "div_datos" for hierarchy "div_datos:inst2"
 Info (12128): Elaborating entity "rom" for hierarchy "rom:inst3"
-Warning (10492): VHDL Process Statement warning at rom.vhd(77): signal "internal_mem" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/rom.vhd Line: 77
-Warning (10873): Using initial value X (don't care) for net "internal_mem[48..63]" at rom.vhd(15) File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica3/rom.vhd Line: 15
+Warning (10492): VHDL Process Statement warning at rom.vhd(77): signal "internal_mem" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/rom.vhd Line: 77
+Warning (10873): Using initial value X (don't care) for net "internal_mem[48..63]" at rom.vhd(15) File: /home/ivan/Documents/FI/Lab_oac/practica3/practica3/rom.vhd Line: 15
 Info (12128): Elaborating entity "concatenador" for hierarchy "concatenador:inst1"
 Info (286030): Timing-Driven Synthesis is running
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
@@ -325,9 +326,9 @@ Info (21057): Implemented 68 device resources after synthesis - the final resour
     Info (21059): Implemented 7 output pins
     Info (21061): Implemented 55 logic cells
 Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 3 warnings
-    Info: Peak virtual memory: 4856 megabytes
-    Info: Processing ended: Fri Sep 18 08:46:58 2026
+    Info: Peak virtual memory: 439 megabytes
+    Info: Processing ended: Fri Sep 18 20:03:53 2026
     Info: Elapsed time: 00:00:07
-    Info: Total CPU time (on all processors): 00:00:17
+    Info: Total CPU time (on all processors): 00:00:19
 
 

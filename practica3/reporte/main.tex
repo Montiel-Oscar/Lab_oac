@@ -92,9 +92,9 @@ La Figura~\ref{fig:carta-asm} reproduce en \LaTeX{} la carta ASM de la llenadora
   \draw[->] (x0.west) -- ++(-1.2,0) |- (s0.west) node[pos=.16,left] {$0$};
   \draw[->] (z1.west) -- ++(-1.2,0) |- (s1.west) node[pos=.16,left] {$0$};
   \draw[->] (y2.east) -- ++(1.15,0) |- (s2.east) node[pos=.16,right] {$0$};
-  \draw[->] (z2.west) -- ++(-1.2,0) |- (s2.west) node[pos=.16,left] {$0$};
+  \draw[->] (z2.west) -- ++(-1.2,0) |- (s1.west) node[pos=.16,left] {$0$};
   \draw[->] (x2.east) -- ++(1.15,0) |- (s2.east) node[pos=.16,right] {$0$};
-  \draw[->] (z3.east) -- ++(1.15,0) |- (s3.east) node[pos=.16,right] {$0$};
+  \draw[->] (z3.west) -- ++(-1.35,0) |- (s3.west) node[pos=.16,left] {$Z=0$};
   \node[st] (s4) at (7.0,-1.0) {$B=1$};
   \node[dec] (y4) at (7.0,-2.35) {$Y$};
   \node[oval] (m4) at (7.0,-3.75) {$M=0$};
@@ -103,7 +103,7 @@ La Figura~\ref{fig:carta-asm} reproduce en \LaTeX{} la carta ASM de la llenadora
   \node[dec] (x5) at (7.0,-7.95) {$X$};
   \node[lab] at (5.15,-.85) {$S_4$};
   \node[lab] at (5.15,-6.50) {$S_5$};
-  \draw[->] (z3.east) -- ++(1.15,0) |- (s4.west) node[pos=.22,above] {$1$};
+  \draw[->] (z3.east) -- ++(1.65,0) |- (s4.west) node[pos=.10,below] {$Z=1$};
   \draw[->] (s4) -- (y4);
   \draw[->] (y4) -- node[right] {$1$} (m4);
   \draw[->] (m4) -- (x4);
@@ -157,9 +157,8 @@ $S_2$ & 010 & * & 0 & * & 010 & 0011 \\
 $S_3$ & 011 & * & * & 0 & 011 & 0111 \\
       & 011 & * & * & 1 & 100 & 0111 \\
 $S_4$ & 100 & * & 0 & * & 101 & 0111 \\
-      & 100 & * & 1 & 0 & 100 & 0110 \\
-      & 100 & 0 & 1 & 1 & 100 & 0110 \\
-      & 100 & 1 & 1 & 1 & 101 & 0110 \\
+      & 100 & 0 & 1 & * & 100 & 0110 \\
+      & 100 & 1 & 1 & * & 101 & 0110 \\
 $S_5$ & 101 & 0 & * & * & 101 & 0001 \\
       & 101 & 1 & * & * & 000 & 0001 \\
 Estados no definidos & 110, 111 & * & * & * & 000 & 0011 \\
@@ -193,13 +192,27 @@ El proyecto se organizó como una máquina de estados implementada por memoria. 
 
 \section{Simulaciones}
 
-La simulación debe comprobar el recorrido de los seis estados y la correspondencia entre cada combinación \texttt{Q2Q1Q0XYZ} y el contenido \texttt{L2L1L0VBPM} de la ROM. En particular, se deben verificar las transiciones $S_0\rightarrow S_1$, $S_1\rightarrow S_2$, $S_2\rightarrow S_3$, $S_3\rightarrow S_4$, $S_4\rightarrow S_5$ y $S_5\rightarrow S_0$, así como los lazos de espera indicados en la carta ASM.
+Las simulaciones verifican el recorrido de los seis estados y la correspondencia entre cada combinación \texttt{Q2Q1Q0XYZ} y el contenido \texttt{L2L1L0VBPM} de la ROM. Para permitir el funcionamiento normal del registro, \texttt{reset} se mantiene en uno durante la simulación; el reinicio del módulo es activo en bajo. Las entradas se probaron primero con combinaciones aleatorias y, en el último tramo, se forzaron a \texttt{111} para recorrer de forma visible todos los estados de la carta ASM.
 
 \begin{figure}[H]
 \centering
-\pendiente{la simulación de Quartus mostrando entradas, estado presente, liga y salidas \texttt{VBPM}}
-\caption{Espacio reservado para la simulación funcional del control por ROM.}
-\label{fig:simulacion}
+\includegraphics[width=\linewidth]{simulacion_1.png}
+\caption{Primera sección de la simulación. Se mantienen \texttt{reset=1} y combinaciones aleatorias en \texttt{entradas}.}
+\label{fig:simulacion-1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{simulacion_2.png}
+\caption{Detalle de la respuesta de \texttt{edo\_p} y \texttt{VBPM} ante cambios aleatorios en las entradas.}
+\label{fig:simulacion-2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{simulacion_3.png}
+\caption{Tramo final forzado con \texttt{entradas=111}; se observa el recorrido completo por los estados de la carta ASM.}
+\label{fig:simulacion-3}
 \end{figure}
 
 \section{Resultados}
@@ -213,7 +226,6 @@ Las Figuras~\ref{fig:bloques-1} y \ref{fig:bloques-2} muestran el diagrama de bl
 \label{fig:bloques-1}
 \end{figure}
 
-\clearpage
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.92\linewidth]{diagramas_bloques_2.png}
@@ -221,15 +233,108 @@ Las Figuras~\ref{fig:bloques-1} y \ref{fig:bloques-2} muestran el diagrama de bl
 \label{fig:bloques-2}
 \end{figure}
 
+\subsection{Evidencia en la tarjeta FPGA}
+
+Las fotografías se organizaron de acuerdo con las filas de la Tabla~\ref{tab:transiciones}. En cada caso se seleccionó la combinación de entradas indicada y se verificaron los LEDs asociados a \texttt{edo\_p} y \texttt{VBPM}. De esta forma, las evidencias físicas permiten contrastar las ligas y las salidas programadas en la ROM.
+
 \begin{figure}[H]
 \centering
-\pendiente{fotografías de la tarjeta FPGA en los estados y salidas relevantes}
-\caption{Espacio reservado para la evidencia de funcionamiento en la tarjeta FPGA.}
-\label{fig:tarjeta}
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{s0_x0.png}
+  \caption{$S_0$, $X=0$: se conserva el estado inicial.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{s0_x1.png}
+  \caption{$S_0$, $X=1$: liga hacia $S_1$.}
+\end{subfigure}
+\caption{Evidencia en tarjeta para las trayectorias del estado $S_0$.}
+\label{fig:tarjeta-s0}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{s1_z0.png}
+  \caption{$S_1$, $Z=0$: permanece en llenado.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{s1_z1.png}
+  \caption{$S_1$, $Z=1$: liga hacia $S_2$.}
+\end{subfigure}
+\caption{Evidencia en tarjeta para las trayectorias del estado $S_1$.}
+\label{fig:tarjeta-s1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.44\linewidth}
+  \centering\includegraphics[width=\linewidth]{s2_y0.png}
+  \caption{$S_2$, $Y=0$.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.44\linewidth}
+  \centering\includegraphics[width=\linewidth]{s2_y1z0.png}
+  \caption{$S_2$, $Y=1,Z=0$: liga hacia $S_1$.}
+\end{subfigure}\\[3mm]
+\begin{subfigure}[b]{0.44\linewidth}
+  \centering\includegraphics[width=\linewidth]{s2_x0y1z1.png}
+  \caption{$S_2$, $X=0,Y=1,Z=1$.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.44\linewidth}
+  \centering\includegraphics[width=\linewidth]{s2_x1y1z1.png}
+  \caption{$S_2$, $X=1,Y=1,Z=1$: liga hacia $S_3$.}
+\end{subfigure}
+\caption{Evidencia en tarjeta para las cuatro trayectorias del estado $S_2$.}
+\label{fig:tarjeta-s2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{s3_z0.png}
+  \caption{$S_3$, $Z=0$: permanece en drenaje.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{s3_z1.png}
+  \caption{$S_3$, $Z=1$: liga hacia $S_4$.}
+\end{subfigure}
+\caption{Evidencia en tarjeta para las trayectorias del estado $S_3$.}
+\label{fig:tarjeta-s3}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.30\linewidth}
+  \centering\includegraphics[width=\linewidth]{s4_y0.png}
+  \caption{$S_4$, $Y=0$.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.30\linewidth}
+  \centering\includegraphics[width=\linewidth]{s4_x0y1.png}
+  \caption{$S_4$, $X=0,Y=1$.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.30\linewidth}
+  \centering\includegraphics[width=\linewidth]{s4_x1y1.png}
+  \caption{$S_4$, $X=1,Y=1$.}
+\end{subfigure}
+\caption{Evidencia en tarjeta para las trayectorias del estado $S_4$; $Z$ es indiferente en este estado.}
+\label{fig:tarjeta-s4}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{s5_x0.png}
+  \caption{$S_5$, $X=0$: mantiene la alarma.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{s5_x1.png}
+  \caption{$S_5$, $X=1$: liga hacia $S_0$.}
+\end{subfigure}
+\caption{Evidencia en tarjeta para las trayectorias del estado $S_5$.}
+\label{fig:tarjeta-s5}
 \end{figure}
 
 \section{Conclusión}
 
-El direccionamiento por trayectoria permitió traducir la carta ASM a una ROM de $64\times7$ bits de manera directa: los seis bits de dirección especifican el estado presente y las entradas, mientras que los siete bits almacenados determinan el estado siguiente y las salidas. La división del diseño en registro, concatenador, ROM y divisor de datos hace visible cada etapa del método y facilita contrastar la implementación VHDL con la tabla de direccionamiento. Las simulaciones y la evidencia en FPGA quedan pendientes de incorporarse en los espacios reservados para concluir la validación experimental.
+El direccionamiento por trayectoria permitió traducir la carta ASM a una ROM de $64\times7$ bits de manera directa: los seis bits de dirección especifican el estado presente y las entradas, mientras que los siete bits almacenados determinan el estado siguiente y las salidas. La división del diseño en registro, concatenador, ROM y divisor de datos hace visible cada etapa del método y facilita contrastar la implementación VHDL con la tabla de direccionamiento. Las simulaciones, con \texttt{reset=1}, y la evidencia en la tarjeta FPGA mostraron las transiciones previstas por la carta ASM, incluyendo el recorrido completo al forzar \texttt{XYZ=111}.
 
 \end{document}

@@ -1,23 +1,23 @@
-// Copyright (C) 2023  Intel Corporation. All rights reserved.
-// Your use of Intel Corporation's design tools, logic functions 
+// Copyright (C) 2025  Altera Corporation. All rights reserved.
+// Your use of Altera Corporation's design tools, logic functions 
 // and other software and tools, and any partner logic 
 // functions, and any output files from any of the foregoing 
 // (including device programming or simulation files), and any 
 // associated documentation or information are expressly subject 
-// to the terms and conditions of the Intel Program License 
-// Subscription Agreement, the Intel Quartus Prime License Agreement,
-// the Intel FPGA IP License Agreement, or other applicable license
+// to the terms and conditions of the Altera Program License 
+// Subscription Agreement, the Altera Quartus Prime License Agreement,
+// the Altera IP License Agreement, or other applicable license
 // agreement, including, without limitation, that your use is for
 // the sole purpose of programming logic devices manufactured by
-// Intel and sold by Intel or its authorized distributors.  Please
-// refer to the applicable agreement for further details, at
-// https://fpgasoftware.intel.com/eula.
+// Altera and sold by Altera or its authorized distributors.  Please
+// refer to the Altera Software License Subscription Agreements 
+// on the Quartus Prime software download page.
 
 // VENDOR "Altera"
 // PROGRAM "Quartus Prime"
-// VERSION "Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition"
+// VERSION "Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition"
 
-// DATE "09/18/2026 08:47:11"
+// DATE "09/18/2026 20:04:09"
 
 // 
 // Device: Altera 10M50DAF484C7G Package FBGA484
@@ -139,19 +139,19 @@ wire \inst4|cuenta[25]~79 ;
 wire \inst4|cuenta[26]~80_combout ;
 wire \inst4|cuenta[26]~81 ;
 wire \inst4|cuenta[27]~82_combout ;
-wire \inst4|state[0]~6_combout ;
-wire \inst4|state[0]~7_combout ;
-wire \inst4|state[0]~9_combout ;
-wire \inst4|state[0]~8_combout ;
-wire \inst4|state[0]~10_combout ;
+wire \inst4|state[1]~6_combout ;
+wire \inst4|state[1]~7_combout ;
+wire \inst4|state[1]~9_combout ;
+wire \inst4|state[1]~8_combout ;
+wire \inst4|state[1]~10_combout ;
 wire \inst4|state[0]~11_combout ;
 wire \inst4|state[0]~feeder_combout ;
-wire \inst4|state[0]~0_combout ;
-wire \inst4|state[0]~1_combout ;
-wire \inst4|state[0]~2_combout ;
-wire \inst4|state[0]~3_combout ;
-wire \inst4|state[0]~4_combout ;
-wire \inst4|state[0]~5_combout ;
+wire \inst4|state[1]~0_combout ;
+wire \inst4|state[1]~1_combout ;
+wire \inst4|state[1]~2_combout ;
+wire \inst4|state[1]~3_combout ;
+wire \inst4|state[1]~4_combout ;
+wire \inst4|state[1]~5_combout ;
 wire \inst4|state[1]~12_combout ;
 wire \inst4|Equal0~combout ;
 wire \inst4|Equal0~clkctrl_outclk ;
@@ -172,8 +172,8 @@ wire \inst3|Mux4~0_combout ;
 wire \inst3|Mux5~0_combout ;
 wire \inst3|Mux2~0_combout ;
 wire \inst3|Mux6~2_combout ;
-wire [27:0] \inst4|cuenta ;
 wire [1:0] \inst4|state ;
+wire [27:0] \inst4|cuenta ;
 wire [2:0] \inst|internal_value ;
 
 
@@ -1363,97 +1363,97 @@ defparam \inst4|cuenta[27] .power_up = "low";
 // synopsys translate_on
 
 // Location: LCCOMB_X21_Y6_N28
-fiftyfivenm_lcell_comb \inst4|state[0]~6 (
+fiftyfivenm_lcell_comb \inst4|state[1]~6 (
 // Equation(s):
-// \inst4|state[0]~6_combout  = (!\inst4|cuenta [25] & (!\inst4|cuenta [27] & !\inst4|cuenta [26]))
+// \inst4|state[1]~6_combout  = (!\inst4|cuenta [25] & (!\inst4|cuenta [27] & !\inst4|cuenta [26]))
 
 	.dataa(\inst4|cuenta [25]),
 	.datab(gnd),
 	.datac(\inst4|cuenta [27]),
 	.datad(\inst4|cuenta [26]),
 	.cin(gnd),
-	.combout(\inst4|state[0]~6_combout ),
+	.combout(\inst4|state[1]~6_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~6 .lut_mask = 16'h0005;
-defparam \inst4|state[0]~6 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~6 .lut_mask = 16'h0005;
+defparam \inst4|state[1]~6 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X22_Y6_N12
-fiftyfivenm_lcell_comb \inst4|state[0]~7 (
+fiftyfivenm_lcell_comb \inst4|state[1]~7 (
 // Equation(s):
-// \inst4|state[0]~7_combout  = (\inst4|state [0] & (((!\inst4|cuenta [24] & \inst4|state[0]~6_combout )))) # (!\inst4|state [0] & (\buttom~input_o ))
+// \inst4|state[1]~7_combout  = (\inst4|state [0] & (((!\inst4|cuenta [24] & \inst4|state[1]~6_combout )))) # (!\inst4|state [0] & (\buttom~input_o ))
 
 	.dataa(\buttom~input_o ),
 	.datab(\inst4|cuenta [24]),
 	.datac(\inst4|state [0]),
-	.datad(\inst4|state[0]~6_combout ),
+	.datad(\inst4|state[1]~6_combout ),
 	.cin(gnd),
-	.combout(\inst4|state[0]~7_combout ),
+	.combout(\inst4|state[1]~7_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~7 .lut_mask = 16'h3A0A;
-defparam \inst4|state[0]~7 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~7 .lut_mask = 16'h3A0A;
+defparam \inst4|state[1]~7 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X22_Y6_N4
-fiftyfivenm_lcell_comb \inst4|state[0]~9 (
+fiftyfivenm_lcell_comb \inst4|state[1]~9 (
 // Equation(s):
-// \inst4|state[0]~9_combout  = ((!\inst4|cuenta [22]) # (!\inst4|cuenta [20])) # (!\inst4|cuenta [21])
+// \inst4|state[1]~9_combout  = ((!\inst4|cuenta [22]) # (!\inst4|cuenta [20])) # (!\inst4|cuenta [21])
 
 	.dataa(\inst4|cuenta [21]),
 	.datab(gnd),
 	.datac(\inst4|cuenta [20]),
 	.datad(\inst4|cuenta [22]),
 	.cin(gnd),
-	.combout(\inst4|state[0]~9_combout ),
+	.combout(\inst4|state[1]~9_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~9 .lut_mask = 16'h5FFF;
-defparam \inst4|state[0]~9 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~9 .lut_mask = 16'h5FFF;
+defparam \inst4|state[1]~9 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X21_Y6_N30
-fiftyfivenm_lcell_comb \inst4|state[0]~8 (
+fiftyfivenm_lcell_comb \inst4|state[1]~8 (
 // Equation(s):
-// \inst4|state[0]~8_combout  = (((!\inst4|cuenta [16] & !\inst4|cuenta [17])) # (!\inst4|cuenta [18])) # (!\inst4|cuenta [19])
+// \inst4|state[1]~8_combout  = (((!\inst4|cuenta [16] & !\inst4|cuenta [17])) # (!\inst4|cuenta [18])) # (!\inst4|cuenta [19])
 
 	.dataa(\inst4|cuenta [19]),
 	.datab(\inst4|cuenta [16]),
 	.datac(\inst4|cuenta [18]),
 	.datad(\inst4|cuenta [17]),
 	.cin(gnd),
-	.combout(\inst4|state[0]~8_combout ),
+	.combout(\inst4|state[1]~8_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~8 .lut_mask = 16'h5F7F;
-defparam \inst4|state[0]~8 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~8 .lut_mask = 16'h5F7F;
+defparam \inst4|state[1]~8 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X22_Y6_N28
-fiftyfivenm_lcell_comb \inst4|state[0]~10 (
+fiftyfivenm_lcell_comb \inst4|state[1]~10 (
 // Equation(s):
-// \inst4|state[0]~10_combout  = (\inst4|state[0]~7_combout ) # ((\inst4|state[0]~1_combout  & ((\inst4|state[0]~9_combout ) # (\inst4|state[0]~8_combout ))))
+// \inst4|state[1]~10_combout  = (\inst4|state[1]~7_combout ) # ((\inst4|state[1]~1_combout  & ((\inst4|state[1]~9_combout ) # (\inst4|state[1]~8_combout ))))
 
-	.dataa(\inst4|state[0]~1_combout ),
-	.datab(\inst4|state[0]~7_combout ),
-	.datac(\inst4|state[0]~9_combout ),
-	.datad(\inst4|state[0]~8_combout ),
+	.dataa(\inst4|state[1]~1_combout ),
+	.datab(\inst4|state[1]~7_combout ),
+	.datac(\inst4|state[1]~9_combout ),
+	.datad(\inst4|state[1]~8_combout ),
 	.cin(gnd),
-	.combout(\inst4|state[0]~10_combout ),
+	.combout(\inst4|state[1]~10_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~10 .lut_mask = 16'hEEEC;
-defparam \inst4|state[0]~10 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~10 .lut_mask = 16'hEEEC;
+defparam \inst4|state[1]~10 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X22_Y6_N24
 fiftyfivenm_lcell_comb \inst4|state[0]~11 (
 // Equation(s):
-// \inst4|state[0]~11_combout  = (!\inst4|state [1] & (\inst4|state [0] $ (((!\inst4|state[0]~5_combout  & !\inst4|state[0]~10_combout )))))
+// \inst4|state[0]~11_combout  = (!\inst4|state [1] & (\inst4|state [0] $ (((!\inst4|state[1]~5_combout  & !\inst4|state[1]~10_combout )))))
 
-	.dataa(\inst4|state[0]~5_combout ),
-	.datab(\inst4|state[0]~10_combout ),
+	.dataa(\inst4|state[1]~5_combout ),
+	.datab(\inst4|state[1]~10_combout ),
 	.datac(\inst4|state [1]),
 	.datad(\inst4|state [0]),
 	.cin(gnd),
@@ -1501,114 +1501,114 @@ defparam \inst4|state[0] .power_up = "low";
 // synopsys translate_on
 
 // Location: LCCOMB_X22_Y6_N20
-fiftyfivenm_lcell_comb \inst4|state[0]~0 (
+fiftyfivenm_lcell_comb \inst4|state[1]~0 (
 // Equation(s):
-// \inst4|state[0]~0_combout  = (\inst4|state [0] & (!\inst4|cuenta [26] & (!\inst4|cuenta [27] & !\inst4|cuenta [25])))
+// \inst4|state[1]~0_combout  = (\inst4|state [0] & (!\inst4|cuenta [26] & (!\inst4|cuenta [27] & !\inst4|cuenta [25])))
 
 	.dataa(\inst4|state [0]),
 	.datab(\inst4|cuenta [26]),
 	.datac(\inst4|cuenta [27]),
 	.datad(\inst4|cuenta [25]),
 	.cin(gnd),
-	.combout(\inst4|state[0]~0_combout ),
+	.combout(\inst4|state[1]~0_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~0 .lut_mask = 16'h0002;
-defparam \inst4|state[0]~0 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~0 .lut_mask = 16'h0002;
+defparam \inst4|state[1]~0 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X22_Y6_N10
-fiftyfivenm_lcell_comb \inst4|state[0]~1 (
+fiftyfivenm_lcell_comb \inst4|state[1]~1 (
 // Equation(s):
-// \inst4|state[0]~1_combout  = (\inst4|state[0]~0_combout  & !\inst4|cuenta [23])
+// \inst4|state[1]~1_combout  = (\inst4|state[1]~0_combout  & !\inst4|cuenta [23])
 
-	.dataa(\inst4|state[0]~0_combout ),
+	.dataa(\inst4|state[1]~0_combout ),
 	.datab(gnd),
 	.datac(gnd),
 	.datad(\inst4|cuenta [23]),
 	.cin(gnd),
-	.combout(\inst4|state[0]~1_combout ),
+	.combout(\inst4|state[1]~1_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~1 .lut_mask = 16'h00AA;
-defparam \inst4|state[0]~1 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~1 .lut_mask = 16'h00AA;
+defparam \inst4|state[1]~1 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X22_Y6_N22
-fiftyfivenm_lcell_comb \inst4|state[0]~2 (
+fiftyfivenm_lcell_comb \inst4|state[1]~2 (
 // Equation(s):
-// \inst4|state[0]~2_combout  = (((!\inst4|cuenta [12]) # (!\inst4|cuenta [11])) # (!\inst4|cuenta [13])) # (!\inst4|cuenta [14])
+// \inst4|state[1]~2_combout  = (((!\inst4|cuenta [12]) # (!\inst4|cuenta [11])) # (!\inst4|cuenta [13])) # (!\inst4|cuenta [14])
 
 	.dataa(\inst4|cuenta [14]),
 	.datab(\inst4|cuenta [13]),
 	.datac(\inst4|cuenta [11]),
 	.datad(\inst4|cuenta [12]),
 	.cin(gnd),
-	.combout(\inst4|state[0]~2_combout ),
+	.combout(\inst4|state[1]~2_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~2 .lut_mask = 16'h7FFF;
-defparam \inst4|state[0]~2 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~2 .lut_mask = 16'h7FFF;
+defparam \inst4|state[1]~2 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X21_Y7_N0
-fiftyfivenm_lcell_comb \inst4|state[0]~3 (
+fiftyfivenm_lcell_comb \inst4|state[1]~3 (
 // Equation(s):
-// \inst4|state[0]~3_combout  = (!\inst4|cuenta [9] & (!\inst4|cuenta [6] & (!\inst4|cuenta [8] & !\inst4|cuenta [7])))
+// \inst4|state[1]~3_combout  = (!\inst4|cuenta [9] & (!\inst4|cuenta [6] & (!\inst4|cuenta [8] & !\inst4|cuenta [7])))
 
 	.dataa(\inst4|cuenta [9]),
 	.datab(\inst4|cuenta [6]),
 	.datac(\inst4|cuenta [8]),
 	.datad(\inst4|cuenta [7]),
 	.cin(gnd),
-	.combout(\inst4|state[0]~3_combout ),
+	.combout(\inst4|state[1]~3_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~3 .lut_mask = 16'h0001;
-defparam \inst4|state[0]~3 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~3 .lut_mask = 16'h0001;
+defparam \inst4|state[1]~3 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X22_Y6_N16
-fiftyfivenm_lcell_comb \inst4|state[0]~4 (
+fiftyfivenm_lcell_comb \inst4|state[1]~4 (
 // Equation(s):
-// \inst4|state[0]~4_combout  = (\inst4|state[0]~2_combout ) # ((!\inst4|cuenta [10] & \inst4|state[0]~3_combout ))
+// \inst4|state[1]~4_combout  = (\inst4|state[1]~2_combout ) # ((!\inst4|cuenta [10] & \inst4|state[1]~3_combout ))
 
 	.dataa(\inst4|cuenta [10]),
 	.datab(gnd),
-	.datac(\inst4|state[0]~2_combout ),
-	.datad(\inst4|state[0]~3_combout ),
+	.datac(\inst4|state[1]~2_combout ),
+	.datad(\inst4|state[1]~3_combout ),
 	.cin(gnd),
-	.combout(\inst4|state[0]~4_combout ),
+	.combout(\inst4|state[1]~4_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~4 .lut_mask = 16'hF5F0;
-defparam \inst4|state[0]~4 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~4 .lut_mask = 16'hF5F0;
+defparam \inst4|state[1]~4 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X22_Y6_N18
-fiftyfivenm_lcell_comb \inst4|state[0]~5 (
+fiftyfivenm_lcell_comb \inst4|state[1]~5 (
 // Equation(s):
-// \inst4|state[0]~5_combout  = (\inst4|state[0]~1_combout  & (!\inst4|cuenta [15] & (!\inst4|cuenta [17] & \inst4|state[0]~4_combout )))
+// \inst4|state[1]~5_combout  = (\inst4|state[1]~1_combout  & (!\inst4|cuenta [15] & (!\inst4|cuenta [17] & \inst4|state[1]~4_combout )))
 
-	.dataa(\inst4|state[0]~1_combout ),
+	.dataa(\inst4|state[1]~1_combout ),
 	.datab(\inst4|cuenta [15]),
 	.datac(\inst4|cuenta [17]),
-	.datad(\inst4|state[0]~4_combout ),
+	.datad(\inst4|state[1]~4_combout ),
 	.cin(gnd),
-	.combout(\inst4|state[0]~5_combout ),
+	.combout(\inst4|state[1]~5_combout ),
 	.cout());
 // synopsys translate_off
-defparam \inst4|state[0]~5 .lut_mask = 16'h0200;
-defparam \inst4|state[0]~5 .sum_lutc_input = "datac";
+defparam \inst4|state[1]~5 .lut_mask = 16'h0200;
+defparam \inst4|state[1]~5 .sum_lutc_input = "datac";
 // synopsys translate_on
 
 // Location: LCCOMB_X22_Y6_N30
 fiftyfivenm_lcell_comb \inst4|state[1]~12 (
 // Equation(s):
-// \inst4|state[1]~12_combout  = (!\inst4|state[0]~5_combout  & (!\inst4|state[0]~10_combout  & (!\inst4|state [1] & \inst4|state [0])))
+// \inst4|state[1]~12_combout  = (!\inst4|state[1]~5_combout  & (!\inst4|state[1]~10_combout  & (!\inst4|state [1] & \inst4|state [0])))
 
-	.dataa(\inst4|state[0]~5_combout ),
-	.datab(\inst4|state[0]~10_combout ),
+	.dataa(\inst4|state[1]~5_combout ),
+	.datab(\inst4|state[1]~10_combout ),
 	.datac(\inst4|state [1]),
 	.datad(\inst4|state [0]),
 	.cin(gnd),

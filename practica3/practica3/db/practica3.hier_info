@@ -1,0 +1,151 @@
+|practica3
+edo_p[0] <= registro:inst.edopresente[0]
+edo_p[1] <= registro:inst.edopresente[1]
+edo_p[2] <= registro:inst.edopresente[2]
+clk => clk_buttom:inst4.clk
+buttom => inst5.IN0
+reset => registro:inst.reset
+entradas[0] => concatenador:inst1.entradas[0]
+entradas[1] => concatenador:inst1.entradas[1]
+entradas[2] => concatenador:inst1.entradas[2]
+VBPM[0] <= div_datos:inst2.salidas[0]
+VBPM[1] <= div_datos:inst2.salidas[1]
+VBPM[2] <= div_datos:inst2.salidas[2]
+VBPM[3] <= div_datos:inst2.salidas[3]
+
+
+|practica3|registro:inst
+clk => internal_value[0].CLK
+clk => internal_value[1].CLK
+clk => internal_value[2].CLK
+reset => internal_value[0].ACLR
+reset => internal_value[1].ACLR
+reset => internal_value[2].ACLR
+edosiguiente[0] => internal_value[0].DATAIN
+edosiguiente[1] => internal_value[1].DATAIN
+edosiguiente[2] => internal_value[2].DATAIN
+edopresente[0] <= internal_value[0].DB_MAX_OUTPUT_PORT_TYPE
+edopresente[1] <= internal_value[1].DB_MAX_OUTPUT_PORT_TYPE
+edopresente[2] <= internal_value[2].DB_MAX_OUTPUT_PORT_TYPE
+
+
+|practica3|clk_buttom:inst4
+clk => cuenta[0].CLK
+clk => cuenta[1].CLK
+clk => cuenta[2].CLK
+clk => cuenta[3].CLK
+clk => cuenta[4].CLK
+clk => cuenta[5].CLK
+clk => cuenta[6].CLK
+clk => cuenta[7].CLK
+clk => cuenta[8].CLK
+clk => cuenta[9].CLK
+clk => cuenta[10].CLK
+clk => cuenta[11].CLK
+clk => cuenta[12].CLK
+clk => cuenta[13].CLK
+clk => cuenta[14].CLK
+clk => cuenta[15].CLK
+clk => cuenta[16].CLK
+clk => cuenta[17].CLK
+clk => cuenta[18].CLK
+clk => cuenta[19].CLK
+clk => cuenta[20].CLK
+clk => cuenta[21].CLK
+clk => cuenta[22].CLK
+clk => cuenta[23].CLK
+clk => cuenta[24].CLK
+clk => cuenta[25].CLK
+clk => cuenta[26].CLK
+clk => cuenta[27].CLK
+clk => state[0].CLK
+clk => state[1].CLK
+buttom => state.OUTPUTSELECT
+buttom => state.OUTPUTSELECT
+div_clk <= Equal0.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|practica3|div_datos:inst2
+data[0] => salidas[0].DATAIN
+data[1] => salidas[1].DATAIN
+data[2] => salidas[2].DATAIN
+data[3] => salidas[3].DATAIN
+data[4] => liga[0].DATAIN
+data[5] => liga[1].DATAIN
+data[6] => liga[2].DATAIN
+liga[0] <= data[4].DB_MAX_OUTPUT_PORT_TYPE
+liga[1] <= data[5].DB_MAX_OUTPUT_PORT_TYPE
+liga[2] <= data[6].DB_MAX_OUTPUT_PORT_TYPE
+salidas[0] <= data[0].DB_MAX_OUTPUT_PORT_TYPE
+salidas[1] <= data[1].DB_MAX_OUTPUT_PORT_TYPE
+salidas[2] <= data[2].DB_MAX_OUTPUT_PORT_TYPE
+salidas[3] <= data[3].DB_MAX_OUTPUT_PORT_TYPE
+
+
+|practica3|rom:inst3
+dir[0] => Mux0.IN69
+dir[0] => Mux1.IN69
+dir[0] => Mux2.IN69
+dir[0] => Mux3.IN69
+dir[0] => Mux4.IN69
+dir[0] => Mux5.IN69
+dir[0] => Mux6.IN69
+dir[1] => Mux0.IN68
+dir[1] => Mux1.IN68
+dir[1] => Mux2.IN68
+dir[1] => Mux3.IN68
+dir[1] => Mux4.IN68
+dir[1] => Mux5.IN68
+dir[1] => Mux6.IN68
+dir[2] => Mux0.IN67
+dir[2] => Mux1.IN67
+dir[2] => Mux2.IN67
+dir[2] => Mux3.IN67
+dir[2] => Mux4.IN67
+dir[2] => Mux5.IN67
+dir[2] => Mux6.IN67
+dir[3] => Mux0.IN66
+dir[3] => Mux1.IN66
+dir[3] => Mux2.IN66
+dir[3] => Mux3.IN66
+dir[3] => Mux4.IN66
+dir[3] => Mux5.IN66
+dir[3] => Mux6.IN66
+dir[4] => Mux0.IN65
+dir[4] => Mux1.IN65
+dir[4] => Mux2.IN65
+dir[4] => Mux3.IN65
+dir[4] => Mux4.IN65
+dir[4] => Mux5.IN65
+dir[4] => Mux6.IN65
+dir[5] => Mux0.IN64
+dir[5] => Mux1.IN64
+dir[5] => Mux2.IN64
+dir[5] => Mux3.IN64
+dir[5] => Mux4.IN64
+dir[5] => Mux5.IN64
+dir[5] => Mux6.IN64
+data[0] <= Mux6.DB_MAX_OUTPUT_PORT_TYPE
+data[1] <= Mux5.DB_MAX_OUTPUT_PORT_TYPE
+data[2] <= Mux4.DB_MAX_OUTPUT_PORT_TYPE
+data[3] <= Mux3.DB_MAX_OUTPUT_PORT_TYPE
+data[4] <= Mux2.DB_MAX_OUTPUT_PORT_TYPE
+data[5] <= Mux1.DB_MAX_OUTPUT_PORT_TYPE
+data[6] <= Mux0.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|practica3|concatenador:inst1
+entradas[0] => dir[0].DATAIN
+entradas[1] => dir[1].DATAIN
+entradas[2] => dir[2].DATAIN
+edopresente[0] => dir[3].DATAIN
+edopresente[1] => dir[4].DATAIN
+edopresente[2] => dir[5].DATAIN
+dir[0] <= entradas[0].DB_MAX_OUTPUT_PORT_TYPE
+dir[1] <= entradas[1].DB_MAX_OUTPUT_PORT_TYPE
+dir[2] <= entradas[2].DB_MAX_OUTPUT_PORT_TYPE
+dir[3] <= edopresente[0].DB_MAX_OUTPUT_PORT_TYPE
+dir[4] <= edopresente[1].DB_MAX_OUTPUT_PORT_TYPE
+dir[5] <= edopresente[2].DB_MAX_OUTPUT_PORT_TYPE
+
+
