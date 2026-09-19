@@ -333,8 +333,15 @@ Las fotografías se organizaron de acuerdo con las filas de la Tabla~\ref{tab:tr
 \label{fig:tarjeta-s5}
 \end{figure}
 
+\clearpage
 \section{Conclusión}
 
-El direccionamiento por trayectoria permitió traducir la carta ASM a una ROM de $64\times7$ bits de manera directa: los seis bits de dirección especifican el estado presente y las entradas, mientras que los siete bits almacenados determinan el estado siguiente y las salidas. La división del diseño en registro, concatenador, ROM y divisor de datos hace visible cada etapa del método y facilita contrastar la implementación VHDL con la tabla de direccionamiento. Las simulaciones, con \texttt{reset=1}, y la evidencia en la tarjeta FPGA mostraron las transiciones previstas por la carta ASM, incluyendo el recorrido completo al forzar \texttt{XYZ=111}.
+El direccionamiento por trayectoria permitió traducir la carta ASM a una ROM de $64\times7$ bits de manera directa: los seis bits de dirección especifican el estado presente y las entradas, mientras que los siete bits almacenados determinan el estado siguiente y las salidas. La división del diseño en registro, concatenador, ROM y divisor de datos hizo visible cada etapa del método y facilitó contrastar la implementación VHDL con la tabla de direccionamiento. Las simulaciones, con \texttt{reset=1}, y la evidencia en la tarjeta FPGA mostraron las transiciones previstas por la carta ASM, incluyendo el recorrido completo al forzar \texttt{XYZ=111}.
+
+\paragraph{Percival Ulises Espinoza Matamoros.} La práctica permitió comprobar que una carta ASM puede convertirse en una implementación funcional al definir con precisión los estados, las condiciones de transición y las salidas. La organización mediante una ROM simplificó la descripción de la máquina y facilitó verificar cada trayectoria en la simulación y en la tarjeta FPGA.
+
+\paragraph{Oscar Iván Montiel Juárez.} En esta práctica aplicamos los conceptos vistos en teoría sobre máquinas de estados finitos, cartas ASM, codificación de estados y memorias ROM. Al llevarlos a VHDL y a la tarjeta FPGA, se pudo relacionar la tabla de direccionamiento con el funcionamiento real del circuito, observando cómo las entradas determinan la liga y las salidas en cada ciclo de reloj.
+
+\paragraph{Amy Valentina Veraza García.} El desarrollo mostró la importancia de validar el diseño en más de una etapa. La simulación permitió revisar las transiciones antes de implementarlas, mientras que las pruebas en la tarjeta confirmaron que el registro de estado, la ROM y las salidas responden de acuerdo con la secuencia definida para la llenadora industrial.
 
 \end{document}
