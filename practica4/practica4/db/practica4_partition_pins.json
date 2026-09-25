@@ -44,15 +44,11 @@
 					"strict" : false
 				},
 				{
-					"name" : "reset",
-					"strict" : false
-				},
-				{
-					"name" : "buttom",
-					"strict" : false
-				},
-				{
 					"name" : "clk",
+					"strict" : false
+				},
+				{
+					"name" : "reset",
 					"strict" : false
 				}
 			]
