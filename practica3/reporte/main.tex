@@ -1,3 +1,4 @@
+% !TEX program = pdflatex
 \documentclass[letterpaper,12pt]{article}
 \usepackage[spanish,mexico]{babel}
 \usepackage[T1]{fontenc}
@@ -45,14 +46,14 @@ Familiarizar al alumno en el conocimiento de construcción de máquinas de estad
 
 \section{Desarrollo}
 
-Se implementó el control de una \emph{llenadora industrial} mediante una máquina de estados finitos realizada con una memoria ROM. El proceso considera tres entradas: el botón de inicio $X$, el sensor de tapa cerrada $Y$ y el sensor de agua llena $Z$. Las cuatro salidas son la válvula de llenado de agua $V$, la bomba de drenaje $B$, el indicador de alarma $P$ y la señal de control del motor $M$. De acuerdo con la carta ASM proporcionada, $V$ y $B$ son activas en alto, mientras que $P$ y $M$ se expresan con lógica negada; por ello, un cero en estas últimas señales activa la función correspondiente.
+Se implementó el circuito digital de una lavadora industrial mediante una máquina de estados finitos implementada con una memoria ROM. El funcionamiento se basa en tres entradas: el botón de inicio $X$, el sensor de tapa cerrada $Y$ y el sensor de agua llena $Z$. El sistema cuenta con cuatro salidas: la válvula de llenado de agua $V$, la bomba de drenaje $B$, el indicador de alarma $P$ y la señal de control del motor $M$. Es importante considerar que las salidas, $V$ y $B$ son salidas en lógica positiva, mientras que $P$ y $M$ se expresan con lógica negada.
 
-El diseño se construyó por direccionamiento por trayectoria. El registro conserva el estado presente; el bloque concatenador une dicho estado con las entradas para formar la dirección de la ROM; y la palabra leída se divide en liga (estado siguiente) y salidas. De esta manera, cada trayectoria de la carta ASM queda codificada directamente en una localidad de memoria, sin requerir simplificación mediante mapas de Karnaugh.
+El diseño fue construido implementado un método de direccionamiento por trayectoria. Donde el registro conserva el estado presente, mientras un bloque de concatenación une dicho estado con las entradas para formar la dirección de la ROM, y la palabra leída se divide en liga (estado siguiente) y salidas. A partir de esta implementación, cada trayectoria de la carta ASM queda codificada directamente en una localidad de memoria, evitando que sea necesario realizar simplificaciones mediante mapas de Karnaugh.
 
 \clearpage
 \subsection{Carta ASM}
 
-La Figura~\ref{fig:carta-asm} reproduce en \LaTeX{} la carta ASM de la llenadora industrial. Los bloques rectangulares representan salidas incondicionales; los rombos, decisiones de entrada; y los óvalos, salidas condicionales. Las etiquetas $0$ y $1$ indican la trayectoria elegida en cada decisión.
+La Figura[\ref{fig:carta-asm}] corresponde al Circuito Digital de la Lavadora Industrial anteriormente descrito. 
 
 \begin{figure}[H]
 \centering
@@ -119,13 +120,15 @@ La Figura~\ref{fig:carta-asm} reproduce en \LaTeX{} la carta ASM de la llenadora
     $X$:& Botón \emph{Start}\\ $Y$:& Tapa cerrada\\ $Z$:& Sensor de agua llena
   \end{tabular}};
 \end{tikzpicture}}
-\caption{Carta ASM de la llenadora industrial.}
+\caption{Carta ASM de la Lavadora industrial.}
 \label{fig:carta-asm}
 \end{figure}
 
 \subsection{Dimensionamiento de la memoria}
 
-La máquina tiene $C=6$ estados ($S_0$ a $S_5$), tres entradas y cuatro salidas. Se requieren $q=\lceil\log_2 C\rceil=3$ bits para codificar el estado. En el direccionamiento por trayectoria, la dirección combina el estado presente con las entradas; la palabra de memoria contiene la liga y las salidas. Por tanto:
+Para implementar la carta ASM mediante direccionamiento por trayectoria, se requiere una memoria ROM que almacene las ligas y las salidas correspondientes a cada combinación de estado presente y entradas.
+
+Se considera que la máquina tiene 6 estados ($S_0$ a $S_5$), tres entradas y cuatro salidas. Se requieren 3 bits ($q = 3$) para codificar el estado. En el direccionamiento por trayectoria, la dirección combina el estado presente con las entradas ($I$), la palabra de memoria se compone de la liga y las salidas ($O$). De forma que los bits de dirección y de palabra se calculan como:
 \[
 \underbrace{n}_{\text{bits de dirección}}=q+I=3+3=6,
 \qquad
@@ -134,8 +137,7 @@ La máquina tiene $C=6$ estados ($S_0$ a $S_5$), tres entradas y cuatro salidas.
 La ROM requerida es de $2^n\times m=2^6\times7=64\times7$ bits, con una capacidad total de $448$ bits. La dirección se organiza como \texttt{Q2 Q1 Q0 X Y Z} y el contenido de cada palabra como \texttt{L2 L1 L0 V B P M}.
 
 \subsection{Tabla de estados, entradas y salidas}
-
-La Tabla~\ref{tab:transiciones} reúne las trayectorias de la carta ASM. El asterisco indica una entrada no relevante para la trayectoria. Las columnas \emph{liga} y \emph{salidas} se escriben en el mismo orden usado en la ROM: \texttt{L2L1L0} y \texttt{VBPM}, respectivamente.
+Para construir la tabla de direccionamiento, se recorrió la carta ASM y se registraron las combinaciones de estado presente, entradas, liga y salidas. La Tabla[\ref{tab:transiciones}] muestra los resultados obtenidos. Las columnas \emph{liga} y \emph{salidas} se escriben en el mismo orden usado en la ROM: \texttt{L2L1L0} y \texttt{VBPM}, respectivamente.
 
 \begin{table}[H]
 \centering
@@ -167,39 +169,53 @@ Estados no definidos & 110, 111 & * & * & * & 000 & 0011 \\
 \end{table}
 
 \clearpage
-Las codificaciones $110$ y $111$ no corresponden a un estado de la carta ASM. Para recuperar el funcionamiento ante cualquiera de ellas, las tres entradas se consideran \emph{don't cares} ($X=Y=Z=*$) y la liga se fija en $000$. Así, sin importar la combinación de entrada, la máquina regresa a $S_0$ con las salidas inactivas \texttt{VBPM=0011}. Esta condición corresponde a las direcciones 48 a 63 de la ROM.
+
+Al tener en cuenta las condiciones de entrada y salida, se puede observar que las codificaciones $110$ y $111$ no corresponden a un estado de la carta ASM. Para recuperar el funcionamiento ante cualquiera de ellas, las tres entradas se consideran \emph{don't cares} ($X=Y=Z=*$) y la liga se fija en $000$. De esta forma sin importar la combinación de entrada, la máquina regresa a $S_0$ con las salidas inactivas \texttt{VBPM=0011}. Esta condición corresponde a las direcciones 48 a 63 de la Memoria ROM.
 
 \subsection{Implementación en VHDL}
 
-El proyecto se organizó como una máquina de estados implementada por memoria. El flujo de datos inicia en el registro: en cada flanco ascendente de reloj guarda la liga que recibió en el ciclo anterior y la presenta como \texttt{edopresente}. En paralelo, el concatenador une los tres bits del estado presente con las entradas \texttt{XYZ}; este vector de seis bits selecciona una palabra de la ROM. La palabra leída se divide en dos campos: los bits $[6:4]$ forman la liga que volverá al registro en el siguiente flanco, y los bits $[3:0]$ se envían de inmediato a las salidas \texttt{VBPM}. Por tanto, el recorrido completo es
+El funcionamiento de la maquina de estados implementado con una Memoria ROM consta del siguiente flujo. Primero inicia en el registro, donde en cada flanco ascendente de reloj guarda la liga que recibió en el ciclo anterior y la presenta como \texttt{edopresente}. En paralelo, el concatenador une los tres bits del estado presente con las entradas \texttt{XYZ}, donde  este vector resultante de seis bits selecciona una palabra de la ROM. La palabra leída se divide en dos campos: los bits $[6:4]$ forman la liga que volverá al registro en el siguiente flanco, y los bits $[3:0]$ se envían de inmediato a las salidas \texttt{VBPM}. Por tanto, el flujo completo del sistema es
 \[
 \texttt{registro}\;\longrightarrow\;\texttt{concatenador}\;\longrightarrow\;\texttt{rom}\;\longrightarrow\;\texttt{div\_datos}\;\longrightarrow\;\texttt{registro}.
 \]
 
-\paragraph{Registro de estado.} El módulo \texttt{registro} contiene la señal interna \texttt{internal\_value}, inicializada en \texttt{000}. Si \texttt{reset='0'}, el primer proceso fuerza inmediatamente dicha codificación, por lo que $S_0$ es el estado seguro de arranque. En cualquier otro caso, el bloque sólo actualiza el estado al detectar \texttt{rising\_edge(clk)}; así se evita que cambios en las entradas modifiquen el estado entre flancos. El segundo proceso copia el valor interno a \texttt{edopresente} para que pueda emplearse como parte de la dirección.
+\subsubsection{Componentes del sistema}
 
-\paragraph{Formación de dirección.} \texttt{concatenador} es lógica combinacional: cada vez que cambia una entrada o el estado presente, ejecuta \texttt{dir <= edopresente \& entradas}. Al colocar \texttt{edopresente} antes de \texttt{entradas}, sus bits son los más significativos. Por ello, todas las direcciones de $S_0$ comienzan con \texttt{000}, las de $S_1$ con \texttt{001}, y así sucesivamente; dentro de cada grupo, \texttt{XYZ} selecciona la trayectoria de la carta ASM.
+Cada uno de los bloques que componen el sistema se implementó como un módulo independiente por medio de Lenguaje VHDL
 
-\paragraph{ROM y división de palabra.} En \texttt{rom.vhd}, el tipo \texttt{mem} declara 64 posiciones de siete bits. Cada asignación tiene la forma \texttt{"liga" \& "salida"}; por ejemplo, las posiciones de $S_0$ escriben \texttt{000\&0011} o \texttt{001\&0011}, según $X$. El proceso de lectura convierte \texttt{dir} de binario a entero mediante \texttt{conv\_integer(unsigned(dir))} y entrega la palabra seleccionada en \texttt{data}. Después, \texttt{div\_datos} toma \texttt{data(6 downto 4)} como liga y \texttt{data(3 downto 0)} como \texttt{VBPM}; por ello no necesita reloj ni memoria adicional. Para que la recuperación indicada en la última fila de la tabla quede implementada también en la ROM, las posiciones 48 a 63 deben almacenar \texttt{000\&0011}.
-
-\paragraph{Acondicionamiento del botón.} \texttt{clk\_buttom} es un bloque auxiliar independiente de la ROM. Sus estados \texttt{STATE\_START}, \texttt{STATE\_COUNT} y \texttt{STATE\_DONE} corresponden a espera, conteo y finalización. Al detectar \texttt{buttom='1'}, pasa a \texttt{STATE\_COUNT}; mientras permanece ahí, incrementa \texttt{cuenta} en cada ciclo del reloj base y mantiene \texttt{div\_clk='1'}. Cuando alcanza \texttt{MAX\_CLK\_COUNT} (25 millones), pasa por \texttt{STATE\_DONE} y regresa a espera. De esta forma, una pulsación genera una sola transición ascendente en \texttt{div\_clk}; mantener la señal alta durante el conteo evita que los rebotes del botón generen múltiples transiciones de inicio.
+\paragraph{Registro de estado.} El módulo \texttt{registro} contiene la señal interna \texttt{internal\_value}, inicializada en \texttt{000}. Si \texttt{reset='0'}, el primer proceso fuerza inmediatamente dicha codificación, por lo que $S_0$ es el estado seguro de arranque. En cualquier otro caso, el bloque sólo actualiza el estado al detectar \texttt{rising\_edge(clk)} de esta forma se evita que cambios en las entradas modifiquen el estado entre flancos. El segundo proceso copia el valor interno a \texttt{edopresente} para que pueda emplearse como parte de la dirección.
 
 \lstinputlisting[style=estiloVHDL,caption={Módulo de registro del estado presente.},label={lst:registro}]{code/registro.vhd}
+
+\paragraph{Formación de dirección.} El componente de concatenación, cada vez que cambia una entrada o el estado presente, ejecuta \texttt{dir <= edopresente \& entradas}. Al colocar \texttt{edopresente} antes de \texttt{entradas}, sus bits son los más significativos. Por ello, todas las direcciones de $S_0$ comienzan con \texttt{000}, las de $S_1$ con \texttt{001}, y así sucesivamente. Dentro de cada grupo, \texttt{XYZ} selecciona la trayectoria de la carta ASM.
+
 \lstinputlisting[style=estiloVHDL,caption={Módulo que concatena el estado presente y las entradas para formar la dirección.},label={lst:concatenador}]{code/concatenador.vhd}
+
+\paragraph{ROM} Para el componente de \texttt{ROM}, el tipo \texttt{mem} declara 64 posiciones de siete bits. Cada asignación tiene la forma \texttt{"liga" \& "salida"}. Donde por ejemplo, las posiciones de $S_0$ escriben \texttt{000\&0011} o \texttt{001\&0011}, según $X$. El proceso de lectura convierte \texttt{dir} de binario a entero mediante \texttt{conv\_integer(unsigned(dir))} y entrega la palabra seleccionada en \texttt{data}.
+
 \lstinputlisting[style=estiloVHDL,caption={Memoria ROM que codifica las ligas y las salidas.},label={lst:rom}]{code/rom.vhd}
+
+\paragraph{División de datos.} Posteriormente, el componente \texttt{div\_datos} toma \texttt{data(6 downto 4)} como liga y \texttt{data(3 downto 0)} como \texttt{VBPM}, esto lo realiza por cada que la memoria ROM entrega una palabra. De esta forma, el registro recibe la liga y las salidas se actualizan de inmediato.
+
 \lstinputlisting[style=estiloVHDL,caption={Módulo que separa liga y salidas de la palabra de la ROM.},label={lst:div-datos}]{code/div_datos.vhd}
-\lstinputlisting[style=estiloVHDL,caption={Módulo de acondicionamiento temporal del botón.},label={lst:clk-button}]{code/clk_buttom.vhd}
+
+\paragraph{Acondicionamiento del botón.}  Para el control de la señal de reloj, se reutilizó el módulo \texttt{clk\_buttom} de la práctica anterior. Este bloque genera un pulso de reloj por cada pulsación del botón, y además filtra el rebote mecánico que se produce al presionar el interruptor.
 
 \section{Simulaciones}
+A partir de las simulaciones se verificó el recorrido de los seis estados, asi como cada combinación \texttt{Q2Q1Q0XYZ} y el contenido \texttt{L2L1L0VBPM} de la ROM. Para permitir el funcionamiento normal del sistema, \texttt{reset} se mantiene en \texttt{1} durante la simulación ya que la señal de entrada de reset se activa con un \texttt{0}. Las entradas se probaron primero con combinaciones aleatorias y, en el último tramo, se forzaron a \texttt{111} para recorrer de forma visible todos los estados de la carta ASM. En las gráficas obtenidas, las señales de entrada aparecen como \texttt{A}, \texttt{B} y \texttt{C} estas corresponden a las entradas \texttt{X}, \texttt{Y} y \texttt{Z} utilizadas en el diseño.
 
-Las simulaciones verifican el recorrido de los seis estados y la correspondencia entre cada combinación \texttt{Q2Q1Q0XYZ} y el contenido \texttt{L2L1L0VBPM} de la ROM. Para permitir el funcionamiento normal del registro, \texttt{reset} se mantiene en uno durante la simulación; el reinicio del módulo es activo en bajo. Las entradas se probaron primero con combinaciones aleatorias y, en el último tramo, se forzaron a \texttt{111} para recorrer de forma visible todos los estados de la carta ASM.
+En Figura[\ref{fig:simulacion-1}] se presenta la vista general del sistema. Donde al inicio, \texttt{reset=1} permite que el sistema opere normalmente y el estado presente \texttt{edo\_p} parte de \texttt{000}, correspondiente al estado $S_0$. El reloj establece los instantes en los que el registro puede aceptar la liga, mientras que las entradas cambian en distintos intervalos para probar varias localidades de la ROM. En cada instante se forma la dirección \texttt{Q2Q1Q0XYZ}, donde los tres bits de \texttt{edo\_p} son los bits más significativos y las entradas seleccionan la trayectoria dentro del estado actual.
+
+La ROM entrega una palabra de siete bits. Sus bits \texttt{L2L1L0} representan la liga que se almacenará como estado siguiente y sus bits \texttt{VBPM} representan las salidas. Se puede observar que al tener salidas condicionales, un cambio en las entradas puede afectar la salida del sistema, pero \texttt{edo\_p} sólo cambia en el siguiente flanco ascendente de \texttt{clk}. Este comportamiento permite distinguir en la forma de onda la respuesta combinacional de la ROM de la actualización secuencial del registro.
 
 \begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{simulacion_1.png}
-\caption{Primera sección de la simulación. Se mantienen \texttt{reset=1} y combinaciones aleatorias en \texttt{entradas}.}
-\label{fig:simulacion-1}
+  \centering
+  \includegraphics[width=\linewidth]{simulacion_1.png}
+  \caption{Primera sección de la simulación. Se mantienen \texttt{reset=1} y combinaciones aleatorias en \texttt{entradas}.}
+  \label{fig:simulacion-1}
 \end{figure}
+
+La Figura[\ref{fig:simulacion-2}] se muestra el comportamiento anteriormente descrito. En esta gráfica se visualizan los cambios de \texttt{A}, \texttt{B} y \texttt{C} y su relación con los valores de \texttt{edo\_p}. Por ejemplo, cuando la combinación de entradas selecciona una salida condicional que conserva el estado, el valor de \texttt{edo\_p} se repite después del flanco cuando selecciona otra trayectoria,sin embargo aparece la nueva codificación de estado en el siguiente ciclo. Es importante considerar que para las señales de salidas $V$ y $B$ usan lógica positiva, mientras que $P$ y $M$ son activos en bajo, por lo que un cero en estos últimos indica que la función está activa.
 
 \begin{figure}[H]
 \centering
@@ -207,6 +223,8 @@ Las simulaciones verifican el recorrido de los seis estados y la correspondencia
 \caption{Detalle de la respuesta de \texttt{edo\_p} y \texttt{VBPM} ante cambios aleatorios en las entradas.}
 \label{fig:simulacion-2}
 \end{figure}
+
+La Figura[\ref{fig:simulacion-3}] corresponde al final de la simulación, donde las entradas se fuerzan a \texttt{111}. Esta condición facilita permite que la carta ASM transicione por todos los estados. La secuencia de \texttt{edo\_p} permite observar el avance por los estados válidos y, al llegar a un estado cuya transición depende de las entradas, la liga almacenada en la ROM determina el siguiente estado. Por lo que  se comprueba el ciclo completo de la máquina y se verifica que el diseño implementado en VHDL cumple con la carta ASM de la lavadora industrial.
 
 \begin{figure}[H]
 \centering
@@ -217,7 +235,7 @@ Las simulaciones verifican el recorrido de los seis estados y la correspondencia
 
 \section{Resultados}
 
-Las Figuras~\ref{fig:bloques-1} y \ref{fig:bloques-2} muestran el diagrama de bloques implementado en Quartus. El reloj y el botón ingresan al bloque \texttt{clk\_buttom}; el registro entrega el estado presente, el concatenador genera la dirección de seis bits y la ROM produce la palabra de siete bits. El bloque \texttt{div\_datos} distribuye la liga hacia el registro y las salidas \texttt{VBPM} hacia los pines de la tarjeta.
+Las Figuras[\ref{fig:bloques-1}] y [\ref{fig:bloques-2}] muestran el diagrama de bloques implementado en Quartus, el cual implementa el flujo de los componentes previamente descritos. Donde el reloj y el botón ingresan al bloque \texttt{clk\_buttom}, el registro entrega el estado presente, el concatenador genera la dirección de seis bits y la ROM produce la palabra de siete bits. El bloque \texttt{div\_datos} distribuye la liga hacia el registro y las salidas \texttt{VBPM} hacia los pines de la tarjeta.
 
 \begin{figure}[H]
 \centering
@@ -235,7 +253,7 @@ Las Figuras~\ref{fig:bloques-1} y \ref{fig:bloques-2} muestran el diagrama de bl
 
 \subsection{Evidencia en la tarjeta FPGA}
 
-Las fotografías se organizaron de acuerdo con las filas de la Tabla~\ref{tab:transiciones}. En cada caso se seleccionó la combinación de entradas indicada y se verificaron los LEDs asociados a \texttt{edo\_p} y \texttt{VBPM}. De esta forma, las evidencias físicas permiten contrastar las ligas y las salidas programadas en la ROM.
+Al cargar el diseño en la tarjeta FPGA, se verificó el funcionamiento de la máquina de estados mediante los LEDs asociados al estado presente \texttt{edo\_p} y a las salidas \texttt{VBPM}. Para cada evidencia se seleccionó la combinación de entradas indicada en la tabla de transición y se comparó la respuesta observada con la liga y las salidas almacenadas en la ROM. 
 
 \begin{figure}[H]
 \centering
@@ -336,9 +354,7 @@ Las fotografías se organizaron de acuerdo con las filas de la Tabla~\ref{tab:tr
 \clearpage
 \section{Conclusión}
 
-El direccionamiento por trayectoria permitió traducir la carta ASM a una ROM de $64\times7$ bits de manera directa: los seis bits de dirección especifican el estado presente y las entradas, mientras que los siete bits almacenados determinan el estado siguiente y las salidas. La división del diseño en registro, concatenador, ROM y divisor de datos hizo visible cada etapa del método y facilitó contrastar la implementación VHDL con la tabla de direccionamiento. Las simulaciones, con \texttt{reset=1}, y la evidencia en la tarjeta FPGA mostraron las transiciones previstas por la carta ASM, incluyendo el recorrido completo al forzar \texttt{XYZ=111}.
-
-\paragraph{Percival Ulises Espinoza Matamoros.} La práctica permitió comprobar que una carta ASM puede convertirse en una implementación funcional al definir con precisión los estados, las condiciones de transición y las salidas. La organización mediante una ROM simplificó la descripción de la máquina y facilitó verificar cada trayectoria en la simulación y en la tarjeta FPGA.
+\paragraph{Percival Ulises Espinoza Matamoros.} Gracias a la realización de la práctica pude comprender la importancia del direccionamiento por trayectoria, ya que al implementar la carta ASM por medio de una memoria ROM junto a otros componentes, donde en la memoria ROM se almacenan las ligas y salidas correspondientes a cada combinación de estado presente y entradas, donde pude observar cómo las entradas determinan la liga y las salidas en cada ciclo de reloj. Al verificar el funcionamiento por medio de la simulación y la implementación física en la tarjeta FPGA, se pudo tener un mejor entendimiento de como funciona el diseño implementado.
 
 \paragraph{Oscar Iván Montiel Juárez.} En esta práctica aplicamos los conceptos vistos en teoría sobre máquinas de estados finitos, cartas ASM, codificación de estados y memorias ROM. Al llevarlos a VHDL y a la tarjeta FPGA, se pudo relacionar la tabla de direccionamiento con el funcionamiento real del circuito, observando cómo las entradas determinan la liga y las salidas en cada ciclo de reloj.
 
