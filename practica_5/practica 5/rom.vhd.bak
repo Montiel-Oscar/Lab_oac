@@ -1,0 +1,30 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity rom is
+	Port ( direccion : in std_logic_vector (2 downto 0);
+				data : out std_logic_vector (13 downto 0)
+	);
+end rom;
+
+architecture Behavioral of rom is
+
+type mem is array (0 to 7) of std_logic_vector (13 downto 0);
+signal internal_mem: mem;
+
+begin
+	
+	--  prueba & VF & liga & SF & SV
+	
+	internal_mem(0) <= "00" & "0" & "011" & "0110" & "0101";
+	internal_mem
+	
+	 process(direccion)
+	 begin
+		data <= internal_mem(conv_integer(unsigned(direccion)));
+		
+	end process;
+	
+end Behavioral;
