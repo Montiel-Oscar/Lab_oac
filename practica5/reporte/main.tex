@@ -6,9 +6,8 @@
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx,float,subcaption,xcolor,array,booktabs,tabularx,ragged2e}
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
 \usepackage{listings}
-\usepackage{pdflscape}
 \usepackage[left=25mm,right=25mm,top=35mm,bottom=30mm,headheight=15pt]{geometry}
 \usepackage{parskip,fancyhdr}
 \usepackage{hyperref}
@@ -42,220 +41,318 @@
 
 \section{Objetivo}
 
-Familiarizar al alumno en el conocimiento de construcción de máquinas de estados usando direccionamiento de memorias con el método de direccionamiento entrada-estado.
+Familiarizar al alumno con la construcción de máquinas de estados mediante memorias, empleando el método de direccionamiento implícito para reducir la información que debe almacenarse en cada palabra y comprobar su funcionamiento por simulación y sobre la tarjeta DE10-Lite.
 
 \section{Desarrollo}
 
-El método de direccionamiento entrada-estado se aplica a cartas ASM en las que cada estado consulta una sola variable de entrada. A diferencia del direccionamiento por trayectoria, la dirección de la ROM depende únicamente del estado presente. La palabra almacenada contiene el código de la entrada que debe probarse, dos ligas posibles y dos conjuntos de salidas. Un selector de entrada obtiene el valor de la variable indicada con dicho valor, los selectores de liga y de salida escogen la alternativa falsa o verdadera.
+El direccionamiento implícito aprovecha el orden consecutivo de los estados. Para cada estado presente $N$, una de las dos transiciones posibles no se almacena en la memoria, sino que se obtiene mediante un incrementador como $N+1$. La otra transición, denominada liga $P$, sí se guarda en la palabra de control. Para utilizar este método, la asignación binaria debe cumplir la regla $N$, $N+1$, $P$; cuando la carta ASM original no la cumple, es necesario reasignar los códigos de estado.
 
-Para esta práctica se implementó la carta ASM propia mostrada en la Figura[\ref{fig:carta-asm}]. Las entradas se denominaron $A$, $B$ y $C$, y las salidas se representaron por $S_3S_2S_1S_0$. La máquina tiene seis estados útiles, codificados de $000$ a $101$. El registro mantiene el estado presente y lo usa directamente como dirección de la ROM por ello, cada estado requiere una única palabra de memoria.
+La palabra almacenada también contiene el código de la entrada que se debe probar, el bit $VF$ y dos campos de salida. El bit $VF$ indica con qué valor de la entrada seleccionada se debe utilizar la liga explícita. Si el resultado de la prueba coincide con $VF$, el contador carga $P$; en caso contrario, avanza a $N+1$. De esta manera, sólo se almacena una liga de tres bits en lugar de dos.
 
-\subsection{Carta ASM y asignaciones binarias}
+\subsection{Carta ASM y asignación binaria}
 
-La carta ASM se diseñó con tres condicionales: en $S_0$ se evalúa $A$, en $S_1$ se evalúa $B$ y en $S_2$ se evalúa $C$. Los estados $S_3$, $S_4$ y $S_5$ no dependen de una entrada, por lo que su transición se fuerza al colocar las mismas ligas y salidas en las alternativas falsa y verdadera. De esta forma el valor seleccionado no modifica el resultado.
+La carta ASM utilizada tiene seis estados, tres entradas de decisión y cuatro salidas. Las entradas $A$, $B$ y $C$ se codificaron como \texttt{00}, \texttt{01} y \texttt{10}; el código \texttt{11} se reservó para $QAUX$. En la implementación, $QAUX$ se conecta a cero y permite representar estados sin prueba externa.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.84\linewidth]{carta_asm.jpeg}
-\caption{Carta ASM propia utilizada para el direccionamiento entrada-estado.}
+\begin{tikzpicture}[
+  flow/.style={-{Stealth[length=2.4mm,width=1.6mm]}, line width=0.8pt, rounded corners=2pt},
+  state/.style={draw, rectangle, minimum width=2.4cm, minimum height=0.85cm, align=center},
+  decision/.style={draw, diamond, aspect=1.3, minimum width=1.1cm, minimum height=0.85cm, inner sep=1pt},
+  condout/.style={draw, ellipse, minimum width=1.7cm, minimum height=0.75cm, align=center},
+  every node/.style={font=\small},
+  elbl/.style={font=\small\bfseries\color{red}} % Estilo para los identificadores de estado
+]
+
+  % --- ESTADOS Y DECISIONES ---
+  % Estado inicial E0 y decisión A
+  \node[state, label={[elbl]above:$E_0$}] (e0) at (0, 0) {$S_3 S_2 \overline{S_1}\,\overline{S_0}$};
+  \node[decision] (a) at (0, -1.6) {$A$};
+
+  % Rama izquierda: E1, B, condout S1, E2, E3
+  \node[state, label={[elbl]above right:$E_1$}] (e1) at (-3.2, -3.1) {$\overline{S_3}\,\overline{S_0}$};
+  \node[decision] (b) at (-3.2, -4.6) {$B$};
+  \node[condout] (bsalida) at (-1.4, -5.8) {$\overline{S_1}$};
+  \node[state, label={[elbl]above left:$E_2$}] (e2) at (-1.4, -7.2) {\phantom{$S_0$}}; % Caja vacía con altura uniforme
+  \node[state, label={[elbl]above left:$E_3$}] (e3) at (-4.8, -7.2) {$S_2$};
+
+  % Rama derecha: E4, C, E5
+  \node[state, label={[elbl]above right:$E_4$}] (e4) at (3.2, -3.1) {$S_2 \overline{S_1}$};
+  \node[decision] (c) at (3.2, -4.6) {$C$};
+  \node[state, label={[elbl]above right:$E_5$}] (e5) at (3.2, -6.3) {$\overline{S_0}$};
+
+  % --- CONEXIONES Y FLUJOS ---
+  % Desde E0 hasta A
+  \draw[flow] (e0) -- (a);
+
+  % Decisión A (1 -> E1, 0 -> E4)
+  \draw[flow] (a.west) -| node[above, pos=0.25] {$1$} (e1.north);
+  \draw[flow] (a.east) -| node[above, pos=0.25] {$0$} (e4.north);
+
+  % Rama izquierda
+  \draw[flow] (e1) -- (b);
+  \draw[flow] (b.west) -| node[above, pos=0.25] {$0$} (e3.north);
+  \draw[flow] (b.east) -| node[above, pos=0.25] {$1$} (bsalida.north);
+  \draw[flow] (bsalida) -- (e2.north);
+
+  % Conexión E2 -> E3
+  \draw[flow] (e2.west) -- (e3.east);
+
+  % Rama derecha
+  \draw[flow] (e4) -- (c);
+  \draw[flow] (c.south) -- node[right] {$0$} (e5.north);
+
+  % Transición E5 -> E2
+  \draw[flow] (e5.south) |- ([yshift=-4mm]e2.south) -| (e2.south);
+
+  % Retorno E4 (C = 1) -> E0
+  \draw[flow] (c.east) -- node[above, pos=0.2] {$1$} (5.2, -4.6)
+    |- ([xshift=8mm, yshift=7mm]e0.north)
+    -- ([xshift=8mm]e0.north);
+
+  % Retorno E3 -> E0
+  \draw[flow] (e3.west) -- (-6.3, -7.2)
+    |- ([xshift=-8mm, yshift=7mm]e0.north)
+    -- ([xshift=-8mm]e0.north);
+
+\end{tikzpicture}
+\caption{Carta ASM empleada para obtener la asignación de estados y el microprograma.}
 \label{fig:carta-asm}
 \end{figure}
 
-La asignación binaria de estados y de entradas es la siguiente:
+
+La asignación binaria seleccionada es:
 \[
 \begin{array}{c|cccccc}
-\text{Estado} & S_0 & S_1 & S_2 & S_3 & S_4 & S_5\\ \hline
+\text{Estado} & E_0 & E_1 & E_2 & E_3 & E_4 & E_5\\ \hline
 Q_2Q_1Q_0 & 000 & 001 & 010 & 011 & 100 & 101
 \end{array}
 \qquad
-\begin{array}{c|ccc}
-\text{Entrada} & A & B & C\\ \hline
-P_1P_0 & 00 & 01 & 10
+\begin{array}{c|cccc}
+\text{Entrada} & A & B & C & QAUX\\ \hline
+K_1K_0 & 00 & 01 & 10 & 11
 \end{array}
 \]
-El código \texttt{11} de prueba queda disponible como valor auxiliar: en \texttt{mux\_prueba.vhd} se implementa como cero. En los estados sin decisión, la implementación utiliza \texttt{00}, pero como sus campos falso y verdadero son idénticos, el selector es indiferente para la transición y las salidas.
+
+Con esta codificación se obtienen las siguientes transiciones:
+\[
+\begin{aligned}
+E_0 &: A=0\rightarrow E_4,\quad A=1\rightarrow E_1,\\
+E_1 &: B=0\rightarrow E_3,\quad B=1\rightarrow E_2,\\
+E_2 &: E_3,\qquad
+E_3 : E_0,\\
+E_4 &: C=0\rightarrow E_5,\quad C=1\rightarrow E_0,\\
+E_5 &: E_2.
+\end{aligned}
+\]
+Las transiciones $E_0\rightarrow E_1$, $E_1\rightarrow E_2$, $E_2\rightarrow E_3$ y $E_4\rightarrow E_5$ corresponden a $N+1$ y, por tanto, pueden generarse sin guardar una segunda liga.
 
 \subsection{Dimensionamiento de la memoria}
 
-Se requieren \texttt{3} bits para codificar los seis estados. Puesto que la dirección se forma sólo con el estado presente, la ROM tiene \texttt{3} bits de dirección. La palabra de memoria se divide en cinco campos:
+Se requieren tres bits para representar los seis estados, por lo que la memoria dispone de $2^3=8$ direcciones. La palabra de control se organiza de la siguiente forma:
 \[
-\underbrace{P_1P_0}_{2\ \text{bits de prueba}}\;
-\underbrace{LF_2 \, LF_1 \,LF_0}_{3\ \text{bits de liga falsa}}\;
-\underbrace{LV_2 \, LV_1 \,LV_0}_{3\ \text{bits de liga verdadera}}\;
-\underbrace{SF_3 \, SF_2 \, SF_1 \,SF_0}_{4\ \text{salidas falsas}}\;
-\underbrace{SV_3 \, SV_2 \, SV_1 \,SV_0}_{4\ \text{salidas verdaderas}}.
+\underbrace{K_1K_0}_{\text{prueba}}
+\;\underbrace{VF}_{\text{valor de liga}}
+\;\underbrace{L_2L_1L_0}_{\text{liga }P}
+\;\underbrace{SF_3SF_2SF_1SF_0}_{\text{salida falsa}}
+\;\underbrace{SV_3SV_2SV_1SV_0}_{\text{salida verdadera}}.
 \]
-Por tanto,
+Por lo tanto, el número de bits por palabra es
 \[
-m=2+3+3+4+4=16\ \text{bits},
-\qquad
-\text{ROM}=2^n\times m=2^3\times16=8\times16\ \text{bits}.
+m=2+1+3+4+4=14\ \text{bits},
 \]
-La capacidad total requerida es de \texttt{128} bits. Las dos direcciones no utilizadas por los seis estados de la carta, \texttt{110} y \texttt{111}, se programaron como recuperación segura hacia $S_0$, con salidas \texttt{0011}.
+y el tamaño de la memoria es
+\[
+2^n\times m=2^3\times14=8\times14=112\ \text{bits}.
+\]
+Aunque sólo se emplean seis estados, se programaron también las direcciones \texttt{110} y \texttt{111} con valores seguros para regresar a \texttt{000}.
 
-\subsection{Contenido de la memoria}
+\subsection{Tabla de direccionamiento y contenido de la memoria}
 
-La Tabla[\ref{tab:memoria}] contiene la palabra de memoria de cada estado. $P$ identifica la entrada que revisa \texttt{mux\_prueba}, $LF$ y $LV$ son las ligas que se seleccionan para $Qsel=0$ y $Qsel=1$, respectivamente. De la misma forma, $SF$ y $SV$ son las salidas para cada alternativa.
+La Tabla~\ref{tab:memoria} muestra el microprograma grabado en la ROM. $K_1K_0$ selecciona la entrada, $VF$ determina cuándo se carga la liga explícita y $L_2L_1L_0$ contiene $P$. Los campos $SF$ y $SV$ se seleccionan cuando la entrada evaluada vale cero o uno, respectivamente.
 
 \begin{table}[H]
 \centering
-\small
-\caption{Tabla de direccionamiento entrada-estado y contenido de la ROM.}
+\scriptsize
+\caption{Tabla de direccionamiento implícito y contenido de la ROM.}
 \label{tab:memoria}
-\begin{tabular}{c c c c c c c}
+\begin{tabular}{c c c c c c}
 \toprule
-Estado & $Q_2Q_1Q_0$ & Prueba $P_1P_0$ & $LF$ & $LV$ & $SF$ & $SV$\\
+Estado & $Q_2Q_1Q_0$ & $K_1K_0$ & $VF$ & Liga $P$ & $SF/SV$\\
 \midrule
-$S_0$ & 000 & 00 & 010 & 001 & 1100 & 1100\\
-$S_1$ & 001 & 01 & 011 & 100 & 1010 & 1000\\
-$S_2$ & 010 & 10 & 101 & 000 & 0101 & 0101\\
-$S_3$ & 011 & $*$ & 000 & 000 & 0111 & 0111\\
-$S_4$ & 100 & $*$ & 011 & 011 & 0011 & 0011\\
-$S_5$ & 101 & $*$ & 100 & 100 & 0010 & 0010\\
-No definidas & 110, 111 & $*$ & 000 & 000 & 0011 & 0011\\
+$E_0$ & 000 & 00 & 0 & 100 & 1100/1100\\
+$E_1$ & 001 & 01 & 0 & 011 & 1010/1000\\
+$E_2$ & 010 & 11 & 1 & 000 & 0011/0011\\
+$E_3$ & 011 & 11 & 0 & 000 & 0111/0111\\
+$E_4$ & 100 & 10 & 1 & 000 & 0101/0101\\
+$E_5$ & 101 & 11 & 0 & 010 & 0010/0010\\
+Recuperación & 110 & 11 & 0 & 000 & 0011/0011\\
+Recuperación & 111 & 11 & 0 & 000 & 0011/0011\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Por ejemplo, cuando el registro presenta \texttt{001}, la ROM entrega \texttt{01 011 100 1010 1000}. El selector de prueba interpreta \texttt{01} como la entrada $B$. Si $B=0$, la máquina avanza a \texttt{011} y presenta \texttt{1010}; si $B=1$, avanza a \texttt{100} y presenta \texttt{1000}. Esta sola palabra reemplaza las dos localidades que habría requerido el direccionamiento por trayectoria.
+Por ejemplo, en $E_0$ la ROM entrega \texttt{00 0 100 1100 1100}. El código \texttt{00} selecciona $A$. Si $A=0$, su valor coincide con $VF=0$ y se carga la liga explícita \texttt{100}; si $A=1$, no coincide con $VF$ y el incrementador produce \texttt{001}. En ambos casos la salida es \texttt{1100}.
 
-\subsection{Arquitectura e implementación en VHDL}
+\subsection{Arquitectura del sistema}
 
-Las Figuras[\ref{fig:bloques-1}] y [\ref{fig:bloques-2}] muestran las capturas del diagrama de bloques implementado en Quartus. El estado presente se registra en cada flanco de reloj y direcciona la ROM. El bloque \texttt{div\_datos} separa los cinco campos de la palabra, \texttt{mux\_prueba} evalúa la entrada seleccionada y genera \texttt{Qsel}. Finalmente, \texttt{mux\_liga} y \texttt{mux\_salidas} escogen, con la misma señal, la liga y las salidas que corresponden a la decisión de la carta ASM.
+El registro entrega el estado presente, que funciona como dirección de la ROM y como entrada del incrementador. La ROM genera los campos de prueba, $VF$, liga y salidas. El multiplexor de prueba selecciona $A$, $B$, $C$ o $QAUX$ y produce $Qsel$. Después, una compuerta XNOR compara $Qsel$ con $VF$ para generar la señal de carga:
+\[
+\texttt{carga}=\overline{Qsel\oplus VF}.
+\]
+Cuando \texttt{carga=1}, el multiplexor de control selecciona la liga $P$; cuando \texttt{carga=0}, selecciona $N+1$. En paralelo, \texttt{mux\_salida} escoge $SF$ o $SV$ directamente con $Qsel$.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{diagramas_bloques_1.png}
-\caption{Primera parte del diagrama de bloques implementado en Quartus.}
+\caption{Conexión del reloj y del bloque contador dentro del sistema.}
 \label{fig:bloques-1}
+\end{figure}
+
+La Figura~\ref{fig:contador-interno} muestra la estructura interna del contador con carga. La salida \texttt{edop} del registro se realimenta hacia el incrementador, que produce \texttt{edouno=edop+1}. El multiplexor \texttt{mux\_control} recibe ese valor y la liga \texttt{edok} proveniente de la ROM. La señal \texttt{carga} decide cuál de los dos valores se aplica a \texttt{edos}; finalmente, el registro captura \texttt{edos} en el siguiente flanco ascendente de \texttt{reloj}. La entrada \texttt{reset} permite forzar el estado inicial \texttt{000}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{diagramas_bloques_4_contador.png}
+\caption{Diagrama interno del contador con carga: multiplexor, registro e incrementador.}
+\label{fig:contador-interno}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.92\linewidth]{diagramas_bloques_2.png}
-\caption{Segunda parte del diagrama de bloques implementado en Quartus.}
+\includegraphics[width=\linewidth]{diagramas_bloques_2.png}
+\caption{Conexión del contador, la ROM y la separación de la palabra de control.}
 \label{fig:bloques-2}
 \end{figure}
 
-\subsection{Módulos implementados}
-Para los módulos implementados se reutilizaron los de la práctica anterior, el funcionamiento de cada uno de los módulos es el siguiente:
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.90\linewidth]{diagramas_bloques_3.png}
+\caption{Selector de prueba y lógica de selección de las salidas.}
+\label{fig:bloques-3}
+\end{figure}
 
-\paragraph{Registro:} El módulo \texttt{registro} almacena la liga seleccionada. Su reinicio es activo en bajo, donde si \texttt{reset='0'}, fuerza el estado \texttt{000}, por otro lado cuando \texttt{reset='1'}, actualiza el estado sólo en el flanco ascendente de \texttt{clk}. Esto asegura que cada transición de la máquina ocurra de manera síncrona.
+\subsection{Módulos implementados en VHDL}
+
+\paragraph{Registro e incrementador.} El registro conserva el estado presente. Su reinicio es asíncrono y activo en bajo; con \texttt{reset='0'} fuerza \texttt{000}, mientras que cada flanco ascendente carga el estado siguiente. El incrementador calcula permanentemente $N+1$.
 
 \lstinputlisting[style=estiloVHDL,caption={Registro del estado presente.},label={lst:registro}]{code/registro.vhd}
 
-\paragraph{ROM y división de datos:} \texttt{rom.vhd} declara ocho palabras de 16 bits y usa el estado presente como dirección. \texttt{div\_datos.vhd} no requiere reloj: separa los bits $[15:14]$ como prueba, $[13:11]$ como liga falsa, $[10:8]$ como liga verdadera, $[7:4]$ como salida falsa y $[3:0]$ como salida verdadera.
+\lstinputlisting[style=estiloVHDL,caption={Incrementador para obtener la dirección implícita $N+1$.},label={lst:incrementador}]{code/incrementador.vhd}
 
-\lstinputlisting[style=estiloVHDL,caption={ROM de ocho palabras para el método entrada-estado.},label={lst:rom}]{code/rom.vhd}
+\paragraph{Multiplexor de control.} Este bloque forma el contador con carga: selecciona el valor incrementado cuando \texttt{carga=0} o la liga almacenada cuando \texttt{carga=1}.
 
-\lstinputlisting[style=estiloVHDL,caption={Separación de los campos de la palabra de 16 bits.},label={lst:div-datos}]{code/div_datos.vhd}
+\lstinputlisting[style=estiloVHDL,caption={Selección entre $N+1$ y la liga explícita $P$.},label={lst:mux-control}]{code/mux_control.vhd}
 
-\paragraph{Selección de entrada, liga y salidas.} \texttt{mux\_prueba} traduce los códigos \texttt{00}, \texttt{01} y \texttt{10} a $A$, $B$ y $C$. El resultado \texttt{Qsel} alimenta simultáneamente a \texttt{mux\_liga} y \texttt{mux\_salidas}: con cero se seleccionan $LF$ y $SF$; con uno, $LV$ y $SV$. Esta selección compartida preserva la correspondencia entre las ramas de la carta ASM, la transición de estado y las salidas.
+\paragraph{ROM y división de datos.} La ROM contiene ocho palabras de 14 bits. El bloque \texttt{div\_datos} separa los bits $[13:12]$ como prueba, el bit $[11]$ como $VF$, los bits $[10:8]$ como liga, $[7:4]$ como salida falsa y $[3:0]$ como salida verdadera.
 
-\lstinputlisting[style=estiloVHDL,caption={Selector de la entrada que debe probarse.},label={lst:mux-prueba}]{code/mux_prueba.vhd}
+\lstinputlisting[style=estiloVHDL,caption={ROM de $8\times14$ bits con el microprograma.},label={lst:rom}]{code/rom.vhd}
 
-\lstinputlisting[style=estiloVHDL,caption={Selector de liga falsa o verdadera.},label={lst:mux-liga}]{code/mux_liga.vhd}
+\lstinputlisting[style=estiloVHDL,caption={Separación de los campos de la palabra de 14 bits.},label={lst:div-datos}]{code/div_datos.vhd}
 
-\lstinputlisting[style=estiloVHDL,caption={Selector de salidas falsas o verdaderas.},label={lst:mux-salidas}]{code/mux_salidas.vhd}
+\paragraph{Selección de prueba y salidas.} El multiplexor de prueba convierte el código almacenado en la ROM en el valor de una de las entradas. El multiplexor de salida utiliza ese mismo resultado para escoger el vector falso o verdadero.
 
-\paragraph{Reloj por botón.} \texttt{clk\_buttom} cuenta pulsos del reloj de la tarjeta. Después de una pulsación, produce una señal \texttt{div\_clk} que genera una transición controlada del registro. Sus estados internos de espera, conteo y finalización evitan que una pulsación prolongada produzca cambios no deseados de estado.
+\lstinputlisting[style=estiloVHDL,caption={Selección de $A$, $B$, $C$ o $QAUX$.},label={lst:mux-prueba}]{code/mux_prueba.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Selección de la salida falsa o verdadera.},label={lst:mux-salida}]{code/mux_salida.vhd}
+
+\paragraph{Reloj por botón.} Para observar las transiciones en la tarjeta, el módulo \texttt{clk\_buttom} genera un pulso controlado a partir del reloj de la DE10-Lite y de un botón. Así se evita recorrer varios estados antes de poder identificar visualmente las salidas.
 
 \lstinputlisting[style=estiloVHDL,caption={Acondicionamiento del reloj mediante botón.},label={lst:clk-button}]{code/clk_buttom.vhd}
 
 \section{Simulación}
 
-La simulación de \texttt{Multisim} permitió visualizar el comportamiento del sistema bajo diferentes condiciones donde en las formas de onda se observan el estado presente, el vector de salidas, la señal \texttt{reset}, las entradas $A$, $B$ y $C$, y el reloj. A diferencia del direccionamiento por trayectoria, la ROM no recibe las entradas como parte de su dirección, los \texttt{3} bits de \texttt{edo\_presente} seleccionan una única palabra de \texttt{16} bits. Después, el campo \texttt{P1\,P0} de esa palabra indica cuál entrada debe evaluarse. El valor de la entrada seleccionada se concentra en \texttt{Qsel} y se utiliza al mismo tiempo para escoger la liga y las salidas correspondientes.
+La simulación funcional se realizó en Quartus con un reloj de periodo constante, \texttt{reset=1} y diferentes combinaciones para $A$, $B$ y $C$. Las señales \texttt{edop} y \texttt{salida} permiten relacionar el estado presente con la palabra leída de la ROM. Como el registro cambia únicamente en el flanco ascendente, \texttt{edop} permanece estable entre flancos aunque las entradas se modifiquen.
 
-Durante la prueba, \texttt{reset} se mantiene en \texttt{1}, esto debido a que el reinicio se activa en bajo. Cuando \texttt{reset} se coloca en \texttt{0}, el registro fuerza inmediatamente el estado \texttt{000}, correspondiente a $S_0$, sin depender de la entrada ni de la señal de reloj.
-
-En la Figura[\ref{fig:simulacion-1}], se aplican diferentes combinaciones a las entradas mientras se observa la respuesta del estado y de las salidas. Al iniciar en $S_0$ (\texttt{000}), la palabra de la ROM indica que debe probarse $A$, mediante el código \texttt{P1\,P0=00}. Si $A=0$, el multiplexor de liga selecciona \texttt{LF=010} y el siguiente estado será $S_2$, si $A=1$, selecciona \texttt{LV=001} y el siguiente estado será $S_1$. En ambos casos se conserva la salida \texttt{1100}, tal como se muestra en la Tabla[\ref{tab:memoria}]. Por lo tanto, el cambio de $A$ no altera la salida en $S_0$, pero sí modifica la liga que será almacenada en el siguiente flanco de reloj.
-
-Esta misma lógica la siguen los demás estados. En $S_1$, \texttt{P1\,P0=01} selecciona la entrada $B$: con $B=0$ se obtiene la liga \texttt{011} hacia $S_3$ y la salida \texttt{1010}, mientras que con $B=1$ se obtiene la liga \texttt{100} hacia $S_4$ y la salida \texttt{1000}. En $S_2$, el código \texttt{10} selecciona $C$, las dos alternativas conducen a $S_5$ o $S_0$, manteniendo la salida \texttt{0101}. Estos casos permiten comprobar y visualizar que la entrada seleccionada, y no las otras entradas del sistema, controla la decisión de cada estado.
+En la Figura~\ref{fig:simulacion-1} se observan recorridos como \texttt{000}$\rightarrow$\texttt{100}$\rightarrow$\texttt{000} y \texttt{000}$\rightarrow$\texttt{001}$\rightarrow$\texttt{011}$\rightarrow$\texttt{000}. El primer recorrido ocurre cuando $A=0$, por lo que se carga la liga de $E_0$ hacia $E_4$. El segundo comienza con $A=1$, que selecciona la dirección implícita $N+1=001$; posteriormente, con $B=0$, se carga \texttt{011}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{simulacion_1.png}
-\caption{Primera Parte de la Simulación  en Quartus.}
+\caption{Primera parte de la simulación funcional del direccionamiento implícito.}
 \label{fig:simulacion-1}
 \end{figure}
 
-La Figura[\ref{fig:simulacion-2}] permite observar la relación temporal entre las señales. La palabra de la ROM, la entrada seleccionada y \texttt{Qsel} forman una ruta combinacional, de forma que  cuando cambia la entrada que está siendo evaluada, pueden cambiar la liga y las salidas antes del siguiente flanco de reloj. Sin embargo, \texttt{edo\_presente} conserva su valor durante ese intervalo, ya que el registro sólo acepta la liga en el flanco ascendente. 
-
-Cuando el estado se encuentra en $S_1$, un cambio de $B=0$ a $B=1$ cambia la selección de la palabra de \texttt{LF=011}, \texttt{SF=1010} a \texttt{LV=100}, \texttt{SV=1000}. El estado mostrado continúa siendo \texttt{001} hasta el siguiente flanco posteriormente el registro presenta \texttt{100}. Este comportamiento confirma que el multiplexor de liga y el multiplexor de salidas reciben la misma señal \texttt{Qsel}, evitando que se seleccione una transición de una rama y la salida de la otra.
-
-En los estados $S_3$, $S_4$ y $S_5$ no existe una decisión en la carta ASM. La ROM coloca los mismos valores en las ramas falsa y verdadera, por lo que cualquier valor de \texttt{Qsel} produce el mismo resultado. En consecuencia, $S_3$ conduce a $S_0$ con salida \texttt{0111}, $S_4$ conduce a $S_3$ con salida \texttt{0011} y $S_5$ conduce a $S_4$ con salida \texttt{0010}. La repetición de ambas alternativas en la palabra de memoria implementa correctamente las transiciones incondicionales.
+La Figura~\ref{fig:simulacion-2} incluye secuencias que atraviesan la rama derecha de la carta ASM. Desde \texttt{100}, si $C=0$, no se carga la liga porque $C\neq VF$ y el contador avanza a \texttt{101}; en $E_5$, $QAUX=0$ coincide con $VF=0$ y se carga la liga \texttt{010}. Después, $E_2$ utiliza nuevamente el avance implícito para llegar a \texttt{011}, y $E_3$ carga la liga \texttt{000}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{simulacion_2.png}
-\caption{Detalle de las transiciones de estado y de las salidas durante la simulación.}
+\caption{Transiciones mediante la liga explícita y la dirección implícita $N+1$.}
 \label{fig:simulacion-2}
 \end{figure}
 
-Finalmente, en la Figura[\ref{fig:simulacion-3}] se observa el tramo en el que se mantienen las entradas en valores que permiten recorrer las ramas de la carta ASM. La secuencia de estados depende de la rama seleccionada en cada estado: desde $S_0$, $A=1$ lleva a $S_1$; en $S_1$, $B=0$ lleva a $S_3$ o $B=1$ lleva a $S_4$; desde $S_2$, $C=0$ lleva a $S_5$ y $C=1$ regresa a $S_0$. Las transiciones fijas completan los caminos restantes mediante $S_3\rightarrow S_0$, $S_4\rightarrow S_3$ y $S_5\rightarrow S_4$.
+En la parte final, mostrada en la Figura~\ref{fig:simulacion-3}, se repiten distintas rutas al modificar las entradas. Los valores de \texttt{salida} coinciden con el microprograma: \texttt{1100} en $E_0$, \texttt{1010} o \texttt{1000} en $E_1$, \texttt{0011} en $E_2$, \texttt{0111} en $E_3$, \texttt{0101} en $E_4$ y \texttt{0010} en $E_5$. Esto verifica tanto la selección de la liga como la selección de la salida correspondiente a cada rama.
 
-De esta manera, la simulación permite comprobar tres aspectos del diseño. Primero, el registro se reinicia correctamente en $S_0$. Segundo, cada estado direcciona la palabra correcta de la ROM y prueba la entrada indicada por \texttt{P1P0}. Tercero, la misma decisión \texttt{Qsel} selecciona de forma coherente la liga y las salidas, mientras que el reloj sincroniza el cambio de estado. 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{simulacion_3.png}
-\caption{Parte final de la Simulación en Quartus, mostrando la secuencia de estados y salidas.}
+\caption{Parte final de la simulación, con diferentes recorridos de la carta ASM.}
 \label{fig:simulacion-3}
 \end{figure}
 
 \section{Resultados en la tarjeta FPGA}
 
-Las fotografías muestran la implementación sobre la tarjeta DE10-Lite. Los LEDs permiten observar el código de \texttt{edo\_presente} y el vector \texttt{salidas}. Se documentó $S_0$, las dos condiciones de $S_1$ y los estados restantes de la carta; con ello se contrastan las ramas dependientes de entrada y las transiciones incondicionales programadas en la ROM.
+El diseño se programó en la tarjeta DE10-Lite. Los tres LEDs asignados a \texttt{edop} muestran el código del estado presente y cuatro LEDs adicionales representan \texttt{salida}. Las fotografías permiten contrastar directamente los valores físicos con la Tabla~\ref{tab:memoria}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.44\linewidth]{est0.jpeg}
-\caption{Evidencia en tarjeta del estado $S_0$, que prueba la entrada $A$.}
-\label{fig:est0}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}[b]{0.44\linewidth}
-  \centering\includegraphics[width=\linewidth]{est1_b0.jpeg}
-  \caption{$S_1$ con $B=0$: se selecciona la liga falsa hacia $S_3$.}
+\begin{subfigure}[b]{0.45\linewidth}
+  \centering\includegraphics[width=\linewidth]{est0.jpeg}
+  \caption{$E_0=000$, salida \texttt{1100}.}
 \end{subfigure}\hfill
-\begin{subfigure}[b]{0.44\linewidth}
-  \centering\includegraphics[width=\linewidth]{est1_b1.jpeg}
-  \caption{$S_1$ con $B=1$: se selecciona la liga verdadera hacia $S_4$.}
+\begin{subfigure}[b]{0.45\linewidth}
+  \centering\includegraphics[width=\linewidth]{est1_b_0.jpeg}
+  \caption{$E_1=001$ con $B=0$, salida \texttt{1010}.}
 \end{subfigure}
-\caption{Verificación física de las dos ramas del estado $S_1$.}
-\label{fig:est1}
+\caption{Comprobación física de $E_0$ y de la rama falsa de $E_1$.}
+\label{fig:fpga-01a}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.44\linewidth}
+\begin{subfigure}[b]{0.45\linewidth}
+  \centering\includegraphics[width=\linewidth]{est1_b_1.jpeg}
+  \caption{$E_1=001$ con $B=1$, salida \texttt{1000}.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.45\linewidth}
   \centering\includegraphics[width=\linewidth]{est2.jpeg}
-  \caption{Estado $S_2$.}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.44\linewidth}
-  \centering\includegraphics[width=\linewidth]{est3.jpeg}
-  \caption{Estado $S_3$.}
-\end{subfigure}\\[3mm]
-\begin{subfigure}[b]{0.44\linewidth}
-  \centering\includegraphics[width=\linewidth]{est4.jpeg}
-  \caption{Estado $S_4$.}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.44\linewidth}
-  \centering\includegraphics[width=\linewidth]{est5.jpeg}
-  \caption{Estado $S_5$.}
+  \caption{$E_2=010$, salida \texttt{0011}.}
 \end{subfigure}
-\caption{Evidencia en tarjeta de los estados $S_2$, $S_3$, $S_4$ y $S_5$.}
-\label{fig:estados-2345}
+\caption{Rama verdadera de $E_1$ y evidencia del estado $E_2$.}
+\label{fig:fpga-12}
 \end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.45\linewidth}
+  \centering\includegraphics[width=\linewidth]{est3.jpeg}
+  \caption{$E_3=011$, salida \texttt{0111}.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.45\linewidth}
+  \centering\includegraphics[width=\linewidth]{est4.jpeg}
+  \caption{$E_4=100$, salida \texttt{0101}.}
+\end{subfigure}
+\caption{Comprobación física de los estados $E_3$ y $E_4$.}
+\label{fig:fpga-34}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\linewidth]{est5.jpeg}
+\caption{Estado $E_5=101$ con salida \texttt{0010}.}
+\label{fig:fpga-5}
+\end{figure}
+
+Las pruebas físicas confirmaron que el contador avanza a $N+1$ cuando la entrada seleccionada es diferente de $VF$ y carga la liga almacenada cuando ambos valores coinciden. También se comprobó que el reinicio activo en bajo devuelve la máquina al estado \texttt{000} y que el pulso de reloj permite avanzar un estado a la vez.
 
 \clearpage
 \section{Conclusión}
 
-\paragraph{Percival Ulises Espinoza Matamoros.} Gracias a la realización de esta práctica pude comprender las diferencias entre el direccionamiento por trayectoria y el direccionamiento entrada-estado, así como la implementación del direccionamiento entrada-estado en lenguaje VHDL. Al implementar este tipo de direccionamiento, se puede observar cómo una sola palabra de memoria puede contener tanto la decisión que se evalúa como las dos posibles respuestas del sistema, esto se pudo visualizar de manera más clara en la implementacición física en la FPGA, así como las transiciones de estado en la simulación.
+\paragraph{Percival Ulises Espinoza Matamoros.} En esta práctica comprendí que el direccionamiento implícito reduce el tamaño de la palabra de memoria al sustituir una de las ligas por el incremento $N+1$. La elaboración de la tabla permitió identificar la función de $VF$ y verificar cuándo debía cargarse la liga explícita. La simulación y la implementación física confirmaron que las transiciones y salidas coincidían con la carta ASM.
 
-\paragraph{Oscar Iván Montiel Juárez.} En este laboratorio comprendí cómo armar el direccionamiento entrada-estado para representar las decisiones y transiciones de una máquina de estados. La implementación en VHDL y las pruebas en la FPGA permitieron relacionar cada entrada con la dirección de memoria correspondiente y verificar que la salida condujera al estado esperado. Además, se puede notar que este método desperdicia menos memoria en comparación con el direccionamiento por trayectoria, ya que aprovecha mejor cada palabra almacenada.
+\paragraph{Oscar Iván Montiel Juárez.} El desarrollo permitió relacionar la asignación binaria de estados con el funcionamiento del contador con carga. Se observó que la regla $N$, $N+1$, $P$ es indispensable para aprovechar el direccionamiento implícito y que una asignación adecuada disminuye la memoria requerida. Las formas de onda mostraron claramente la diferencia entre incrementar el estado y cargar una dirección almacenada.
 
-\paragraph{Amy Valentina Veraza García.} En esta práctica reforcé la relación entre el diagrama de estados, la tabla de direccionamiento y su implementación física. La simulación y la comprobación de los LEDs en la FPGA ayudaron a confirmar que las entradas $A$, $B$ y $C$ producen las transiciones correctas y que el circuito responde de acuerdo con el diseño.
+\paragraph{Amy Valentina Veraza García.} La práctica ayudó a reforzar la relación entre la carta ASM, el microprograma y los módulos implementados en VHDL. Al probar el circuito en la DE10-Lite fue posible comprobar visualmente el estado presente y las salidas, así como el efecto de las entradas $A$, $B$ y $C$ sobre cada recorrido de la máquina.
 
 \end{document}
