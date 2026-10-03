@@ -1,5 +1,5 @@
 Flow report for practica4
-Fri Sep 25 13:50:58 2026
+Sat Oct  3 09:19:18 2026
 Quartus Prime Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
 
 
@@ -41,7 +41,7 @@ on the Quartus Prime software download page.
 +--------------------------------------------------------------------------------------+
 ; Flow Summary                                                                         ;
 +------------------------------------+-------------------------------------------------+
-; Flow Status                        ; Successful - Fri Sep 25 13:50:58 2026           ;
+; Flow Status                        ; Successful - Sat Oct  3 09:19:18 2026           ;
 ; Quartus Prime Version              ; 25.1std.0 Build 1129 10/21/2025 SC Lite Edition ;
 ; Revision Name                      ; practica4                                       ;
 ; Top-level Entity Name              ; practica4                                       ;
@@ -115,7 +115,9 @@ on the Quartus Prime software download page.
 ; EDA Netlist Writer   ; 00:00:01     ; 1.0                     ; 597 MB              ; 00:00:00                           ;
 ; EDA Netlist Writer   ; 00:00:00     ; 1.0                     ; 582 MB              ; 00:00:00                           ;
 ; EDA Netlist Writer   ; 00:00:01     ; 1.0                     ; 582 MB              ; 00:00:00                           ;
-; Total                ; 00:00:27     ; --                      ; --                  ; 00:00:45                           ;
+; EDA Netlist Writer   ; 00:00:00     ; 1.0                     ; 582 MB              ; 00:00:00                           ;
+; EDA Netlist Writer   ; 00:00:01     ; 1.0                     ; 582 MB              ; 00:00:00                           ;
+; Total                ; 00:00:28     ; --                      ; --                  ; 00:00:45                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
@@ -128,6 +130,8 @@ on the Quartus Prime software download page.
 ; Fitter               ; oscar-aspirea51454 ; Ubuntu  ; 26         ; x86_64         ;
 ; Assembler            ; oscar-aspirea51454 ; Ubuntu  ; 26         ; x86_64         ;
 ; Timing Analyzer      ; oscar-aspirea51454 ; Ubuntu  ; 26         ; x86_64         ;
+; EDA Netlist Writer   ; oscar-aspirea51454 ; Ubuntu  ; 26         ; x86_64         ;
+; EDA Netlist Writer   ; oscar-aspirea51454 ; Ubuntu  ; 26         ; x86_64         ;
 ; EDA Netlist Writer   ; oscar-aspirea51454 ; Ubuntu  ; 26         ; x86_64         ;
 ; EDA Netlist Writer   ; oscar-aspirea51454 ; Ubuntu  ; 26         ; x86_64         ;
 ; EDA Netlist Writer   ; oscar-aspirea51454 ; Ubuntu  ; 26         ; x86_64         ;
@@ -158,6 +162,8 @@ quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_f
 quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off practica4 -c practica4 --vector_source=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/output_files/Waveform1.vwf --testbench_file=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/simulation/qsim/output_files/Waveform1.vwf.vht
 quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off practica4 -c practica4 --vector_source=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/output_files/Waveform1.vwf --testbench_file=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/simulation/qsim/output_files/Waveform1.vwf.vht
 quartus_eda --write_settings_files=off --simulation=on --functional=off --flatten_buses=off --timescale=1ps --tool=modelsim_oem --format=vhdl --output_directory=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/simulation/qsim/ practica4 -c practica4
+quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off practica4 -c practica4 --vector_source=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/output_files/Waveform1.vwf --testbench_file=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/simulation/qsim/output_files/Waveform1.vwf.vht
+quartus_eda --write_settings_files=off --simulation=on --functional=on --flatten_buses=off --tool=modelsim_oem --format=vhdl --output_directory=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/simulation/qsim/ practica4 -c practica4
 quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off practica4 -c practica4 --vector_source=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/output_files/Waveform1.vwf --testbench_file=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/simulation/qsim/output_files/Waveform1.vwf.vht
 quartus_eda --write_settings_files=off --simulation=on --functional=on --flatten_buses=off --tool=modelsim_oem --format=vhdl --output_directory=/home/ivan/Documents/FI/Lab_oac/practica4/practica4/simulation/qsim/ practica4 -c practica4
 
