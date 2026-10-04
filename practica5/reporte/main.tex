@@ -41,13 +41,13 @@
 
 \section{Objetivo}
 
-Familiarizar al alumno con la construcción de máquinas de estados mediante memorias, empleando el método de direccionamiento implícito para reducir la información que debe almacenarse en cada palabra y comprobar su funcionamiento por simulación y sobre la tarjeta DE10-Lite.
+Familiarizar al alumno en el conocimiento de construcción de máquinas de estados usando direccionamiento de memorias con el método de direccionamiento implícito.
 
 \section{Desarrollo}
 
-El direccionamiento implícito aprovecha el orden consecutivo de los estados. Para cada estado presente $N$, una de las dos transiciones posibles no se almacena en la memoria, sino que se obtiene mediante un incrementador como $N+1$. La otra transición, denominada liga $P$, sí se guarda en la palabra de control. Para utilizar este método, la asignación binaria debe cumplir la regla $N$, $N+1$, $P$; cuando la carta ASM original no la cumple, es necesario reasignar los códigos de estado.
+El direccionamiento implícito aprovecha el orden consecutivo de los estados. Para cada estado presente $N$, una de las dos transiciones posibles no se almacena en la memoria, sino que se obtiene mediante un incrementador como $N+1$. La otra transición, denominada liga $P$, sí se guarda en la palabra de control. Para utilizar este método, la asignación binaria debe cumplir la regla $N$, $N+1$, $P$. Cuando la carta ASM original no la cumple, es necesario reasignar los códigos de estado.
 
-La palabra almacenada también contiene el código de la entrada que se debe probar, el bit $VF$ y dos campos de salida. El bit $VF$ indica con qué valor de la entrada seleccionada se debe utilizar la liga explícita. Si el resultado de la prueba coincide con $VF$, el contador carga $P$; en caso contrario, avanza a $N+1$. De esta manera, sólo se almacena una liga de tres bits en lugar de dos.
+La palabra almacenada también contiene el código de la entrada que se debe probar, el bit $VF$ y dos campos de salida. El bit $VF$ indica con qué valor de la entrada seleccionada se debe utilizar la liga explícita. Si el resultado de la prueba coincide con $VF$, el contador carga $P$, en caso contrario, avanza a $N+1$. De esta manera, sólo se almacena una liga de tres bits en lugar de dos.
 
 \subsection{Carta ASM y asignación binaria}
 
@@ -116,7 +116,7 @@ La carta ASM utilizada tiene seis estados, tres entradas de decisión y cuatro s
     -- ([xshift=-8mm]e0.north);
 
 \end{tikzpicture}
-\caption{Carta ASM empleada para obtener la asignación de estados y el microprograma.}
+\caption{Carta ASM empleada utilizada para la práctica 5.}
 \label{fig:carta-asm}
 \end{figure}
 
@@ -151,11 +151,11 @@ Las transiciones $E_0\rightarrow E_1$, $E_1\rightarrow E_2$, $E_2\rightarrow E_3
 
 Se requieren tres bits para representar los seis estados, por lo que la memoria dispone de $2^3=8$ direcciones. La palabra de control se organiza de la siguiente forma:
 \[
-\underbrace{K_1K_0}_{\text{prueba}}
+\underbrace{K_1\,K_0}_{\text{prueba}}
 \;\underbrace{VF}_{\text{valor de liga}}
-\;\underbrace{L_2L_1L_0}_{\text{liga }P}
-\;\underbrace{SF_3SF_2SF_1SF_0}_{\text{salida falsa}}
-\;\underbrace{SV_3SV_2SV_1SV_0}_{\text{salida verdadera}}.
+\;\underbrace{L_2\,L_1\,L_0}_{\text{liga }P}
+\;\underbrace{SF_3\,SF_2\,SF_1\,SF_0}_{\text{salida falsa}}
+\;\underbrace{SV_3\,SV_2\,SV_1\,SV_0}_{\text{salida verdadera}}.
 \]
 Por lo tanto, el número de bits por palabra es
 \[
@@ -169,7 +169,7 @@ Aunque sólo se emplean seis estados, se programaron también las direcciones \t
 
 \subsection{Tabla de direccionamiento y contenido de la memoria}
 
-La Tabla~\ref{tab:memoria} muestra el microprograma grabado en la ROM. $K_1K_0$ selecciona la entrada, $VF$ determina cuándo se carga la liga explícita y $L_2L_1L_0$ contiene $P$. Los campos $SF$ y $SV$ se seleccionan cuando la entrada evaluada vale cero o uno, respectivamente.
+La Tabla[\ref{tab:memoria}] muestra el programa grabado en la ROM. Donde $K_1K_0$ selecciona la entrada, $VF$ determina cuándo se carga la liga explícita y $L_2L_1L_0$ contiene $P$. Los campos $SF$ y $SV$ se seleccionan cuando la entrada evaluada vale \texttt{0} o \texttt{1}.
 
 \begin{table}[H]
 \centering
@@ -192,7 +192,7 @@ Recuperación & 111 & 11 & 0 & 000 & 0011/0011\\
 \end{tabular}
 \end{table}
 
-Por ejemplo, en $E_0$ la ROM entrega \texttt{00 0 100 1100 1100}. El código \texttt{00} selecciona $A$. Si $A=0$, su valor coincide con $VF=0$ y se carga la liga explícita \texttt{100}; si $A=1$, no coincide con $VF$ y el incrementador produce \texttt{001}. En ambos casos la salida es \texttt{1100}.
+Por ejemplo, en $E_0$ la ROM entrega \texttt{00 0 100 1100 1100}. El código \texttt{00} selecciona $A$. Si $A=0$, su valor coincide con $VF=0$ y se carga la liga explícita \texttt{100} si $A=1$, no coincide con $VF$ y el incrementador produce \texttt{001}. En ambos casos la salida es \texttt{1100}.
 
 \subsection{Arquitectura del sistema}
 
@@ -200,7 +200,7 @@ El registro entrega el estado presente, que funciona como dirección de la ROM y
 \[
 \texttt{carga}=\overline{Qsel\oplus VF}.
 \]
-Cuando \texttt{carga=1}, el multiplexor de control selecciona la liga $P$; cuando \texttt{carga=0}, selecciona $N+1$. En paralelo, \texttt{mux\_salida} escoge $SF$ o $SV$ directamente con $Qsel$.
+Cuando \texttt{carga=1}, el multiplexor de control selecciona la liga $P$, cuando \texttt{carga=0}, selecciona $N+1$. En paralelo, \texttt{mux\_salida} escoge $SF$ o $SV$ directamente con $Qsel$.
 
 \begin{figure}[H]
 \centering
@@ -209,7 +209,7 @@ Cuando \texttt{carga=1}, el multiplexor de control selecciona la liga $P$; cuand
 \label{fig:bloques-1}
 \end{figure}
 
-La Figura~\ref{fig:contador-interno} muestra la estructura interna del contador con carga. La salida \texttt{edop} del registro se realimenta hacia el incrementador, que produce \texttt{edouno=edop+1}. El multiplexor \texttt{mux\_control} recibe ese valor y la liga \texttt{edok} proveniente de la ROM. La señal \texttt{carga} decide cuál de los dos valores se aplica a \texttt{edos}; finalmente, el registro captura \texttt{edos} en el siguiente flanco ascendente de \texttt{reloj}. La entrada \texttt{reset} permite forzar el estado inicial \texttt{000}.
+La Figura[\ref{fig:contador-interno}] muestra la estructura interna del contador con carga. La salida \texttt{edop} del registro se realimenta hacia el incrementador, que produce \texttt{edouno=edop+1}. El multiplexor \texttt{mux\_control} recibe ese valor y la liga \texttt{edok} proveniente de la ROM. La señal \texttt{carga} decide cuál de los dos valores se aplica a \texttt{edos}, finalmente, el registro captura \texttt{edos} en el siguiente flanco ascendente de \texttt{reloj}. La entrada \texttt{reset} permite forzar el estado inicial \texttt{000}.
 
 \begin{figure}[H]
 \centering
@@ -234,13 +234,13 @@ La Figura~\ref{fig:contador-interno} muestra la estructura interna del contador 
 
 \subsection{Módulos implementados en VHDL}
 
-\paragraph{Registro e incrementador.} El registro conserva el estado presente. Su reinicio es asíncrono y activo en bajo; con \texttt{reset='0'} fuerza \texttt{000}, mientras que cada flanco ascendente carga el estado siguiente. El incrementador calcula permanentemente $N+1$.
+\paragraph{Registro e incrementador:} El registro conserva el estado presente. Su reinicio es asíncrono y activo en bajo; con \texttt{reset='0'} fuerza \texttt{000}, mientras que cada flanco ascendente carga el estado siguiente. El incrementador calcula permanentemente $N+1$.
 
 \lstinputlisting[style=estiloVHDL,caption={Registro del estado presente.},label={lst:registro}]{code/registro.vhd}
 
 \lstinputlisting[style=estiloVHDL,caption={Incrementador para obtener la dirección implícita $N+1$.},label={lst:incrementador}]{code/incrementador.vhd}
 
-\paragraph{Multiplexor de control.} Este bloque forma el contador con carga: selecciona el valor incrementado cuando \texttt{carga=0} o la liga almacenada cuando \texttt{carga=1}.
+\paragraph{Multiplexor de control:} Este bloque forma el contador con carga: selecciona el valor incrementado cuando \texttt{carga=0} o la liga almacenada cuando \texttt{carga=1}.
 
 \lstinputlisting[style=estiloVHDL,caption={Selección entre $N+1$ y la liga explícita $P$.},label={lst:mux-control}]{code/mux_control.vhd}
 
@@ -250,21 +250,21 @@ La Figura~\ref{fig:contador-interno} muestra la estructura interna del contador 
 
 \lstinputlisting[style=estiloVHDL,caption={Separación de los campos de la palabra de 14 bits.},label={lst:div-datos}]{code/div_datos.vhd}
 
-\paragraph{Selección de prueba y salidas.} El multiplexor de prueba convierte el código almacenado en la ROM en el valor de una de las entradas. El multiplexor de salida utiliza ese mismo resultado para escoger el vector falso o verdadero.
+\paragraph{Selección de prueba y salidas.} El multiplexor de prueba convierte el código almacenado en la ROM en el valor de una de las entradas. El multiplexor de salida utiliza este mismo resultado para escoger el vector falso o verdadero.
 
 \lstinputlisting[style=estiloVHDL,caption={Selección de $A$, $B$, $C$ o $QAUX$.},label={lst:mux-prueba}]{code/mux_prueba.vhd}
 
 \lstinputlisting[style=estiloVHDL,caption={Selección de la salida falsa o verdadera.},label={lst:mux-salida}]{code/mux_salida.vhd}
 
-\paragraph{Reloj por botón.} Para observar las transiciones en la tarjeta, el módulo \texttt{clk\_buttom} genera un pulso controlado a partir del reloj de la DE10-Lite y de un botón. Así se evita recorrer varios estados antes de poder identificar visualmente las salidas.
+\paragraph{Reloj por botón.} Para observar las transiciones en la tarjeta, el módulo \texttt{clk\_buttom} genera un pulso controlado a partir del reloj de la FPGA y de un botón. Así se evita recorrer varios estados antes de poder identificar visualmente las salidas.
 
 \lstinputlisting[style=estiloVHDL,caption={Acondicionamiento del reloj mediante botón.},label={lst:clk-button}]{code/clk_buttom.vhd}
 
 \section{Simulación}
 
-La simulación funcional se realizó en Quartus con un reloj de periodo constante, \texttt{reset=1} y diferentes combinaciones para $A$, $B$ y $C$. Las señales \texttt{edop} y \texttt{salida} permiten relacionar el estado presente con la palabra leída de la ROM. Como el registro cambia únicamente en el flanco ascendente, \texttt{edop} permanece estable entre flancos aunque las entradas se modifiquen.
+La simulación en \texttt{Multisim} fue con una señal de reloj preestablecida, con \texttt{reset=1} y diferentes combinaciones para $A$, $B$ y $C$. Las señales \texttt{edop} y \texttt{salida} permiten relacionar el estado presente con la palabra leída de la ROM. Como el registro cambia únicamente en el flanco ascendente, \texttt{edop} permanece estable entre flancos aunque las entradas se modifiquen.
 
-En la Figura~\ref{fig:simulacion-1} se observan recorridos como \texttt{000}$\rightarrow$\texttt{100}$\rightarrow$\texttt{000} y \texttt{000}$\rightarrow$\texttt{001}$\rightarrow$\texttt{011}$\rightarrow$\texttt{000}. El primer recorrido ocurre cuando $A=0$, por lo que se carga la liga de $E_0$ hacia $E_4$. El segundo comienza con $A=1$, que selecciona la dirección implícita $N+1=001$; posteriormente, con $B=0$, se carga \texttt{011}.
+En la Figura[\ref{fig:simulacion-1}] se observan recorridos como \texttt{000}$\rightarrow$\texttt{100}$\rightarrow$\texttt{000} y \texttt{000}$\rightarrow$\texttt{001}$\rightarrow$\texttt{011}$\rightarrow$\texttt{000}. El primer recorrido ocurre cuando $A=0$, por lo que se carga la liga de $E_0$ hacia $E_4$. El segundo comienza con $A=1$, que selecciona la dirección implícita $N+1=001$; posteriormente, con $B=0$, se carga \texttt{011}.
 
 \begin{figure}[H]
 \centering
@@ -273,7 +273,7 @@ En la Figura~\ref{fig:simulacion-1} se observan recorridos como \texttt{000}$\ri
 \label{fig:simulacion-1}
 \end{figure}
 
-La Figura~\ref{fig:simulacion-2} incluye secuencias que atraviesan la rama derecha de la carta ASM. Desde \texttt{100}, si $C=0$, no se carga la liga porque $C\neq VF$ y el contador avanza a \texttt{101}; en $E_5$, $QAUX=0$ coincide con $VF=0$ y se carga la liga \texttt{010}. Después, $E_2$ utiliza nuevamente el avance implícito para llegar a \texttt{011}, y $E_3$ carga la liga \texttt{000}.
+La Figura[\ref{fig:simulacion-2}] incluye secuencias que atraviesan la rama derecha de la carta ASM. Desde \texttt{100}, si $C=0$, no se carga la liga porque $C\neq VF$ y el contador avanza a \texttt{101}, en $E_5$, $QAUX=0$ coincide con $VF=0$ y se carga la liga \texttt{010}. Después, $E_2$ utiliza nuevamente el avance implícito para llegar a \texttt{011}, y $E_3$ carga la liga \texttt{000}.
 
 \begin{figure}[H]
 \centering
@@ -282,7 +282,7 @@ La Figura~\ref{fig:simulacion-2} incluye secuencias que atraviesan la rama derec
 \label{fig:simulacion-2}
 \end{figure}
 
-En la parte final, mostrada en la Figura~\ref{fig:simulacion-3}, se repiten distintas rutas al modificar las entradas. Los valores de \texttt{salida} coinciden con el microprograma: \texttt{1100} en $E_0$, \texttt{1010} o \texttt{1000} en $E_1$, \texttt{0011} en $E_2$, \texttt{0111} en $E_3$, \texttt{0101} en $E_4$ y \texttt{0010} en $E_5$. Esto verifica tanto la selección de la liga como la selección de la salida correspondiente a cada rama.
+En la parte final, mostrada en la Figura[\ref{fig:simulacion-3}], se repiten distintas rutas al modificar las entradas. Los valores de \texttt{salida} coinciden con el programa implementado: \texttt{1100} en $E_0$, \texttt{1010} o \texttt{1000} en $E_1$, \texttt{0011} en $E_2$, \texttt{0111} en $E_3$, \texttt{0101} en $E_4$ y \texttt{0010} en $E_5$. Esto verifica tanto la selección de la liga como la selección de la salida correspondiente a cada rama.
 
 \begin{figure}[H]
 \centering
@@ -293,7 +293,7 @@ En la parte final, mostrada en la Figura~\ref{fig:simulacion-3}, se repiten dist
 
 \section{Resultados en la tarjeta FPGA}
 
-El diseño se programó en la tarjeta DE10-Lite. Los tres LEDs asignados a \texttt{edop} muestran el código del estado presente y cuatro LEDs adicionales representan \texttt{salida}. Las fotografías permiten contrastar directamente los valores físicos con la Tabla~\ref{tab:memoria}.
+El diseño se implementó en la tarjeta  de desarrollo DE10-Lite. Los tres LEDs asignados a \texttt{edop} muestran el código del estado presente y cuatro LEDs adicionales representan \texttt{salida}. Las fotografías permiten contrastar directamente los valores físicos con la Tabla~\ref{tab:memoria}.
 
 \begin{figure}[H]
 \centering
@@ -344,12 +344,12 @@ El diseño se programó en la tarjeta DE10-Lite. Los tres LEDs asignados a \text
 \label{fig:fpga-5}
 \end{figure}
 
-Las pruebas físicas confirmaron que el contador avanza a $N+1$ cuando la entrada seleccionada es diferente de $VF$ y carga la liga almacenada cuando ambos valores coinciden. También se comprobó que el reinicio activo en bajo devuelve la máquina al estado \texttt{000} y que el pulso de reloj permite avanzar un estado a la vez.
+Las implementación física confirmo que el contador avanza a $N+1$ cuando la entrada seleccionada es diferente de $VF$ y carga la liga almacenada cuando ambos valores coinciden. También se comprobó que el reinicio activo en bajo devuelve la máquina al estado \texttt{000} y que el pulso de reloj permite avanzar un estado a la vez.
 
 \clearpage
 \section{Conclusión}
 
-\paragraph{Percival Ulises Espinoza Matamoros.} En esta práctica comprendí que el direccionamiento implícito reduce el tamaño de la palabra de memoria al sustituir una de las ligas por el incremento $N+1$. La elaboración de la tabla permitió identificar la función de $VF$ y verificar cuándo debía cargarse la liga explícita. La simulación y la implementación física confirmaron que las transiciones y salidas coincidían con la carta ASM.
+\paragraph{Percival Ulises Espinoza Matamoros.} A partir de la implementación de la máquina de estados con direccionamiento implícito, comprendí el funcionamiento del direccionamiento implícito, el cuál permite reducir el tamaño de la memoria al aprovechar la secuencia de estados siempre y cuando se cumpla la regla $N$, $N+1$, $P$. La simulación y la implementación física me permitieron observar las transiciones de estado y la selección de salida, de forma que  se logró implementar la carta ASM de manera correcta.
 
 \paragraph{Oscar Iván Montiel Juárez.} El desarrollo permitió relacionar la asignación binaria de estados con el funcionamiento del contador con carga. Se observó que la regla $N$, $N+1$, $P$ es indispensable para aprovechar el direccionamiento implícito y que una asignación adecuada disminuye la memoria requerida. Las formas de onda mostraron claramente la diferencia entre incrementar el estado y cargar una dirección almacenada.
 
