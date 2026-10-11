@@ -1,15 +1,15 @@
-Fitter Status : Successful - Fri Oct  9 08:40:30 2026
-Quartus Prime Version : 23.1std.0 Build 991 11/28/2023 SC Lite Edition
+Fitter Status : Successful - Sun Oct 11 11:21:18 2026
+Quartus Prime Version : 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
 Revision Name : practica6
 Top-level Entity Name : practica6
 Family : MAX 10
 Device : 10M50DAF484C7G
 Timing Models : Final
-Total logic elements : 54 / 49,760 ( < 1 % )
-    Total combinational functions : 50 / 49,760 ( < 1 % )
-    Dedicated logic registers : 34 / 49,760 ( < 1 % )
-Total registers : 34
-Total pins : 10 / 360 ( 3 % )
+Total logic elements : 8 / 49,760 ( < 1 % )
+    Total combinational functions : 8 / 49,760 ( < 1 % )
+    Dedicated logic registers : 4 / 49,760 ( < 1 % )
+Total registers : 4
+Total pins : 9 / 360 ( 3 % )
 Total virtual pins : 0
 Total memory bits : 0 / 1,677,312 ( 0 % )
 Embedded Multiplier 9-bit elements : 0 / 288 ( 0 % )

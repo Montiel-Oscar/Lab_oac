@@ -20,11 +20,11 @@
 					"strict" : false
 				},
 				{
-					"name" : "I1",
+					"name" : "i_1",
 					"strict" : false
 				},
 				{
-					"name" : "I0",
+					"name" : "i_0",
 					"strict" : false
 				},
 				{
@@ -32,15 +32,11 @@
 					"strict" : false
 				},
 				{
-					"name" : "rst",
-					"strict" : false
-				},
-				{
-					"name" : "boton",
-					"strict" : false
-				},
-				{
 					"name" : "clk",
+					"strict" : false
+				},
+				{
+					"name" : "rst",
 					"strict" : false
 				}
 			]

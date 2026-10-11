@@ -4,8 +4,8 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity logica is
-    Port ( I0: in std_logic;
-           I1: in std_logic;
+    Port ( i_0: in std_logic;
+           i_1: in std_logic;
            cc: in std_logic;          -- Condición de control/prueba
            sel: out std_logic_vector (1 downto 0) -- Salida del selector de modo
          );
@@ -14,7 +14,7 @@ end logica;
 architecture Behavioral of logica is
 signal I_sel : std_logic_vector(1 downto 0);
 begin
-    I_sel <= I1 & I0;
+    I_sel <= i_1 & i_0;
     process(I_sel, cc)
     begin
         sel <= "00";
