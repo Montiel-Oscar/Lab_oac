@@ -1,0 +1,331 @@
+% !TEX program = pdflatex
+\documentclass[letterpaper,12pt]{article}
+\usepackage[spanish,mexico]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx,float,subcaption,xcolor,array,booktabs,tabularx,ragged2e}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
+\usepackage{listings}
+\usepackage[left=25mm,right=25mm,top=35mm,bottom=30mm,headheight=15pt]{geometry}
+\usepackage{parskip,fancyhdr}
+\usepackage{hyperref}
+
+\graphicspath{{img/}{portada_img/}}
+\newcommand{\materia}{Laboratorio de Organización y Arquitectura de Computadoras}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\textsc{\materia}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.8pt}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=cyan}
+
+\definecolor{codebg}{rgb}{0.96,0.96,0.96}
+\definecolor{keyword}{rgb}{0.0,0.2,0.6}
+\definecolor{comment}{rgb}{0.25,0.5,0.35}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{amber}{RGB}{255,191,0}
+\lstdefinestyle{estiloVHDL}{
+  language=VHDL,basicstyle=\ttfamily\scriptsize,
+  backgroundcolor=\color{codebg},commentstyle=\color{comment}\itshape,
+  keywordstyle=\color{keyword}\bfseries,numbers=left,
+  numberstyle=\tiny\color{codegray},frame=single,breaklines=true,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1,
+  keepspaces=true,showstringspaces=false,tabsize=4,
+  morekeywords={library,use,all,entity,is,port,in,out,architecture,of,begin,end,signal,constant,process,if,then,else,elsif,case,when,others,std_logic,std_logic_vector}
+}
+
+\begin{document}
+\input{portada.tex}
+\newpage
+
+\section{Objetivo}
+
+Familiarizar al alumno en el conocimiento del secuenciador básico, el cual es una parte fundamental del procesador.
+
+\section{Desarrollo}
+
+Un secuenciador es el bloque encargado de generar la dirección de la siguiente microinstrucción. En una unidad de control microprogramada, el registro $mPC$ contiene la dirección actual de la memoria de control. A partir de ella, el secuenciador puede continuar con la dirección consecutiva, cargar una liga asociada a un salto condicional, utilizar una dirección de transformación o atender una interrupción.
+
+Para esta práctica se seleccionó la alternativa de cuatro microinstrucciones. El diseño se realizó con un contador de microprograma de cuatro bits, un incrementador, tres registros que entregan direcciones fijas y un multiplexor de cuatro entradas. La lógica interna recibe los bits $I_1I_0$ de la microinstrucción y la condición de control $CC$, con lo que genera los dos bits de selección del multiplexor.
+
+\subsection{Microinstrucciones del secuenciador}
+
+En el esquema proporcionado se considera una secuenciador alternativo donde se utiliza una ROM que entrega los campos de prueba, valor de prueba, tipo de microinstrucción, liga y salidas. En esta alternativa se implementó directamente el mecanismo de selección. Para probarlo, se aplicaron $I_1$, $I_0$ y $CC$ como entradas externas, los registros de liga, transformación e interrupción representan las direcciones almacenadas que normalmente provendrían de los campos correspondientes. La Figura[\ref{fig:secuenciador-general}] muestra el diagrama del secuenciador básico alternativo proporcionado.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    scale=0.8,
+    transform shape,
+    % Estilo general para los bloques
+    block/.style={draw=teal!80!black, fill=teal!10, rounded corners, thick, align=center, minimum height=1.2cm, minimum width=3cm},
+    font=\sffamily
+]
+
+    % Título
+    \node[align=left, font=\bfseries\large, anchor=north west, text=black!80] at (-0.5, 5.5) {Secuenciador\\Alternativo};
+
+    % ===============================
+    % NODOS IZQUIERDOS
+    % ===============================
+    \node[block, minimum height=1.6cm, fill=blue!10, draw=blue!80!black] (mPC) at (1.5, 2.5) {mPC};
+    \node[block] (Liga) at (1.5, 0.8) {Liga};
+    \node[block] (RT) at (1.5, -0.8) {Registro de\\Transformación};
+    \node[block] (RI) at (1.5, -2.4) {Registro de\\Interrupción};
+
+    % ===============================
+    % MULTIPLEXOR (MUX)
+    % ===============================
+    % Se dibuja de forma personalizada para control perfecto de los anclajes y la forma
+    \coordinate (M_TL) at (4.5, 3.5);
+    \coordinate (M_BL) at (4.5, -3.4);
+    \coordinate (M_TR) at (6, 1.5);
+    \coordinate (M_BR) at (6, -1.4);
+
+    \draw[thick, draw=orange!80!black, fill=orange!10] (M_TL) -- (M_TR) -- (M_BR) -- (M_BL) -- cycle;
+    \node[font=\bfseries\large] at (5.1, 0) {MUX};
+
+    % ===============================
+    % CONEXIONES DE ENTRADA AL MUX
+    % ===============================
+    \coordinate (in1) at (4.5, 2.5);
+    \coordinate (in2) at (4.5, 0.8);
+    \coordinate (in3) at (4.5, -0.8);
+    \coordinate (in4) at (4.5, -2.4);
+
+    \tikzset{bus/.style={-Latex, thick, draw=black!70}}
+
+    \draw[bus] (mPC.east) -- (in1);
+    \draw[bus] (Liga.east) -- (in2);
+    \draw[bus] (RT.east) -- (in3);
+    \draw[bus] (RI.east) -- (in4);
+
+    % ===============================
+    % INCREMENTADOR Y SALIDA
+    % ===============================
+    \node[block, fill=blue!10, draw=blue!80!black] (Inc) at (8.5, 3.5) {Incrementador};
+
+    % Salida del MUX (doble línea como representación de bus en el dibujo)
+    \coordinate (mux_out) at (6, 0);
+    \draw[thick, draw=black!70] (mux_out) ++(0, 0.1) -- (11, 0.1);
+    \draw[thick, draw=black!70] (mux_out) ++(0, -0.1) -- (11, -0.1);
+    \node[above, font=\bfseries, text=black!80] at (9.5, 0.1) {Edo presente};
+
+    % Conexión del bus de salida al Incrementador
+    \draw[bus] (8.5, 0.1) -- (Inc.south);
+
+    % Lazo de retroalimentación (Incrementador -> mPC)
+    \draw[bus] (Inc.north) -- (8.5, 4.8) -- (1.5, 4.8) node[midway, above, text=green!60!black, font=\bfseries] {edo presente + 1} -- (mPC.north);
+
+    % ===============================
+    % LÓGICA INTERNA
+    % ===============================
+    \node[block, fill=blue!10, draw=blue!80!black] (Logica) at (5.25, -5.2) {Lógica\\Interna\\4 u 8 MI};
+
+    % Conexión de Lógica a MUX (Selector)
+    \draw[bus] (Logica.north) -- (5.25, -2.42); 
+
+    % Entradas a Lógica Interna
+    \draw[Latex-, thick, draw=black!70] ([yshift=3mm]Logica.east) -- ++(1.5, 0) node[right] {$\neg cc$};
+    \draw[Latex-, thick, draw=black!70] ([yshift=-3mm]Logica.east) -- ++(1.5, 0) node[right] {MI};
+
+\end{tikzpicture}
+\caption{Diagrama del secuenciador básico alternativo.}
+\label{fig:secuenciador-general}
+\end{figure}
+
+
+Las cuatro opciones se definen con los bits $I_1I_0$ ($MI$). El paso continuo selecciona el valor $mPC+1$. El salto condicional selecciona la liga solamente cuando $CC=0$. El salto de transformación usa el registro $RT$ sin depender de $CC$. Finalmente, la microinstrucción de interrupción selecciona el registro $RI$ cuando $CC=0$, donde si la condición no solicita la interrupción, el contador continúa normalmente.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Tabla de operación del secuenciador básico alternativo.}
+\label{tab:microinstrucciones}
+\begin{tabular}{c c c c l}
+\toprule
+$I_1$ & $I_0$ & $CC$ & \texttt{sel} & Operación realizada \\
+\midrule
+0 & 0 & $X$ & 00 & Paso continuo: $mPC \leftarrow mPC+1$. \\
+0 & 1 & 0 & 11 & Salto condicional: $mPC \leftarrow \text{Liga}$. \\
+0 & 1 & 1 & 00 & No se cumple el salto: $mPC \leftarrow mPC+1$. \\
+1 & 0 & $X$ & 01 & Salto de transformación: $mPC \leftarrow RT$. \\
+1 & 1 & 0 & 10 & Salto de interrupción: $mPC \leftarrow RI$. \\
+1 & 1 & 1 & 00 & No hay interrupción: $mPC \leftarrow mPC+1$. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Para la implementación se usaron las direcciones fijas de la Tabla[\ref{tab:direcciones}]. Estos valores permiten distinguir de manera más clara cada fuente cuando se observa la salida del contador de microprograma. El incremento se obtiene de manera combinacional a partir de la dirección presente.
+
+\begin{table}[H]
+\centering
+\caption{Fuentes de dirección utilizadas en la implementación.}
+\label{tab:direcciones}
+\begin{tabular}{l c c}
+\toprule
+Fuente & Dirección de prueba & Selección del multiplexor \\
+\midrule
+Paso continuo & $mPC+1$ & 00 \\
+Registro de liga & \texttt{1000} & 11 \\
+Registro de transformación ($RT$) & \texttt{1010} & 01 \\
+Registro de interrupción ($RI$) & \texttt{1100} & 10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Arquitectura implementada}
+
+El registro $mPC$ conserva la microdirección presente y se actualiza únicamente en el flanco ascendente del reloj. Su salida se realimenta al incrementador, el cual genera $mPC+1$. El multiplexor recibe cuatro posibles direcciones: la consecutiva, la liga, $RT$ y $RI$. La lógica interna entrega la señal \texttt{sel[1..0]} que determina cuál de ellas llegará al registro $mPC$ en el siguiente pulso.
+
+La Figura[\ref{fig:interconexion}] muestra el diagrama de bloques de conexión final de los módulos. La señal de reloj tiene un divisor de frecuencia mediante el bloque \texttt{clk\_buttom}, por cada flanco de subida se avanza una microinstrucción a la vez desde el botón de la tarjeta. Las entradas $I_0$, $I_1$ y $CC$ alimentan la lógica interna, donde la salida \texttt{edo\_pr[3..0]} permite observar la microdirección presente.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{diagramas_bloques_2.png}
+\caption{Interconexión final del multiplexor, los registros, la lógica interna y el contador de microprograma.}
+\label{fig:interconexion}
+\end{figure}
+
+En la Figura[\ref{fig:contador-mpc}] se observa con mayor detalle la realimentación entre el registro $mPC$ y el incrementador. El valor incrementado entra a la primera opción del multiplexor y constituye el recorrido natural del microprograma cuando se selecciona el paso continuo.
+
+Es importante consideara que el único registro que se actualiza en el flanco ascendente del reloj es $mPC$, debido a esto, el bloque se debe de colocar después del multiplexor y no antes, ya que de lo contrario se perdería la información de la microdirección presente.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\linewidth]{diagramas_bloques_3.png}
+\caption{Camino de realimentación para el paso continuo $mPC+1$.}
+\label{fig:contador-mpc}
+\end{figure}
+
+\subsection{Módulos implementados en VHDL}
+
+\paragraph{Contador de microprograma e incrementador.} El módulo \texttt{registro\_mpc} almacena la dirección que entrega el multiplexor. El reinicio es asíncrono y activo en bajo, por lo que \texttt{reset='0'} fuerza la dirección \texttt{0000}. El incrementador calcula de forma combinacional la dirección consecutiva de cuatro bits.
+
+\lstinputlisting[style=estiloVHDL,caption={Registro del contador de microprograma.},label={lst:registro-mpc}]{code/registro_mpc.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Incrementador que genera $mPC+1$.},label={lst:incrementador}]{code/incrementador.vhd}
+
+\paragraph{Multiplexor y lógica interna.} El multiplexor \texttt{mux} concentra las cuatro fuentes de dirección. La lógica combinacional convierte los bits $I_1I_0$ y la condición \texttt{cc} en el selector de dos bits, de acuerdo con la Tabla[\ref{tab:microinstrucciones}].
+
+\lstinputlisting[style=estiloVHDL,caption={Multiplexor de cuatro fuentes para la siguiente microdirección.},label={lst:mux}]{code/mux.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Lógica interna que implementa los cuatro tipos de microinstrucción.},label={lst:logica}]{code/logica.vhd}
+
+\paragraph{Registros de dirección.} Los registros de liga, transformación e interrupción entregan valores constantes después de liberar el reinicio: \texttt{1000}, \texttt{1010} y \texttt{1100}, respectivamente. Los registros implementados cumplen la función de almacenar las direcciones específicas para cada tipo de microinstrucción.
+
+\lstinputlisting[style=estiloVHDL,caption={Registro que entrega la dirección de liga.},label={lst:liga}]{code/registro_liga.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Registro de dirección de transformación.},label={lst:rt}]{code/registro_rt.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Registro de dirección de interrupción.},label={lst:ri}]{code/registro_ri.vhd}
+
+\paragraph{Reloj por botón.} El bloque \texttt{clk\_buttom} genera un pulso lento y controlable a partir del reloj de la FPGA y del botón. Este bloque a su vez implemente un divisor de frecuencia para que el pulso de reloj sea lo suficientemente lento y permita observar los cambios de microdirección en la tarjeta.
+
+\lstinputlisting[style=estiloVHDL,caption={Generación de un pulso de reloj controlado por botón.},label={lst:clk-button}]{code/clk_buttom.vhd}
+
+\section{Simulación}
+
+La simulación se realizó con una señal de reloj periódica, reinicio activo en bajo y diferentes combinaciones de $I_1$, $I_0$ y $CC$. La señal \texttt{edo\_pr} muestra el contenido del contador de microprograma. Debido a que $mPC$ es un registro, cada dirección se actualiza en el flanco ascendente del reloj y permanece estable entre flancos.
+
+En la Figura[\ref{fig:simulacion-1}] se observan los cuatro valores importantes del diseño ($I_0$, $I_1$, $CC$, $edo_pr$). Además de los avances consecutivos como \texttt{1000}$\rightarrow$\texttt{1001}$\rightarrow$\texttt{1010}, aparecen \texttt{1000} por la liga, \texttt{1010} por el registro de transformación y \texttt{1100} por el registro de interrupción. Esto permite reconocer la fuente seleccionada a partir de la salida del contador.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{simulacion_1.png}
+\caption{Primera parte de la simulación funcional del secuenciador.}
+\label{fig:simulacion-1}
+\end{figure}
+
+La Figura[\ref{fig:simulacion-2}] verifica la respuesta de la lógica interna al cambiar las entradas durante la simulación. Cuando $I_1I_0=01$, el valor de $CC$ decide entre el salto a la liga y el paso continuo. Para $I_1I_0=10$, la salida toma directamente el valor del registro $RT$. Para $I_1I_0=11$, sólo se usa el registro $RI$ cuando $CC=0$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{simulacion_2.png}
+\caption{Cambios de microdirección al modificar $I_1$, $I_0$ y $CC$.}
+\label{fig:simulacion-2}
+\end{figure}
+
+En la parte final, mostrada en la Figura[\ref{fig:simulacion-3}], se repiten los modos de operación con nuevas combinaciones de entrada. La señal \texttt{edo\_pr} no depende directamente de los cambios intermedios de las entradas, sino del valor que la lógica seleccione al siguiente flanco de reloj. Con ello se comprueba la operación síncrona del secuenciador alternativo.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{simulacion_3.png}
+\caption{Parte final de la simulación, con recorridos continuos y saltos.}
+\label{fig:simulacion-3}
+\end{figure}
+
+\section{Resultados en la tarjeta FPGA}
+
+El diseño se implementó en la tarjeta de desarrollo DE10-Lite. Las fotografías muestran distintas combinaciones de $I_1I_0CC$ y los LEDs asociados a la microdirección presente. Cada combinación activa la fuente indicada en la Tabla[\ref{tab:microinstrucciones}], por lo que se pueden distinguir visualmente los modos continuo, condicional, de transformación y de interrupción.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{000_i2i1cc.jpeg}
+  \caption{Combinación \texttt{000}: paso continuo.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{001.jpeg}
+  \caption{Combinación \texttt{001}: paso continuo.}
+\end{subfigure}
+\caption{Comprobación física del modo $I_1I_0=00$.}
+\label{fig:fpga-00}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{010.jpeg}
+  \caption{\texttt{010}: salto condicional a la liga.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{011.jpeg}
+  \caption{\texttt{011}: avance continuo.}
+\end{subfigure}
+\caption{Comprobación del salto condicionado por $CC$ para $I_1I_0=01$.}
+\label{fig:fpga-01}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{100.jpeg}
+  \caption{\texttt{100}: salto de transformación.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{101.jpeg}
+  \caption{\texttt{101}: salto de transformación.}
+\end{subfigure}
+\caption{Comprobación del registro $RT$ para $I_1I_0=10$.}
+\label{fig:fpga-10}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{110.jpeg}
+  \caption{\texttt{110}: salto de interrupción.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.47\linewidth}
+  \centering\includegraphics[width=\linewidth]{111.jpeg}
+  \caption{\texttt{111}: avance continuo.}
+\end{subfigure}
+\caption{Comprobación del modo de interrupción para $I_1I_0=11$.}
+\label{fig:fpga-11}
+\end{figure}
+
+La implementación física confirma que la siguiente microdirección sólo se registra en el pulso de reloj y que la lógica interna selecciona correctamente una de las cuatro fuentes. También se comprobó que el reinicio activo en bajo devuelve el contador de microprograma a \texttt{0000}, lo que permite iniciar cualquier secuencia desde una dirección conocida.
+
+\clearpage
+\section{Conclusión}
+
+\paragraph{Percival Ulises Espinoza Matamoros.} A partir de la realización de la práctica logró implementar un secuenciador básico alternativo, donde al realizar la implementación ayudo a comprender el funcionamiento de este tipo de secuenciador. El secuenciador alternativo permite seleccionar la siguiente microdirección a partir de cuatro fuentes, dependiendo de los bits de microinstrucción y de la condición de control. Por medio de la simulación así como de la implementación física se pudo comprobar y verificar el funcionamiento del secuenciador, así como la relación entre las microinstrucciones y la ruta de control.
+
+\paragraph{Oscar Iván Montiel Juárez.} El desarrollo de esta práctica permitió conocer la importancia del contador de microprograma y de la lógica de selección dentro de un procesador. Al conectar el incrementador, los registros de liga, transformación e interrupción con el multiplexor se pudo comprobar que una sola arquitectura puede generar distintos recorridos dependiendo de los bits de microinstrucción y de la condición de control. La simulación y la tarjeta permitieron verificar cada caso de manera visual.
+
+\paragraph{Amy Valentina Veraza García.} La práctica ayudó a reforzar la relación entre las microinstrucciones y el funcionamiento de la ruta de control. Al probar el circuito en la DE10-Lite fue posible observar los cambios de dirección en cada pulso de reloj y comprobar que el valor de $CC$ sólo afecta a los tipos de salto que requieren una decisión.
+
+\end{document}

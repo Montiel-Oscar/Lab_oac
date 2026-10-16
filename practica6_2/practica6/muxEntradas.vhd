@@ -1,0 +1,28 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity muxEntradas is
+    Port (
+        sel : in  std_logic_vector(1 downto 0);
+        E0  : in  std_logic; -- X
+        E1  : in  std_logic; -- Y
+        E2  : in  std_logic; -- INT
+        E3  : in  std_logic; -- AUX
+        O   : out std_logic
+    );
+end muxEntradas;
+
+architecture Behavioral of muxEntradas is
+begin
+    process(sel, E0, E1, E2, E3)
+    begin
+        O <= '0';
+        case sel is
+            when "00"   => O <= E0;
+            when "01"   => O <= E1;
+            when "10"   => O <= E2;
+            when "11"   => O <= E3;
+            when others => O <= '0';
+        end case;
+    end process;
+end Behavioral;
