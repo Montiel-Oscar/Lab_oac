@@ -1,10 +1,10 @@
-/* Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition */
+/* Quartus Prime Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition */
 JedecChain;
 	FileRevision(JESD32A);
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(10M50DAF484) Path("C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6/output_files/") File("practica6.sof") MfrSpec(OpMask(1));
+		Device PartName(10M50DAF484) Path("/home/ivan/Documents/FI/Lab_oac/practica6_2/practica6/output_files/") File("practica6.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 

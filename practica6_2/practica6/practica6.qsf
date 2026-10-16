@@ -54,37 +54,59 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_symbol
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_signal_integrity
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
-set_global_assignment -name BDF_FILE practica6.bdf
+set_global_assignment -name VHDL_FILE practica6.vhd
+set_global_assignment -name VHDL_FILE paso_boton.vhd
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name VHDL_FILE registro_mpc.vhd
-set_global_assignment -name VHDL_FILE mux.vhd
 set_global_assignment -name VHDL_FILE logica.vhd
-set_global_assignment -name VHDL_FILE registro_liga.vhd
 set_global_assignment -name VHDL_FILE registro_ri.vhd
 set_global_assignment -name VHDL_FILE registro_rt.vhd
 set_global_assignment -name VHDL_FILE incrementador.vhd
-set_global_assignment -name VHDL_FILE clk_buttom.vhd
 set_global_assignment -name VHDL_FILE rom.vhd
 set_global_assignment -name VHDL_FILE divisor_datos.vhd
 set_global_assignment -name VHDL_FILE muxDireccion.vhd
 set_global_assignment -name VHDL_FILE muxEntradas.vhd
 set_location_assignment PIN_P11 -to clk
 set_location_assignment PIN_B8 -to boton
-set_location_assignment PIN_F15 -to rst
-set_location_assignment PIN_C10 -to CC
-set_location_assignment PIN_C11 -to I0
-set_location_assignment PIN_D12 -to I1
-set_location_assignment PIN_A8 -to edo_pr[0]
-set_location_assignment PIN_A9 -to edo_pr[1]
-set_location_assignment PIN_A10 -to edo_pr[2]
-set_location_assignment PIN_B10 -to edo_pr[3]
+set_location_assignment PIN_A7 -to rst
+set_location_assignment PIN_E14 -to edo_pr[0]
+set_location_assignment PIN_D14 -to edo_pr[1]
+set_location_assignment PIN_A11 -to edo_pr[2]
+set_location_assignment PIN_B11 -to edo_pr[3]
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform1.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform2.vwf
 
 
 
+
+set_location_assignment PIN_C11 -to Y
+set_location_assignment PIN_D12 -to X
+set_location_assignment PIN_C12 -to entrada_int_RI
+set_location_assignment PIN_A12 -to entrada_trans[0]
+set_location_assignment PIN_B12 -to entrada_trans[1]
+set_location_assignment PIN_A8 -to salidas[0]
+set_location_assignment PIN_A9 -to salidas[1]
+set_location_assignment PIN_A10 -to salidas[2]
+set_location_assignment PIN_B10 -to salidas[3]
+set_instance_assignment -name IO_STANDARD "3.3 V SCHMITT TRIGGER" -to boton
+set_instance_assignment -name IO_STANDARD "3.3 V SCHMITT TRIGGER" -to rst
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to X
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Y
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to entrada_int_RI
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to entrada_trans[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to entrada_trans[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to edo_pr[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to edo_pr[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to edo_pr[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to edo_pr[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to salidas[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to salidas[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to salidas[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to salidas[3]
+set_global_assignment -name SDC_FILE practica6.sdc
 
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

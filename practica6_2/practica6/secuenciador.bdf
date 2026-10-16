@@ -56,7 +56,7 @@ on the Quartus Prime software download page.
 )
 (pin
 	(input)
-	(rect 832 544 1000 560)
+	(rect 832 488 1000 504)
 	(text "INPUT" (rect 15 0 43 10)(font "Arial" (font_size 6)))
 	(text "i_sel[1..0]" (rect 108 0 159 11)(font "Arial" ))
 	(pt 0 8)
@@ -73,7 +73,7 @@ on the Quartus Prime software download page.
 )
 (pin
 	(input)
-	(rect 832 560 1000 576)
+	(rect 832 504 1000 520)
 	(text "INPUT" (rect 15 0 43 10)(font "Arial" (font_size 6)))
 	(text "cc" (rect 109 0 119 11)(font "DejaVu Sans Condensed" ))
 	(pt 0 8)
@@ -87,13 +87,13 @@ on the Quartus Prime software download page.
 	)
 	(flipy)
 	(text "VCC" (rect 20 7 40 17)(font "Arial" (font_size 6)))
-	(annotation_block (location)(rect 768 576 832 592))
+	(annotation_block (location)(rect 768 520 832 536))
 )
 (pin
 	(input)
 	(rect 312 160 480 176)
 	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
-	(text "ligai[3..0]" (rect 5 0 56 11)(font "Arial" ))
+	(text "ligai[3..0]" (rect 5 0 55 11)(font "Arial" ))
 	(pt 168 8)
 	(drawing
 		(line (pt 84 12)(pt 109 12))
@@ -109,7 +109,7 @@ on the Quartus Prime software download page.
 	(input)
 	(rect 328 248 496 264)
 	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
-	(text "rt[3..0]" (rect 5 0 40 11)(font "DejaVu Sans Condensed" ))
+	(text "rt[3..0]" (rect 5 0 39 11)(font "DejaVu Sans Condensed" ))
 	(pt 168 8)
 	(drawing
 		(line (pt 84 12)(pt 109 12))
@@ -125,7 +125,7 @@ on the Quartus Prime software download page.
 	(input)
 	(rect 312 336 480 352)
 	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
-	(text "ri[3..0]" (rect 5 0 39 11)(font "DejaVu Sans Condensed" ))
+	(text "ri[3..0]" (rect 5 0 38 11)(font "DejaVu Sans Condensed" ))
 	(pt 168 8)
 	(drawing
 		(line (pt 84 12)(pt 109 12))
@@ -298,7 +298,7 @@ on the Quartus Prime software download page.
 	(flipx)
 )
 (symbol
-	(rect 632 520 800 600)
+	(rect 632 464 800 544)
 	(text "logica" (rect 132 0 163 11)(font "Arial" ))
 	(text "inst" (rect 140 64 160 75)(font "Arial" ))
 	(port
@@ -326,11 +326,6 @@ on the Quartus Prime software download page.
 		(rectangle (rect 16 16 152 64))
 	)
 	(flipy)
-)
-(connector
-	(pt 624 304)
-	(pt 608 304)
-	(bus)
 )
 (connector
 	(pt 480 168)
@@ -388,16 +383,6 @@ on the Quartus Prime software download page.
 	(bus)
 )
 (connector
-	(pt 608 304)
-	(pt 608 552)
-	(bus)
-)
-(connector
-	(pt 608 552)
-	(pt 632 552)
-	(bus)
-)
-(connector
 	(pt 1000 384)
 	(pt 1000 272)
 )
@@ -444,15 +429,6 @@ on the Quartus Prime software download page.
 	(pt 1000 384)
 )
 (connector
-	(pt 800 552)
-	(pt 832 552)
-	(bus)
-)
-(connector
-	(pt 800 568)
-	(pt 832 568)
-)
-(connector
 	(pt 200 168)
 	(pt 288 168)
 )
@@ -480,5 +456,29 @@ on the Quartus Prime software download page.
 	(pt 608 56)
 	(pt 624 56)
 	(bus)
+)
+(connector
+	(pt 624 304)
+	(pt 608 304)
+	(bus)
+)
+(connector
+	(pt 608 304)
+	(pt 608 496)
+	(bus)
+)
+(connector
+	(pt 608 496)
+	(pt 632 496)
+	(bus)
+)
+(connector
+	(pt 800 496)
+	(pt 832 496)
+	(bus)
+)
+(connector
+	(pt 800 512)
+	(pt 832 512)
 )
 (junction (pt 1224 272))

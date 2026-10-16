@@ -27,7 +27,7 @@ architecture Behavioral of rom is
     -- una prueba sin uso, ya que son campos indiferentes en esa fila.
     constant ROM : mem := (
         -- Dir  Prueba VF MI  Liga  Salidas
-        0  => "11" & "0" & "00" & "0000" & "0101",
+        0  => "11" & "0" & "00" & "0000" & "1100", -- Carta ASM: S3 S2 /S1 /S0
         1  => "11" & "0" & "10" & "0000" & "1011",
         2  => "00" & "0" & "01" & "0010" & "0001",
         3  => "10" & "1" & "11" & "0000" & "0000",
