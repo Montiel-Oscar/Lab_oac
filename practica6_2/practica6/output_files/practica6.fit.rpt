@@ -1,5 +1,5 @@
 Fitter report for practica6
-Fri Oct 16 13:29:44 2026
+Sun Oct 18 13:27:46 2026
 Quartus Prime Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
 
 
@@ -66,7 +66,7 @@ on the Quartus Prime software download page.
 +--------------------------------------------------------------------------------------+
 ; Fitter Summary                                                                       ;
 +------------------------------------+-------------------------------------------------+
-; Fitter Status                      ; Successful - Fri Oct 16 13:29:44 2026           ;
+; Fitter Status                      ; Successful - Sun Oct 18 13:27:46 2026           ;
 ; Quartus Prime Version              ; 25.1std.0 Build 1129 10/21/2025 SC Lite Edition ;
 ; Revision Name                      ; practica6                                       ;
 ; Top-level Entity Name              ; practica6                                       ;
@@ -157,8 +157,8 @@ on the Quartus Prime software download page.
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processor 2            ;   0.7%      ;
-;     Processors 3-4         ;   0.7%      ;
+;     Processor 2            ;   0.6%      ;
+;     Processors 3-4         ;   0.6%      ;
 +----------------------------+-------------+
 
 
@@ -248,7 +248,7 @@ The pin-out file can be found in /home/ivan/Documents/FI/Lab_oac/practica6_2/pra
 ; Oscillator blocks                           ; 0 / 1 ( 0 % )         ;
 ; Impedance control blocks                    ; 0 / 1 ( 0 % )         ;
 ; Average interconnect usage (total/H/V)      ; 0.0% / 0.0% / 0.0%    ;
-; Peak interconnect usage (total/H/V)         ; 0.5% / 0.4% / 0.7%    ;
+; Peak interconnect usage (total/H/V)         ; 0.6% / 0.6% / 0.5%    ;
 ; Maximum fan-out                             ; 29                    ;
 ; Highest non-global fan-out                  ; 29                    ;
 ; Total fan-out                               ; 352                   ;
@@ -342,7 +342,7 @@ The pin-out file can be found in /home/ivan/Documents/FI/Lab_oac/practica6_2/pra
 ; entrada_int_RI   ; C12   ; 7        ; 54           ; 54           ; 28           ; 3                     ; 0                  ; no     ; no             ; no            ; yes             ; no       ; Off          ; 3.3-V LVTTL           ; --                        ; User                 ; 0         ;
 ; entrada_trans[0] ; A12   ; 7        ; 54           ; 54           ; 21           ; 4                     ; 0                  ; no     ; no             ; no            ; yes             ; no       ; Off          ; 3.3-V LVTTL           ; --                        ; User                 ; 0         ;
 ; entrada_trans[1] ; B12   ; 7        ; 49           ; 54           ; 0            ; 4                     ; 0                  ; no     ; no             ; no            ; yes             ; no       ; Off          ; 3.3-V LVTTL           ; --                        ; User                 ; 0         ;
-; rst              ; A7    ; 7        ; 49           ; 54           ; 28           ; 29                    ; 0                  ; no     ; no             ; no            ; yes             ; no       ; Off          ; 3.3 V Schmitt Trigger ; --                        ; User                 ; 0         ;
+; rst              ; F15   ; 7        ; 69           ; 54           ; 0            ; 29                    ; 0                  ; no     ; no             ; no            ; yes             ; no       ; Off          ; 3.3 V Schmitt Trigger ; --                        ; User                 ; 0         ;
 +------------------+-------+----------+--------------+--------------+--------------+-----------------------+--------------------+--------+----------------+---------------+-----------------+----------+--------------+-----------------------+---------------------------+----------------------+-----------+
 
 
@@ -406,7 +406,7 @@ The pin-out file can be found in /home/ivan/Documents/FI/Lab_oac/practica6_2/pra
 ; A4       ; 475        ; 8        ; RESERVED_INPUT_WITH_WEAK_PULLUP                ;        ;                       ;         ; Column I/O ;                 ; no       ; On           ;
 ; A5       ; 473        ; 8        ; RESERVED_INPUT_WITH_WEAK_PULLUP                ;        ;                       ;         ; Column I/O ;                 ; no       ; On           ;
 ; A6       ; 471        ; 8        ; RESERVED_INPUT_WITH_WEAK_PULLUP                ;        ;                       ;         ; Column I/O ;                 ; no       ; On           ;
-; A7       ; 445        ; 7        ; rst                                            ; input  ; 3.3 V Schmitt Trigger ;         ; Column I/O ; Y               ; no       ; Off          ;
+; A7       ; 445        ; 7        ; RESERVED_INPUT_WITH_WEAK_PULLUP                ;        ;                       ;         ; Column I/O ;                 ; no       ; On           ;
 ; A8       ; 447        ; 7        ; salidas[0]                                     ; output ; 3.3-V LVTTL           ;         ; Column I/O ; Y               ; no       ; Off          ;
 ; A9       ; 449        ; 7        ; salidas[1]                                     ; output ; 3.3-V LVTTL           ;         ; Column I/O ; Y               ; no       ; Off          ;
 ; A10      ; 439        ; 7        ; salidas[2]                                     ; output ; 3.3-V LVTTL           ;         ; Column I/O ; Y               ; no       ; Off          ;
@@ -568,7 +568,7 @@ The pin-out file can be found in /home/ivan/Documents/FI/Lab_oac/practica6_2/pra
 ; F12      ;            ; 7        ; VCCIO7                                         ; power  ;                       ; 3.3V    ; --         ;                 ; --       ; --           ;
 ; F13      ;            ;          ; GND                                            ; gnd    ;                       ;         ; --         ;                 ; --       ; --           ;
 ; F14      ;            ; 7        ; VCCIO7                                         ; power  ;                       ; 3.3V    ; --         ;                 ; --       ; --           ;
-; F15      ; 398        ; 7        ; RESERVED_INPUT_WITH_WEAK_PULLUP                ;        ;                       ;         ; Column I/O ;                 ; no       ; On           ;
+; F15      ; 398        ; 7        ; rst                                            ; input  ; 3.3 V Schmitt Trigger ;         ; Column I/O ; Y               ; no       ; Off          ;
 ; F16      ; 396        ; 7        ; RESERVED_INPUT_WITH_WEAK_PULLUP                ;        ;                       ;         ; Column I/O ;                 ; no       ; On           ;
 ; F17      ; 364        ; 6        ; RESERVED_INPUT_WITH_WEAK_PULLUP                ;        ;                       ;         ; Row I/O    ;                 ; no       ; On           ;
 ; F18      ; 354        ; 6        ; RESERVED_INPUT_WITH_WEAK_PULLUP                ;        ;                       ;         ; Row I/O    ;                 ; no       ; On           ;
@@ -941,7 +941,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; entrada_int_RI   ; Input    ; (6) 868 ps    ; --            ; --                    ; --  ; --   ;
 ; X                ; Input    ; (6) 868 ps    ; --            ; --                    ; --  ; --   ;
 ; clk              ; Input    ; (0) 0 ps      ; --            ; --                    ; --  ; --   ;
-; rst              ; Input    ; --            ; (6) 868 ps    ; --                    ; --  ; --   ;
+; rst              ; Input    ; (6) 868 ps    ; --            ; --                    ; --  ; --   ;
 ; boton            ; Input    ; --            ; (6) 868 ps    ; --                    ; --  ; --   ;
 +------------------+----------+---------------+---------------+-----------------------+-----+------+
 
@@ -971,35 +971,35 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ;      - logica:control|Mux0~0             ; 0                 ; 6       ;
 ; clk                                      ;                   ;         ;
 ; rst                                      ;                   ;         ;
-;      - registro_mpc:contador|estado[0]   ; 1                 ; 6       ;
-;      - registro_mpc:contador|estado[1]   ; 1                 ; 6       ;
-;      - registro_mpc:contador|estado[2]   ; 1                 ; 6       ;
-;      - registro_mpc:contador|estado[3]   ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[0]        ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[1]        ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[2]        ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[3]        ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[4]        ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[5]        ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[6]        ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[7]        ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[8]        ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[9]        ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[10]       ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[11]       ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[12]       ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[13]       ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[14]       ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[15]       ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[16]       ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[17]       ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[18]       ; 1                 ; 6       ;
-;      - paso_boton:tecla|cuenta[19]       ; 1                 ; 6       ;
-;      - paso_boton:tecla|pulso            ; 1                 ; 6       ;
-;      - registro_ri:interrupcion|ri[1]~0  ; 1                 ; 6       ;
-;      - paso_boton:tecla|sinc             ; 1                 ; 6       ;
-;      - paso_boton:tecla|estable          ; 1                 ; 6       ;
-;      - paso_boton:tecla|meta             ; 1                 ; 6       ;
+;      - registro_mpc:contador|estado[0]   ; 0                 ; 6       ;
+;      - registro_mpc:contador|estado[1]   ; 0                 ; 6       ;
+;      - registro_mpc:contador|estado[2]   ; 0                 ; 6       ;
+;      - registro_mpc:contador|estado[3]   ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[0]        ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[1]        ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[2]        ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[3]        ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[4]        ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[5]        ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[6]        ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[7]        ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[8]        ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[9]        ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[10]       ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[11]       ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[12]       ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[13]       ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[14]       ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[15]       ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[16]       ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[17]       ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[18]       ; 0                 ; 6       ;
+;      - paso_boton:tecla|cuenta[19]       ; 0                 ; 6       ;
+;      - paso_boton:tecla|pulso            ; 0                 ; 6       ;
+;      - registro_ri:interrupcion|ri[1]~0  ; 0                 ; 6       ;
+;      - paso_boton:tecla|sinc             ; 0                 ; 6       ;
+;      - paso_boton:tecla|estable          ; 0                 ; 6       ;
+;      - paso_boton:tecla|meta             ; 0                 ; 6       ;
 ; boton                                    ;                   ;         ;
 ;      - paso_boton:tecla|meta~0           ; 1                 ; 6       ;
 +------------------------------------------+-------------------+---------+
@@ -1011,9 +1011,9 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; Name                           ; Location           ; Fan-Out ; Usage        ; Global ; Global Resource Used ; Global Line Name ; Enable Signal Source Name ;
 +--------------------------------+--------------------+---------+--------------+--------+----------------------+------------------+---------------------------+
 ; clk                            ; PIN_P11            ; 28      ; Clock        ; yes    ; Global Clock         ; GCLK19           ; --                        ;
-; paso_boton:tecla|cuenta[14]~54 ; LCCOMB_X50_Y50_N12 ; 20      ; Sync. clear  ; no     ; --                   ; --               ; --                        ;
-; paso_boton:tecla|pulso         ; FF_X50_Y50_N17     ; 4       ; Clock enable ; no     ; --                   ; --               ; --                        ;
-; rst                            ; PIN_A7             ; 29      ; Async. clear ; no     ; --                   ; --               ; --                        ;
+; paso_boton:tecla|cuenta[14]~54 ; LCCOMB_X54_Y53_N18 ; 20      ; Sync. clear  ; no     ; --                   ; --               ; --                        ;
+; paso_boton:tecla|pulso         ; FF_X54_Y53_N9      ; 4       ; Clock enable ; no     ; --                   ; --               ; --                        ;
+; rst                            ; PIN_F15            ; 29      ; Async. clear ; no     ; --                   ; --               ; --                        ;
 +--------------------------------+--------------------+---------+--------------+--------+----------------------+------------------+---------------------------+
 
 
@@ -1032,14 +1032,14 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; Routing Resource Type ; Usage                  ;
 +-----------------------+------------------------+
 ; Block interconnects   ; 55 / 148,641 ( < 1 % ) ;
-; C16 interconnects     ; 0 / 5,382 ( 0 % )      ;
-; C4 interconnects      ; 29 / 106,704 ( < 1 % ) ;
-; Direct links          ; 16 / 148,641 ( < 1 % ) ;
+; C16 interconnects     ; 1 / 5,382 ( < 1 % )    ;
+; C4 interconnects      ; 30 / 106,704 ( < 1 % ) ;
+; Direct links          ; 14 / 148,641 ( < 1 % ) ;
 ; Global clocks         ; 1 / 20 ( 5 % )         ;
-; Local interconnects   ; 45 / 49,760 ( < 1 % )  ;
+; Local interconnects   ; 43 / 49,760 ( < 1 % )  ;
 ; NSLEEPs               ; 0 / 500 ( 0 % )        ;
-; R24 interconnects     ; 1 / 5,406 ( < 1 % )    ;
-; R4 interconnects      ; 20 / 147,764 ( < 1 % ) ;
+; R24 interconnects     ; 2 / 5,406 ( < 1 % )    ;
+; R4 interconnects      ; 26 / 147,764 ( < 1 % ) ;
 +-----------------------+------------------------+
 
 
@@ -1053,15 +1053,15 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; 3                                           ; 0                           ;
 ; 4                                           ; 0                           ;
 ; 5                                           ; 0                           ;
-; 6                                           ; 0                           ;
-; 7                                           ; 1                           ;
+; 6                                           ; 1                           ;
+; 7                                           ; 0                           ;
 ; 8                                           ; 0                           ;
 ; 9                                           ; 0                           ;
 ; 10                                          ; 0                           ;
 ; 11                                          ; 0                           ;
 ; 12                                          ; 0                           ;
-; 13                                          ; 1                           ;
-; 14                                          ; 0                           ;
+; 13                                          ; 0                           ;
+; 14                                          ; 1                           ;
 ; 15                                          ; 1                           ;
 ; 16                                          ; 2                           ;
 +---------------------------------------------+-----------------------------+
@@ -1070,9 +1070,9 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +------------------------------------------------------------------+
 ; LAB-wide Signals                                                 ;
 +------------------------------------+-----------------------------+
-; LAB-wide Signals  (Average = 1.83) ; Number of LABs  (Total = 6) ;
+; LAB-wide Signals  (Average = 1.67) ; Number of LABs  (Total = 6) ;
 +------------------------------------+-----------------------------+
-; 1 Async. clear                     ; 4                           ;
+; 1 Async. clear                     ; 3                           ;
 ; 1 Clock                            ; 4                           ;
 ; 1 Clock enable                     ; 1                           ;
 ; 1 Sync. clear                      ; 2                           ;
@@ -1094,8 +1094,8 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; 7                                            ; 0                           ;
 ; 8                                            ; 0                           ;
 ; 9                                            ; 0                           ;
-; 10                                           ; 0                           ;
-; 11                                           ; 1                           ;
+; 10                                           ; 1                           ;
+; 11                                           ; 0                           ;
 ; 12                                           ; 0                           ;
 ; 13                                           ; 0                           ;
 ; 14                                           ; 0                           ;
@@ -1107,8 +1107,8 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; 20                                           ; 1                           ;
 ; 21                                           ; 0                           ;
 ; 22                                           ; 0                           ;
-; 23                                           ; 1                           ;
-; 24                                           ; 0                           ;
+; 23                                           ; 0                           ;
+; 24                                           ; 1                           ;
 ; 25                                           ; 1                           ;
 +----------------------------------------------+-----------------------------+
 
@@ -1121,10 +1121,10 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; 0                                               ; 0                           ;
 ; 1                                               ; 2                           ;
 ; 2                                               ; 0                           ;
-; 3                                               ; 0                           ;
-; 4                                               ; 1                           ;
-; 5                                               ; 1                           ;
-; 6                                               ; 0                           ;
+; 3                                               ; 1                           ;
+; 4                                               ; 0                           ;
+; 5                                               ; 0                           ;
+; 6                                               ; 1                           ;
 ; 7                                               ; 1                           ;
 ; 8                                               ; 0                           ;
 ; 9                                               ; 0                           ;
@@ -1138,7 +1138,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +---------------------------------------------------------------------------+
 ; LAB Distinct Inputs                                                       ;
 +---------------------------------------------+-----------------------------+
-; Number of Distinct Inputs  (Average = 7.83) ; Number of LABs  (Total = 6) ;
+; Number of Distinct Inputs  (Average = 7.50) ; Number of LABs  (Total = 6) ;
 +---------------------------------------------+-----------------------------+
 ; 0                                           ; 0                           ;
 ; 1                                           ; 0                           ;
@@ -1146,12 +1146,12 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; 3                                           ; 0                           ;
 ; 4                                           ; 0                           ;
 ; 5                                           ; 0                           ;
-; 6                                           ; 2                           ;
-; 7                                           ; 1                           ;
-; 8                                           ; 0                           ;
+; 6                                           ; 1                           ;
+; 7                                           ; 2                           ;
+; 8                                           ; 1                           ;
 ; 9                                           ; 0                           ;
 ; 10                                          ; 0                           ;
-; 11                                          ; 1                           ;
+; 11                                          ; 0                           ;
 ; 12                                          ; 0                           ;
 ; 13                                          ; 0                           ;
 ; 14                                          ; 0                           ;
@@ -1328,7 +1328,7 @@ Info (176353): Automatically promoted node clk~input (placed in PIN P11 (CLK7p, 
 Info (176233): Starting register packing
 Info (176235): Finished register packing
     Extra Info (176219): No registers were packed into other blocks
-Info (171121): Fitter preparation operations ending: elapsed time is 00:00:01
+Info (171121): Fitter preparation operations ending: elapsed time is 00:00:00
 Info (14896): Fitter has disabled Advanced Physical Optimization because it is not supported for the current family.
 Info (170189): Fitter placement preparation operations beginning
 Info (170190): Fitter placement preparation operations ending: elapsed time is 00:00:00
@@ -1342,12 +1342,12 @@ Info (170199): The Fitter performed an Auto Fit compilation.  Optimizations were
     Info (170201): Optimizations that may affect the design's routability were skipped
     Info (170200): Optimizations that may affect the design's timing were skipped
 Info (170194): Fitter routing operations ending: elapsed time is 00:00:00
-Info (11888): Total time spent on timing analysis during the Fitter is 0.03 seconds.
+Info (11888): Total time spent on timing analysis during the Fitter is 0.02 seconds.
 Info (334003): Started post-fitting delay annotation
 Info (334004): Delay annotation completed successfully
 Info (334003): Started post-fitting delay annotation
 Info (334004): Delay annotation completed successfully
-Info (11218): Fitter post-fit operations ending: elapsed time is 00:00:00
+Info (11218): Fitter post-fit operations ending: elapsed time is 00:00:01
 Warning (169177): 8 pins must meet Intel FPGA requirements for 3.3-, 3.0-, and 2.5-V interfaces. For more information, refer to AN 447: Interfacing MAX 10 Devices with 3.3/3.0/2.5-V LVTTL/LVCMOS I/O Systems.
     Info (169178): Pin entrada_trans[0] uses I/O standard 3.3-V LVTTL at A12 File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6/practica6.vhd Line: 14
     Info (169178): Pin entrada_trans[1] uses I/O standard 3.3-V LVTTL at B12 File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6/practica6.vhd Line: 14
@@ -1355,14 +1355,14 @@ Warning (169177): 8 pins must meet Intel FPGA requirements for 3.3-, 3.0-, and 2
     Info (169178): Pin entrada_int_RI uses I/O standard 3.3-V LVTTL at C12 File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6/practica6.vhd Line: 13
     Info (169178): Pin X uses I/O standard 3.3-V LVTTL at D12 File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6/practica6.vhd Line: 11
     Info (169178): Pin clk uses I/O standard 3.3-V LVTTL at P11 File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6/practica6.vhd Line: 8
-    Info (169178): Pin rst uses I/O standard 3.3 V Schmitt Trigger at A7 File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6/practica6.vhd Line: 10
+    Info (169178): Pin rst uses I/O standard 3.3 V Schmitt Trigger at F15 File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6/practica6.vhd Line: 10
     Info (169178): Pin boton uses I/O standard 3.3 V Schmitt Trigger at B8 File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6/practica6.vhd Line: 9
 Info (144001): Generated suppressed messages file /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6/output_files/practica6.fit.smsg
 Info: Quartus Prime Fitter was successful. 0 errors, 4 warnings
-    Info: Peak virtual memory: 1091 megabytes
-    Info: Processing ended: Fri Oct 16 13:29:44 2026
-    Info: Elapsed time: 00:00:06
-    Info: Total CPU time (on all processors): 00:00:08
+    Info: Peak virtual memory: 1090 megabytes
+    Info: Processing ended: Sun Oct 18 13:27:46 2026
+    Info: Elapsed time: 00:00:05
+    Info: Total CPU time (on all processors): 00:00:07
 
 
 +----------------------------+

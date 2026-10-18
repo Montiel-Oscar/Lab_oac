@@ -70,7 +70,7 @@ set_global_assignment -name VHDL_FILE muxDireccion.vhd
 set_global_assignment -name VHDL_FILE muxEntradas.vhd
 set_location_assignment PIN_P11 -to clk
 set_location_assignment PIN_B8 -to boton
-set_location_assignment PIN_A7 -to rst
+set_location_assignment PIN_F15 -to rst
 set_location_assignment PIN_E14 -to edo_pr[0]
 set_location_assignment PIN_D14 -to edo_pr[1]
 set_location_assignment PIN_A11 -to edo_pr[2]

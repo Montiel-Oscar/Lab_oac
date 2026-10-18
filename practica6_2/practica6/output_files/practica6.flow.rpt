@@ -1,5 +1,5 @@
 Flow report for practica6
-Fri Oct 16 13:29:52 2026
+Sun Oct 18 13:27:53 2026
 Quartus Prime Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
 
 
@@ -41,7 +41,7 @@ on the Quartus Prime software download page.
 +--------------------------------------------------------------------------------------+
 ; Flow Summary                                                                         ;
 +------------------------------------+-------------------------------------------------+
-; Flow Status                        ; Successful - Fri Oct 16 13:29:52 2026           ;
+; Flow Status                        ; Successful - Sun Oct 18 13:27:53 2026           ;
 ; Quartus Prime Version              ; 25.1std.0 Build 1129 10/21/2025 SC Lite Edition ;
 ; Revision Name                      ; practica6                                       ;
 ; Top-level Entity Name              ; practica6                                       ;
@@ -67,7 +67,7 @@ on the Quartus Prime software download page.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 10/16/2026 13:29:30 ;
+; Start date & time ; 10/18/2026 13:27:33 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; practica6           ;
 +-------------------+---------------------+
@@ -78,7 +78,7 @@ on the Quartus Prime software download page.
 +-------------------------------------+----------------------------------------+---------------+-------------+-----------------------------------+
 ; Assignment Name                     ; Value                                  ; Default Value ; Entity Name ; Section Id                        ;
 +-------------------------------------+----------------------------------------+---------------+-------------+-----------------------------------+
-; COMPILER_SIGNATURE_ID               ; 36015909679830.179217897007886         ; --            ; --          ; --                                ;
+; COMPILER_SIGNATURE_ID               ; 36015909679830.179235165308055         ; --            ; --          ; --                                ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --          ; eda_board_design_timing           ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --          ; eda_board_design_boundary_scan    ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --          ; eda_board_design_signal_integrity ;
@@ -100,12 +100,12 @@ on the Quartus Prime software download page.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:07     ; 1.0                     ; 418 MB              ; 00:00:18                           ;
-; Fitter               ; 00:00:06     ; 1.0                     ; 1091 MB             ; 00:00:07                           ;
-; Assembler            ; 00:00:02     ; 1.0                     ; 369 MB              ; 00:00:02                           ;
-; Timing Analyzer      ; 00:00:02     ; 1.0                     ; 540 MB              ; 00:00:02                           ;
-; EDA Netlist Writer   ; 00:00:01     ; 1.0                     ; 582 MB              ; 00:00:00                           ;
-; Total                ; 00:00:18     ; --                      ; --                  ; 00:00:29                           ;
+; Analysis & Synthesis ; 00:00:07     ; 1.0                     ; 427 MB              ; 00:00:18                           ;
+; Fitter               ; 00:00:05     ; 1.0                     ; 1090 MB             ; 00:00:06                           ;
+; Assembler            ; 00:00:02     ; 1.0                     ; 381 MB              ; 00:00:02                           ;
+; Timing Analyzer      ; 00:00:02     ; 1.0                     ; 524 MB              ; 00:00:01                           ;
+; EDA Netlist Writer   ; 00:00:00     ; 1.0                     ; 582 MB              ; 00:00:00                           ;
+; Total                ; 00:00:16     ; --                      ; --                  ; 00:00:27                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

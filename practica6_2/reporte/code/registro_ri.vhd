@@ -1,30 +1,40 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity registro_ri is
-    Port ( reset : in std_logic;
-           ri : out std_logic_vector (3 downto 0)
-         );
+    Port (
+        reset            : in  std_logic;
+        estado_presente  : in  std_logic_vector(3 downto 0);
+        entrada_int      : in  std_logic;
+        ri               : out std_logic_vector(3 downto 0)
+    );
 end registro_ri;
 
 architecture Behavioral of registro_ri is
-
-signal internal_value: std_logic_vector (3 downto 0) := B"0000";
 begin
-    process(reset)
+    process(reset, estado_presente, entrada_int)
     begin
         if reset = '0' then
-            internal_value <= B"0000";
+            ri <= "0000";
         else
-            internal_value <= B"1100";
+            case estado_presente is
+                when "0011" => -- Estado 3: INT=0 -> 4; INT=1 -> 10
+                    if entrada_int = '0' then
+                        ri <= "0100";
+                    else
+                        ri <= "1010";
+                    end if;
+
+                when "1101" => -- Estado 13: INT=0 -> 14; INT=1 -> 0
+                    if entrada_int = '0' then
+                        ri <= "1110";
+                    else
+                        ri <= "0000";
+                    end if;
+
+                when others =>
+                    ri <= "0000";
+            end case;
         end if;
     end process;
-
-    process(internal_value)
-    begin
-        ri <= internal_value;
-    end process;
-
 end Behavioral;
