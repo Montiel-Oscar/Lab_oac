@@ -4,7 +4,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity registro_mpc is
     Port (
         reloj     : in  std_logic;
-        reset     : in  std_logic; -- KEY1, activo en 0
+        reset     : in  std_logic; -- SW9, activo en 0
         habilitar : in  std_logic; -- Un pulso por pulsacion de KEY0
         entrada_r : in  std_logic_vector(3 downto 0);
         mpc       : out std_logic_vector(3 downto 0)

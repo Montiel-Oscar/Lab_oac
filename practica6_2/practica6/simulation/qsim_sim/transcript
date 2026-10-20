@@ -1,0 +1,24 @@
+# vsim -c -t 1ps -L fiftyfivenm -L altera -L altera_mf -L 220model -L sgate -L altera_lnsim work.practica6_sim_vhd_vec_tst -do "vcd file waveform_sim.vcd; vcd add /practica6_sim_vhd_vec_tst/edo_pr; vcd add /practica6_sim_vhd_vec_tst/salidas; run 3600 ns; quit -f" 
+# Start time: 10:20:11 on Oct 19,2026
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading work.practica6_sim_vhd_vec_tst(practica6_sim_arch)
+# Loading ieee.vital_timing(body)
+# Loading ieee.vital_primitives(body)
+# Loading altera.dffeas_pack
+# Loading altera.altera_primitives_components
+# Loading fiftyfivenm.fiftyfivenm_atom_pack(body)
+# Loading fiftyfivenm.fiftyfivenm_components
+# Loading work.practica6_sim(structure)
+# Loading fiftyfivenm.fiftyfivenm_io_obuf(behavior)
+# Loading fiftyfivenm.fiftyfivenm_io_ibuf(behavior)
+# Loading fiftyfivenm.fiftyfivenm_lcell_comb(vital_lcell_comb)
+# Loading altera.dffeas(vital_dffeas)
+# vcd file waveform_sim.vcd
+#  vcd add /practica6_sim_vhd_vec_tst/edo_pr
+#  vcd add /practica6_sim_vhd_vec_tst/salidas
+#  run 3600 ns
+#  quit -f
+# End time: 10:20:11 on Oct 19,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

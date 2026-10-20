@@ -1,0 +1,21 @@
+# Revision exclusiva para simular en Quartus Waveform Editor.
+# No usar su netlist ni un posible .sof para programar la tarjeta.
+set_global_assignment -name FAMILY "MAX 10"
+set_global_assignment -name DEVICE 10M50DAF484C7G
+set_global_assignment -name TOP_LEVEL_ENTITY practica6_sim
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_sim
+set_global_assignment -name VHDL_FILE practica6_sim.vhd
+set_global_assignment -name VHDL_FILE practica6.vhd
+set_global_assignment -name VHDL_FILE paso_boton.vhd
+set_global_assignment -name VHDL_FILE registro_mpc.vhd
+set_global_assignment -name VHDL_FILE logica.vhd
+set_global_assignment -name VHDL_FILE registro_ri.vhd
+set_global_assignment -name VHDL_FILE registro_rt.vhd
+set_global_assignment -name VHDL_FILE incrementador.vhd
+set_global_assignment -name VHDL_FILE rom.vhd
+set_global_assignment -name VHDL_FILE divisor_datos.vhd
+set_global_assignment -name VHDL_FILE muxDireccion.vhd
+set_global_assignment -name VHDL_FILE muxEntradas.vhd
+set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform_sim.vwf
+
+set_global_assignment -name LAST_QUARTUS_VERSION "25.1std.0 Lite Edition"

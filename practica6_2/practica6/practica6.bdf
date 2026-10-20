@@ -56,23 +56,6 @@ on the Quartus Prime software download page.
 )
 (pin
 	(input)
-	(rect -216 256 -48 272)
-	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
-	(text "boton" (rect 5 0 33 11)(font "DejaVu Sans Condensed" ))
-	(pt 168 8)
-	(drawing
-		(line (pt 84 12)(pt 109 12))
-		(line (pt 84 4)(pt 109 4))
-		(line (pt 113 8)(pt 168 8))
-		(line (pt 84 12)(pt 84 4))
-		(line (pt 109 4)(pt 113 8))
-		(line (pt 109 12)(pt 113 8))
-	)
-	(text "VCC" (rect 128 7 148 17)(font "Arial" (font_size 6)))
-	(annotation_block (location)(rect -272 272 -216 288))
-)
-(pin
-	(input)
 	(rect 896 416 1064 432)
 	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
 	(text "X" (rect 5 0 13 11)(font "Arial" ))
@@ -140,7 +123,7 @@ on the Quartus Prime software download page.
 )
 (pin
 	(input)
-	(rect -112 240 56 256)
+	(rect 48 240 216 256)
 	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
 	(text "clk" (rect 5 0 21 11)(font "Arial" ))
 	(pt 168 8)
@@ -153,13 +136,13 @@ on the Quartus Prime software download page.
 		(line (pt 109 12)(pt 113 8))
 	)
 	(text "VCC" (rect 128 7 148 17)(font "Arial" (font_size 6)))
-	(annotation_block (location)(rect -176 256 -112 272))
+	(annotation_block (location)(rect -8 208 56 224))
 )
 (pin
 	(input)
 	(rect -96 312 72 328)
 	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
-	(text "rst" (rect 5 0 20 11)(font "Arial" ))
+	(text "rst" (rect 5 0 19 11)(font "Arial" ))
 	(pt 168 8)
 	(drawing
 		(line (pt 84 12)(pt 109 12))
@@ -170,6 +153,7 @@ on the Quartus Prime software download page.
 		(line (pt 109 12)(pt 113 8))
 	)
 	(text "VCC" (rect 128 7 148 17)(font "Arial" (font_size 6)))
+	(annotation_block (location)(rect -160 328 -96 344))
 )
 (pin
 	(output)
@@ -513,60 +497,6 @@ on the Quartus Prime software download page.
 	)
 )
 (symbol
-	(rect 72 216 232 296)
-	(text "clk_buttom" (rect 5 0 64 11)(font "Arial" ))
-	(text "inst16" (rect 8 64 38 75)(font "DejaVu Sans Condensed" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "clk" (rect 0 0 16 11)(font "Arial" ))
-		(text "clk" (rect 21 27 37 38)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "buttom" (rect 0 0 38 11)(font "Arial" ))
-		(text "buttom" (rect 21 43 59 54)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48))
-	)
-	(port
-		(pt 160 32)
-		(output)
-		(text "div_clk" (rect 0 0 37 11)(font "Arial" ))
-		(text "div_clk" (rect 108 27 145 38)(font "Arial" ))
-		(line (pt 160 32)(pt 144 32))
-	)
-	(drawing
-		(rectangle (rect 16 16 144 64))
-	)
-)
-(symbol
-	(rect -16 256 32 288)
-	(text "NOT" (rect 1 0 22 10)(font "Arial" (font_size 6)))
-	(text "inst1" (rect 3 21 26 32)(font "DejaVu Sans Condensed" ))
-	(port
-		(pt 0 16)
-		(input)
-		(text "IN" (rect 2 7 16 18)(font "Courier New" (bold))(invisible))
-		(text "IN" (rect 2 7 16 18)(font "Courier New" (bold))(invisible))
-		(line (pt 0 16)(pt 13 16))
-	)
-	(port
-		(pt 48 16)
-		(output)
-		(text "OUT" (rect 32 7 53 18)(font "Courier New" (bold))(invisible))
-		(text "OUT" (rect 32 7 53 18)(font "Courier New" (bold))(invisible))
-		(line (pt 39 16)(pt 48 16))
-	)
-	(drawing
-		(line (pt 13 25)(pt 13 7))
-		(line (pt 13 7)(pt 31 16))
-		(line (pt 13 25)(pt 31 16))
-		(circle (rect 31 12 39 20))
-	)
-)
-(symbol
 	(rect 96 328 144 360)
 	(text "NOT" (rect 1 0 22 10)(font "Arial" (font_size 6)))
 	(text "inst4" (rect 3 21 26 32)(font "DejaVu Sans Condensed" ))
@@ -892,14 +822,6 @@ on the Quartus Prime software download page.
 	(pt 240 248)
 )
 (connector
-	(pt 232 248)
-	(pt 240 248)
-)
-(connector
-	(pt 72 248)
-	(pt 56 248)
-)
-(connector
 	(pt 1080 424)
 	(pt 1064 424)
 )
@@ -920,26 +842,6 @@ on the Quartus Prime software download page.
 	(pt 144 344)
 )
 (connector
-	(pt -48 264)
-	(pt -16 264)
-)
-(connector
-	(pt -16 264)
-	(pt -16 272)
-)
-(connector
-	(pt 72 264)
-	(pt 40 264)
-)
-(connector
-	(pt 40 264)
-	(pt 40 272)
-)
-(connector
-	(pt 32 272)
-	(pt 40 272)
-)
-(connector
 	(pt 72 320)
 	(pt 80 320)
 )
@@ -950,6 +852,10 @@ on the Quartus Prime software download page.
 (connector
 	(pt 80 344)
 	(pt 96 344)
+)
+(connector
+	(pt 216 248)
+	(pt 240 248)
 )
 (junction (pt 496 360))
 (junction (pt 448 360))

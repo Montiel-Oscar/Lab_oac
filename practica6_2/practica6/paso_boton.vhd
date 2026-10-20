@@ -7,7 +7,7 @@ entity paso_boton is
     generic (CUENTA_REBOTE : natural := 999999); -- 20 ms a 50 MHz
     Port (
         clk   : in  std_logic; -- 50 MHz
-        reset : in  std_logic; -- KEY1, activo en bajo
+        reset : in  std_logic; -- SW9, activo en bajo
         boton : in  std_logic; -- KEY0, activo en bajo
         paso  : out std_logic
     );

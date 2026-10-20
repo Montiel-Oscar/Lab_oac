@@ -40,6 +40,7 @@
 \input{portada.tex}
 \newpage
 
+\iffalse
 \section{Objetivo}
 
 Familiarizar al alumno en el conocimiento del secuenciador básico, el cual es una parte fundamental del procesador.
@@ -319,7 +320,6 @@ El diseño se implementó en la tarjeta de desarrollo DE10-Lite. Las fotografía
 
 La implementación física confirma que la siguiente microdirección sólo se registra en el pulso de reloj y que la lógica interna selecciona correctamente una de las cuatro fuentes. También se comprobó que el reinicio activo en bajo devuelve el contador de microprograma a \texttt{0000}, lo que permite iniciar cualquier secuencia desde una dirección conocida.
 
-\clearpage
 \section{Conclusión}
 
 \paragraph{Percival Ulises Espinoza Matamoros.} A partir de la realización de la práctica logró implementar un secuenciador básico alternativo, donde al realizar la implementación ayudo a comprender el funcionamiento de este tipo de secuenciador. El secuenciador alternativo permite seleccionar la siguiente microdirección a partir de cuatro fuentes, dependiendo de los bits de microinstrucción y de la condición de control. Por medio de la simulación así como de la implementación física se pudo comprobar y verificar el funcionamiento del secuenciador, así como la relación entre las microinstrucciones y la ruta de control.
@@ -327,5 +327,217 @@ La implementación física confirma que la siguiente microdirección sólo se re
 \paragraph{Oscar Iván Montiel Juárez.} El desarrollo de esta práctica permitió conocer la importancia del contador de microprograma y de la lógica de selección dentro de un procesador. Al conectar el incrementador, los registros de liga, transformación e interrupción con el multiplexor se pudo comprobar que una sola arquitectura puede generar distintos recorridos dependiendo de los bits de microinstrucción y de la condición de control. La simulación y la tarjeta permitieron verificar cada caso de manera visual.
 
 \paragraph{Amy Valentina Veraza García.} La práctica ayudó a reforzar la relación entre las microinstrucciones y el funcionamiento de la ruta de control. Al probar el circuito en la DE10-Lite fue posible observar los cambios de dirección en cada pulso de reloj y comprobar que el valor de $CC$ sólo afecta a los tipos de salto que requieren una decisión.
+
+\fi
+
+\section{Objetivo}
+
+Implementar un secuenciador básico microprogramado a partir de una carta ASM, utilizando una memoria ROM para almacenar las microinstrucciones, un contador de microprograma y la lógica necesaria para seleccionar la siguiente dirección.
+
+\section{Desarrollo}
+
+En esta práctica se construyó un secuenciador microprogramado que ejecuta la carta ASM proporcionada. A diferencia de la versión anterior, la secuencia no se determina con direcciones fijas: cada estado consulta una palabra de la ROM y, a partir de sus campos, obtiene las salidas del estado, la condición que se debe probar y la fuente de la siguiente microdirección.
+
+El contador de microprograma (\texttt{mPC}) guarda la dirección presente. Esa dirección consulta la ROM, se separa en campos y alimenta la ruta de control. El bloque de prueba selecciona una de las entradas $X$, $Y$, \texttt{INT} o una constante, mientras que el valor $VF$ permite invertir la condición por medio de una compuerta XOR. Finalmente, el campo $MI$ decide si la siguiente dirección corresponde al paso continuo, la liga, el registro de transformación o el registro de interrupción.
+
+\subsection{Carta ASM y tamaño de la memoria}
+
+La Figura~\ref{fig:carta-asm} representa la carta ASM implementada. Los estados $E_0$ a $E_{14}$ forman la secuencia principal y la posición $E_{15}$ se incluyó como posición de seguridad de la ROM; su flujo regresa al estado inicial. Las cajas indican las salidas activas de cada estado y los rombos indican la entrada que decide el siguiente salto.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{carta_asm_practica6_2.png}
+\caption{Carta ASM implementada mediante el secuenciador microprogramado.}
+\label{fig:carta-asm}
+\end{figure}
+
+La memoria requiere cuatro bits de dirección, ya que la microprogramación ocupa las posiciones de $0$ a $15$. Cada microinstrucción tiene un campo de prueba de dos bits, un bit de valor de prueba, dos bits para el tipo de microinstrucción, cuatro bits de liga y cuatro bits de salidas. Por lo tanto, su organización es de $16$ palabras por $13$ bits:
+
+\[
+n=2^4=16 \text{ palabras}, \qquad
+m=2+1+2+4+4=13 \text{ bits}
+\]
+\[
+\text{Capacidad}=16 \times 13=\boxed{208\text{ bits}}.
+\]
+
+\begin{table}[H]
+\centering
+\caption{Formato de una microinstrucción de la memoria de control.}
+\label{tab:formato-micro}
+\begin{tabular}{c c c c c}
+\toprule
+Campo & Prueba & $VF$ & $MI$ & Liga \hspace{5mm} Salidas \\
+\midrule
+Bits & $K_1K_0$ & 1 & $I_1I_0$ & $L_3L_2L_1L_0$ \hspace{3mm} $S_3S_2S_1S_0$ \\
+Longitud & 2 & 1 & 2 & 4 \hspace{12mm} 4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Los valores de $MI$ codifican cuatro opciones: \texttt{00} selecciona $mPC+1$, \texttt{01} selecciona la liga cuando la condición se cumple, \texttt{10} selecciona el registro de transformación y \texttt{11} selecciona el registro de interrupción. El bloque \texttt{muxEntradas} define la entrada que se prueba: \texttt{00} corresponde a $X$, \texttt{01} a $Y$, \texttt{10} a \texttt{INT} y \texttt{11} a una constante cero.
+
+\subsection{Contenido de la memoria de control}
+
+La Tabla~\ref{tab:microprogramacion} contiene la microprogramación capturada en el módulo \texttt{rom.vhd}. Los campos indiferentes de la carta ASM se guardaron con un valor definido, por lo que cada dirección de la ROM entrega una palabra completa de 13 bits.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Contenido de la ROM para la carta ASM.}
+\label{tab:microprogramacion}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{c c c c c c l}
+\toprule
+Dirección & Prueba & $VF$ & $MI$ & Liga & Salidas & Operación / siguiente estado \\
+\midrule
+\texttt{0000} & \texttt{11} & 0 & \texttt{00} & \texttt{0000} & \texttt{1100} & Paso continuo a $E_1$. \\
+\texttt{0001} & \texttt{11} & 0 & \texttt{10} & \texttt{0000} & \texttt{1011} & Transformación desde $E_1$. \\
+\texttt{0010} & \texttt{00} & 0 & \texttt{01} & \texttt{0010} & \texttt{0001} & Prueba $X$: $0\rightarrow E_2$, $1\rightarrow E_3$. \\
+\texttt{0011} & \texttt{10} & 1 & \texttt{11} & \texttt{0000} & \texttt{0000} & Salto por interrupción desde $E_3$. \\
+\texttt{0100} & \texttt{11} & 0 & \texttt{00} & \texttt{0000} & \texttt{0000} & Paso continuo a $E_5$. \\
+\texttt{0101} & \texttt{11} & 0 & \texttt{01} & \texttt{0000} & \texttt{1011} & Retorno incondicional a $E_0$. \\
+\texttt{0110} & \texttt{11} & 0 & \texttt{00} & \texttt{0000} & \texttt{1110} & Paso continuo a $E_7$. \\
+\texttt{0111} & \texttt{11} & 0 & \texttt{01} & \texttt{0000} & \texttt{0001} & Retorno incondicional a $E_0$. \\
+\texttt{1000} & \texttt{11} & 0 & \texttt{00} & \texttt{0000} & \texttt{0010} & Paso continuo a $E_9$. \\
+\texttt{1001} & \texttt{01} & 1 & \texttt{01} & \texttt{1011} & \texttt{0011} & Prueba $Y$: $1\rightarrow E_{11}$, $0\rightarrow E_{10}$. \\
+\texttt{1010} & \texttt{11} & 0 & \texttt{01} & \texttt{0110} & \texttt{0000} & Salto incondicional a $E_6$. \\
+\texttt{1011} & \texttt{11} & 0 & \texttt{10} & \texttt{0000} & \texttt{1001} & Transformación desde $E_{11}$. \\
+\texttt{1100} & \texttt{11} & 0 & \texttt{01} & \texttt{1110} & \texttt{0011} & Salto incondicional a $E_{14}$. \\
+\texttt{1101} & \texttt{10} & 1 & \texttt{11} & \texttt{0000} & \texttt{0111} & Salto por interrupción desde $E_{13}$. \\
+\texttt{1110} & \texttt{11} & 0 & \texttt{01} & \texttt{1011} & \texttt{1011} & Salto incondicional a $E_{11}$. \\
+\texttt{1111} & \texttt{11} & 0 & \texttt{01} & \texttt{0000} & \texttt{0011} & Posición de seguridad: regreso a $E_0$. \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{Arquitectura implementada}
+
+El bloque principal \texttt{practica6} integra el generador de paso por botón, el registro \texttt{mPC}, el incrementador, la ROM, el divisor de campos, los multiplexores y los registros de transformación e interrupción. El contador únicamente cambia cuando se genera el pulso \texttt{paso}; de esta manera cada pulsación permite observar una microinstrucción en la tarjeta.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{diagramas_bloques_1.png}
+\caption{Interconexión de la ruta de microdirección del secuenciador.}
+\label{fig:interconexion-1}
+\end{figure}
+
+La Figura~\ref{fig:interconexion-2} muestra la conexión de la ROM con el divisor de datos. La palabra de 13 bits se separa en los campos de prueba, $VF$, $MI$, liga y salidas. Las salidas llegan directamente a los LEDs, mientras que los demás campos controlan la selección de la siguiente microdirección.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{diagramas_bloques_2.png}
+\caption{Interconexión de la memoria ROM, el divisor de datos y la ruta de control.}
+\label{fig:interconexion-2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{diagramas_bloques_3.png}
+\caption{Diagrama final de bloques del secuenciador microprogramado.}
+\label{fig:interconexion-3}
+\end{figure}
+
+\subsection{Módulos implementados en VHDL}
+
+\paragraph{Módulo principal.} El módulo \texttt{practica6} conecta la entrada de reloj, las entradas de prueba $X$, $Y$ e \texttt{INT}, la entrada de transformación y los LEDs. La señal \texttt{cc} se obtiene con una XOR entre la condición seleccionada y $VF$.
+
+\lstinputlisting[style=estiloVHDL,caption={Conexión estructural del secuenciador microprogramado.},label={lst:principal}]{code/practica6.vhd}
+
+\paragraph{Memoria y divisor de campos.} La ROM contiene las dieciséis microinstrucciones de la Tabla~\ref{tab:microprogramacion}. El divisor entrega por separado los campos que usa cada bloque de la arquitectura.
+
+\lstinputlisting[style=estiloVHDL,caption={Memoria ROM de 16 palabras por 13 bits.},label={lst:rom}]{code/rom.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Divisor de los campos de una microinstrucción.},label={lst:divisor}]{code/divisor_datos.vhd}
+
+\paragraph{Selección de condiciones y direcciones.} \texttt{muxEntradas} selecciona la condición indicada por el campo \texttt{Prueba}; \texttt{logica} interpreta el campo $MI$ y \texttt{muxDireccion} selecciona la fuente de la siguiente dirección.
+
+\lstinputlisting[style=estiloVHDL,caption={Multiplexor de entradas para la condición de control.},label={lst:mux-entradas}]{code/muxEntradas.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Lógica que decodifica el tipo de microinstrucción.},label={lst:logica}]{code/logica.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Multiplexor de la siguiente microdirección.},label={lst:mux-direccion}]{code/muxDireccion.vhd}
+
+\paragraph{Registros y paso por botón.} El registro \texttt{mPC} se actualiza en el flanco ascendente del reloj cuando recibe la habilitación del bloque \texttt{paso\_boton}. Los módulos \texttt{registro\_rt} y \texttt{registro\_ri} generan los destinos que corresponden a los rombos de transformación e interrupción de la carta ASM.
+
+\lstinputlisting[style=estiloVHDL,caption={Registro del contador de microprograma.},label={lst:mpc}]{code/registro_mpc.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Registro de transformación.},label={lst:rt}]{code/registro_rt.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Registro de interrupción.},label={lst:ri}]{code/registro_ri.vhd}
+
+\lstinputlisting[style=estiloVHDL,caption={Generador de un avance por pulsación.},label={lst:paso}]{code/paso_boton.vhd}
+
+\section{Simulación}
+
+La simulación verifica que el contador de microprograma actualiza \texttt{edo\_pr} únicamente en el flanco donde se genera el pulso de avance. En las formas de onda se distinguen las direcciones presentes, las salidas de la ROM y las entradas que provocan los saltos de la carta ASM.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{simulacion_1.png}
+\caption{Simulación del recorrido de microdirecciones y de las salidas de la ROM.}
+\label{fig:sim-1}
+\end{figure}
+
+En la segunda simulación se aplican diferentes valores a $X$, $Y$, \texttt{INT} y a la entrada de transformación. Con ello se comprueba que las decisiones condicionales y los registros de salto conducen al estado definido por la carta ASM.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{simulacion_2.png}
+\caption{Verificación de condiciones, transformaciones e interrupciones.}
+\label{fig:sim-2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{simulacion_3.png}
+\caption{Continuación de la simulación con cambios de estado sincronizados.}
+\label{fig:sim-3}
+\end{figure}
+
+\section{Resultados en la tarjeta FPGA}
+
+El circuito se descargó en la tarjeta DE10-Lite. Los LEDs de menor peso muestran el campo de salidas de la microinstrucción y los LEDs superiores permiten observar la dirección presente. Con el botón se avanza un estado por vez, por lo que es posible contrastar cada fotografía con la carta ASM y la Tabla~\ref{tab:microprogramacion}.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est0.jpg}\caption{$E_0$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est01.jpg}\caption{$E_1$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est02.jpg}\caption{$E_2$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est03.jpg}\caption{$E_3$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est04.jpg}\caption{$E_4$}\end{subfigure}
+\caption{Estados iniciales observados en la tarjeta DE10-Lite.}
+\label{fig:fpga-0-4}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est05.jpg}\caption{$E_5$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est06.jpg}\caption{$E_6$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est07.jpg}\caption{$E_7$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est08.jpg}\caption{$E_8$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est09.jpg}\caption{$E_9$}\end{subfigure}
+\caption{Comprobación física de los estados $E_5$ a $E_9$.}
+\label{fig:fpga-5-9}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est10.jpg}\caption{$E_{10}$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est11.jpg}\caption{$E_{11}$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est12.jpg}\caption{$E_{12}$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est13.jpg}\caption{$E_{13}$}\end{subfigure}\hfill
+\begin{subfigure}[b]{0.19\linewidth}\centering\includegraphics[width=\linewidth]{est14.jpg}\caption{$E_{14}$}\end{subfigure}
+\caption{Comprobación física de los estados $E_{10}$ a $E_{14}$.}
+\label{fig:fpga-10-14}
+\end{figure}
+
+\section{Conclusión}
+
+\paragraph{Percival Ulises Espinoza Matamoros.} Esta práctica permitió implementar una unidad de control microprogramada a partir de una carta ASM. Al almacenar las microinstrucciones en la ROM se pudo observar que una misma ruta de datos puede ejecutar diferentes recorridos solamente al cambiar el contenido de la memoria. También se comprendió la función de los campos de prueba, liga y tipo de microinstrucción.
+
+\paragraph{Oscar Iván Montiel Juárez.} El desarrollo permitió relacionar la carta ASM con una implementación real en VHDL. La ROM de $16 \times 13$ bits concentra la secuencia de control, mientras que el contador de microprograma y los multiplexores seleccionan la dirección siguiente. La simulación y la tarjeta mostraron que los saltos condicionados, las transformaciones y las interrupciones se realizan de acuerdo con el estado presente.
+
+\paragraph{Amy Valentina Veraza García.} La práctica reforzó la importancia de dividir una microinstrucción en campos independientes. Al observar los LEDs se pudo comprobar que las salidas de cada estado se obtienen directamente de la ROM y que el botón permite avanzar de forma controlada para verificar la secuencia definida en la carta ASM.
 
 \end{document}

@@ -7,7 +7,7 @@ entity practica6 is
     Port (
         clk            : in  std_logic; -- MAX10_CLK1_50
         boton          : in  std_logic; -- KEY0: avanzar, activo en 0
-        rst            : in  std_logic; -- KEY1: regresar a estado 0, activo en 0
+        rst            : in  std_logic; -- SW9: regresar a estado 0, activo en 0
         X              : in  std_logic; -- SW2
         Y              : in  std_logic; -- SW1
         entrada_int_RI : in  std_logic; -- SW3

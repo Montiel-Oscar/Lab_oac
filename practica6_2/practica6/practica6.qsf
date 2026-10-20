@@ -75,9 +75,6 @@ set_location_assignment PIN_E14 -to edo_pr[0]
 set_location_assignment PIN_D14 -to edo_pr[1]
 set_location_assignment PIN_A11 -to edo_pr[2]
 set_location_assignment PIN_B11 -to edo_pr[3]
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform1.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform2.vwf
 
 
 

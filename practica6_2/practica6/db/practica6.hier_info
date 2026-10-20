@@ -12,14 +12,14 @@ entrada_int_RI => muxentradas:entradas.E2
 entrada_int_RI => registro_ri:interrupcion.entrada_int
 entrada_trans[0] => registro_rt:transformacion.entrada_trans[0]
 entrada_trans[1] => registro_rt:transformacion.entrada_trans[1]
-edo_pr[0] << registro_mpc:contador.mpc[0]
-edo_pr[1] << registro_mpc:contador.mpc[1]
-edo_pr[2] << registro_mpc:contador.mpc[2]
-edo_pr[3] << registro_mpc:contador.mpc[3]
-salidas[0] << divisor_datos:campos.salidas[0]
-salidas[1] << divisor_datos:campos.salidas[1]
-salidas[2] << divisor_datos:campos.salidas[2]
-salidas[3] << divisor_datos:campos.salidas[3]
+edo_pr[0] <= registro_mpc:contador.mpc[0]
+edo_pr[1] <= registro_mpc:contador.mpc[1]
+edo_pr[2] <= registro_mpc:contador.mpc[2]
+edo_pr[3] <= registro_mpc:contador.mpc[3]
+salidas[0] <= divisor_datos:campos.salidas[0]
+salidas[1] <= divisor_datos:campos.salidas[1]
+salidas[2] <= divisor_datos:campos.salidas[2]
+salidas[3] <= divisor_datos:campos.salidas[3]
 
 
 |practica6|paso_boton:tecla
