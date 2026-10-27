@@ -1,6 +1,6 @@
 Analysis & Synthesis report for practica6_2
-Thu Oct 22 23:09:23 2026
-Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
+Fri Oct 23 11:55:39 2026
+Quartus Prime Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
 
 
 ---------------------
@@ -14,53 +14,52 @@ Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
   6. Analysis & Synthesis Resource Usage Summary
   7. Analysis & Synthesis Resource Utilization by Entity
   8. General Register Statistics
-  9. Multiplexer Restructuring Statistics (Restructuring Performed)
- 10. Post-Synthesis Netlist Statistics for Top Partition
- 11. Elapsed Time Per Partition
- 12. Analysis & Synthesis Messages
+  9. Post-Synthesis Netlist Statistics for Top Partition
+ 10. Elapsed Time Per Partition
+ 11. Analysis & Synthesis Messages
 
 
 
 ----------------
 ; Legal Notice ;
 ----------------
-Copyright (C) 2023  Intel Corporation. All rights reserved.
-Your use of Intel Corporation's design tools, logic functions 
+Copyright (C) 2025  Altera Corporation. All rights reserved.
+Your use of Altera Corporation's design tools, logic functions 
 and other software and tools, and any partner logic 
 functions, and any output files from any of the foregoing 
 (including device programming or simulation files), and any 
 associated documentation or information are expressly subject 
-to the terms and conditions of the Intel Program License 
-Subscription Agreement, the Intel Quartus Prime License Agreement,
-the Intel FPGA IP License Agreement, or other applicable license
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, the Altera Quartus Prime License Agreement,
+the Altera IP License Agreement, or other applicable license
 agreement, including, without limitation, that your use is for
 the sole purpose of programming logic devices manufactured by
-Intel and sold by Intel or its authorized distributors.  Please
-refer to the applicable agreement for further details, at
-https://fpgasoftware.intel.com/eula.
+Altera and sold by Altera or its authorized distributors.  Please
+refer to the Altera Software License Subscription Agreements 
+on the Quartus Prime software download page.
 
 
 
-+-------------------------------------------------------------------------------------+
-; Analysis & Synthesis Summary                                                        ;
-+------------------------------------+------------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Thu Oct 22 23:09:23 2026          ;
-; Quartus Prime Version              ; 23.1std.0 Build 991 11/28/2023 SC Lite Edition ;
-; Revision Name                      ; practica6_2                                    ;
-; Top-level Entity Name              ; practica6_2                                    ;
-; Family                             ; MAX 10                                         ;
-; Total logic elements               ; 84                                             ;
-;     Total combinational functions  ; 84                                             ;
-;     Dedicated logic registers      ; 34                                             ;
-; Total registers                    ; 34                                             ;
-; Total pins                         ; 17                                             ;
-; Total virtual pins                 ; 0                                              ;
-; Total memory bits                  ; 0                                              ;
-; Embedded Multiplier 9-bit elements ; 0                                              ;
-; Total PLLs                         ; 0                                              ;
-; UFM blocks                         ; 0                                              ;
-; ADC blocks                         ; 0                                              ;
-+------------------------------------+------------------------------------------------+
++--------------------------------------------------------------------------------------+
+; Analysis & Synthesis Summary                                                         ;
++------------------------------------+-------------------------------------------------+
+; Analysis & Synthesis Status        ; Successful - Fri Oct 23 11:55:39 2026           ;
+; Quartus Prime Version              ; 25.1std.0 Build 1129 10/21/2025 SC Lite Edition ;
+; Revision Name                      ; practica6_2                                     ;
+; Top-level Entity Name              ; practica6_2                                     ;
+; Family                             ; MAX 10                                          ;
+; Total logic elements               ; 42                                              ;
+;     Total combinational functions  ; 42                                              ;
+;     Dedicated logic registers      ; 4                                               ;
+; Total registers                    ; 4                                               ;
+; Total pins                         ; 16                                              ;
+; Total virtual pins                 ; 0                                               ;
+; Total memory bits                  ; 0                                               ;
+; Embedded Multiplier 9-bit elements ; 0                                               ;
+; Total PLLs                         ; 0                                               ;
+; UFM blocks                         ; 0                                               ;
+; ADC blocks                         ; 0                                               ;
++------------------------------------+-------------------------------------------------+
 
 
 +------------------------------------------------------------------------------------------------------------+
@@ -166,56 +165,55 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------+-------------+
 
 
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Source Files Read                                                                                                                                         ;
-+----------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------------+---------+
-; File Name with User-Entered Path ; Used in Netlist ; File Type                          ; File Name with Absolute Path                                               ; Library ;
-+----------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------------+---------+
-; practica6_2.bdf                  ; yes             ; User Block Diagram/Schematic File  ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/practica6_2.bdf   ;         ;
-; mux.vhd                          ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd           ;         ;
-; logica.vhd                       ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/logica.vhd        ;         ;
-; incrementador.vhd                ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/incrementador.vhd ;         ;
-; secuenciador.bdf                 ; yes             ; User Block Diagram/Schematic File  ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/secuenciador.bdf  ;         ;
-; registro_mpc.vhd                 ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/registro_mpc.vhd  ;         ;
-; registro_ri.vhd                  ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/registro_ri.vhd   ;         ;
-; registro_rt.vhd                  ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/registro_rt.vhd   ;         ;
-; rom.vhd                          ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/rom.vhd           ;         ;
-; divisor_datos.vhd                ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/divisor_datos.vhd ;         ;
-; muxEntradas.vhd                  ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/muxEntradas.vhd   ;         ;
-; clk_buttom.vhd                   ; yes             ; User VHDL File                     ; C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/clk_buttom.vhd    ;         ;
-+----------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------------+---------+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                                                        ;
++----------------------------------+-----------------+------------------------------------+---------------------------------------------------------------------------+---------+
+; File Name with User-Entered Path ; Used in Netlist ; File Type                          ; File Name with Absolute Path                                              ; Library ;
++----------------------------------+-----------------+------------------------------------+---------------------------------------------------------------------------+---------+
+; practica6_2.bdf                  ; yes             ; User Block Diagram/Schematic File  ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/practica6_2.bdf   ;         ;
+; mux.vhd                          ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd           ;         ;
+; logica.vhd                       ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/logica.vhd        ;         ;
+; incrementador.vhd                ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/incrementador.vhd ;         ;
+; secuenciador.bdf                 ; yes             ; User Block Diagram/Schematic File  ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/secuenciador.bdf  ;         ;
+; registro_mpc.vhd                 ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/registro_mpc.vhd  ;         ;
+; registro_ri.vhd                  ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/registro_ri.vhd   ;         ;
+; registro_rt.vhd                  ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/registro_rt.vhd   ;         ;
+; rom.vhd                          ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/rom.vhd           ;         ;
+; divisor_datos.vhd                ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/divisor_datos.vhd ;         ;
+; muxEntradas.vhd                  ; yes             ; User VHDL File                     ; /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/muxEntradas.vhd   ;         ;
++----------------------------------+-----------------+------------------------------------+---------------------------------------------------------------------------+---------+
 
 
-+-----------------------------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary                           ;
-+---------------------------------------------+-------------------------+
-; Resource                                    ; Usage                   ;
-+---------------------------------------------+-------------------------+
-; Estimated Total logic elements              ; 84                      ;
-;                                             ;                         ;
-; Total combinational functions               ; 84                      ;
-; Logic element usage by number of LUT inputs ;                         ;
-;     -- 4 input functions                    ; 39                      ;
-;     -- 3 input functions                    ; 11                      ;
-;     -- <=2 input functions                  ; 34                      ;
-;                                             ;                         ;
-; Logic elements by mode                      ;                         ;
-;     -- normal mode                          ; 57                      ;
-;     -- arithmetic mode                      ; 27                      ;
-;                                             ;                         ;
-; Total registers                             ; 34                      ;
-;     -- Dedicated logic registers            ; 34                      ;
-;     -- I/O registers                        ; 0                       ;
-;                                             ;                         ;
-; I/O pins                                    ; 17                      ;
-;                                             ;                         ;
-; Embedded Multiplier 9-bit elements          ; 0                       ;
-;                                             ;                         ;
-; Maximum fan-out node                        ; clk_buttom:inst5|Equal0 ;
-; Maximum fan-out                             ; 32                      ;
-; Total fan-out                               ; 388                     ;
-; Average fan-out                             ; 2.55                    ;
-+---------------------------------------------+-------------------------+
++----------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary                                                  ;
++---------------------------------------------+------------------------------------------------+
+; Resource                                    ; Usage                                          ;
++---------------------------------------------+------------------------------------------------+
+; Estimated Total logic elements              ; 42                                             ;
+;                                             ;                                                ;
+; Total combinational functions               ; 42                                             ;
+; Logic element usage by number of LUT inputs ;                                                ;
+;     -- 4 input functions                    ; 30                                             ;
+;     -- 3 input functions                    ; 8                                              ;
+;     -- <=2 input functions                  ; 4                                              ;
+;                                             ;                                                ;
+; Logic elements by mode                      ;                                                ;
+;     -- normal mode                          ; 42                                             ;
+;     -- arithmetic mode                      ; 0                                              ;
+;                                             ;                                                ;
+; Total registers                             ; 4                                              ;
+;     -- Dedicated logic registers            ; 4                                              ;
+;     -- I/O registers                        ; 0                                              ;
+;                                             ;                                                ;
+; I/O pins                                    ; 16                                             ;
+;                                             ;                                                ;
+; Embedded Multiplier 9-bit elements          ; 0                                              ;
+;                                             ;                                                ;
+; Maximum fan-out node                        ; secuenciador:inst|registro_mpc:inst4|estado[3] ;
+; Maximum fan-out                             ; 23                                             ;
+; Total fan-out                               ; 195                                            ;
+; Average fan-out                             ; 2.50                                           ;
++---------------------------------------------+------------------------------------------------+
 
 
 +----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -223,8 +221,7 @@ https://fpgasoftware.intel.com/eula.
 +-----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+----------------------------------------------------+---------------+--------------+
 ; Compilation Hierarchy Node  ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; UFM Blocks ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; ADC blocks ; Full Hierarchy Name                                ; Entity Name   ; Library Name ;
 +-----------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+----------------------------------------------------+---------------+--------------+
-; |practica6_2                ; 84 (0)              ; 34 (0)                    ; 0           ; 0          ; 0            ; 0       ; 0         ; 17   ; 0            ; 0          ; |practica6_2                                       ; practica6_2   ; work         ;
-;    |clk_buttom:inst5|       ; 42 (42)             ; 30 (30)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |practica6_2|clk_buttom:inst5                      ; clk_buttom    ; work         ;
+; |practica6_2                ; 42 (0)              ; 4 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 16   ; 0            ; 0          ; |practica6_2                                       ; practica6_2   ; work         ;
 ;    |muxEntradas:inst6|      ; 2 (2)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |practica6_2|muxEntradas:inst6                     ; muxEntradas   ; work         ;
 ;    |registro_rt:inst2|      ; 2 (2)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |practica6_2|registro_rt:inst2                     ; registro_rt   ; work         ;
 ;    |rom:inst3|              ; 13 (13)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |practica6_2|rom:inst3                             ; rom           ; work         ;
@@ -241,8 +238,8 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 34    ;
-; Number of registers using Synchronous Clear  ; 28    ;
+; Total registers                              ; 4     ;
+; Number of registers using Synchronous Clear  ; 0     ;
 ; Number of registers using Synchronous Load   ; 4     ;
 ; Number of registers using Asynchronous Clear ; 4     ;
 ; Number of registers using Asynchronous Load  ; 0     ;
@@ -251,36 +248,23 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 
 
-+------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                       ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------+
-; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output             ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------+
-; 6:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |practica6_2|clk_buttom:inst5|state[0] ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------+
-
-
 +-----------------------------------------------------+
 ; Post-Synthesis Netlist Statistics for Top Partition ;
 +-----------------------+-----------------------------+
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
-; boundary_port         ; 17                          ;
-; cycloneiii_ff         ; 34                          ;
+; boundary_port         ; 16                          ;
+; cycloneiii_ff         ; 4                           ;
 ;     CLR SLD           ; 4                           ;
-;     SCLR              ; 28                          ;
-;     plain             ; 2                           ;
-; cycloneiii_lcell_comb ; 86                          ;
-;     arith             ; 27                          ;
-;         2 data inputs ; 27                          ;
-;     normal            ; 59                          ;
-;         1 data inputs ; 4                           ;
-;         2 data inputs ; 5                           ;
-;         3 data inputs ; 11                          ;
-;         4 data inputs ; 39                          ;
+; cycloneiii_lcell_comb ; 44                          ;
+;     normal            ; 44                          ;
+;         1 data inputs ; 3                           ;
+;         2 data inputs ; 3                           ;
+;         3 data inputs ; 8                           ;
+;         4 data inputs ; 30                          ;
 ;                       ;                             ;
 ; Max LUT depth         ; 5.00                        ;
-; Average LUT depth     ; 3.34                        ;
+; Average LUT depth     ; 3.57                        ;
 +-----------------------+-----------------------------+
 
 
@@ -298,78 +282,77 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +-------------------------------+
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
-    Info: Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
-    Info: Processing started: Thu Oct 22 23:09:16 2026
+    Info: Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
+    Info: Processing started: Fri Oct 23 11:55:31 2026
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off practica6_2 -c practica6_2
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
 Info (12021): Found 1 design units, including 1 entities, in source file practica6_2.bdf
     Info (12023): Found entity 1: practica6_2
-Warning (12090): Entity "mux" obtained from "mux.vhd" instead of from Quartus Prime megafunction library File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 6
+Warning (12090): Entity "mux" obtained from "mux.vhd" instead of from Quartus Prime megafunction library File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 6
 Info (12021): Found 2 design units, including 1 entities, in source file mux.vhd
-    Info (12022): Found design unit 1: mux-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 16
-    Info (12023): Found entity 1: mux File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 6
+    Info (12022): Found design unit 1: mux-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 16
+    Info (12023): Found entity 1: mux File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 6
 Info (12021): Found 2 design units, including 1 entities, in source file logica.vhd
-    Info (12022): Found design unit 1: logica-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/logica.vhd Line: 12
-    Info (12023): Found entity 1: logica File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/logica.vhd Line: 4
+    Info (12022): Found design unit 1: logica-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/logica.vhd Line: 12
+    Info (12023): Found entity 1: logica File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/logica.vhd Line: 4
 Info (12021): Found 2 design units, including 1 entities, in source file incrementador.vhd
-    Info (12022): Found design unit 1: incrementador-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/incrementador.vhd Line: 12
-    Info (12023): Found entity 1: incrementador File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/incrementador.vhd Line: 6
+    Info (12022): Found design unit 1: incrementador-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/incrementador.vhd Line: 12
+    Info (12023): Found entity 1: incrementador File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/incrementador.vhd Line: 6
 Info (12021): Found 1 design units, including 1 entities, in source file secuenciador.bdf
     Info (12023): Found entity 1: secuenciador
 Info (12021): Found 2 design units, including 1 entities, in source file registro_mpc.vhd
-    Info (12022): Found design unit 1: registro_mpc-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/registro_mpc.vhd Line: 13
-    Info (12023): Found entity 1: registro_mpc File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/registro_mpc.vhd Line: 4
+    Info (12022): Found design unit 1: registro_mpc-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/registro_mpc.vhd Line: 13
+    Info (12023): Found entity 1: registro_mpc File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/registro_mpc.vhd Line: 4
 Info (12021): Found 2 design units, including 1 entities, in source file registro_ri.vhd
-    Info (12022): Found design unit 1: registro_ri-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/registro_ri.vhd Line: 13
-    Info (12023): Found entity 1: registro_ri File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/registro_ri.vhd Line: 4
+    Info (12022): Found design unit 1: registro_ri-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/registro_ri.vhd Line: 13
+    Info (12023): Found entity 1: registro_ri File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/registro_ri.vhd Line: 4
 Info (12021): Found 2 design units, including 1 entities, in source file registro_rt.vhd
-    Info (12022): Found design unit 1: registro_rt-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/registro_rt.vhd Line: 13
-    Info (12023): Found entity 1: registro_rt File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/registro_rt.vhd Line: 4
+    Info (12022): Found design unit 1: registro_rt-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/registro_rt.vhd Line: 13
+    Info (12023): Found entity 1: registro_rt File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/registro_rt.vhd Line: 4
 Info (12021): Found 2 design units, including 1 entities, in source file rom.vhd
-    Info (12022): Found design unit 1: rom-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/rom.vhd Line: 13
-    Info (12023): Found entity 1: rom File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/rom.vhd Line: 6
+    Info (12022): Found design unit 1: rom-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/rom.vhd Line: 13
+    Info (12023): Found entity 1: rom File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/rom.vhd Line: 6
 Info (12021): Found 2 design units, including 1 entities, in source file divisor_datos.vhd
-    Info (12022): Found design unit 1: divisor_datos-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/divisor_datos.vhd Line: 15
-    Info (12023): Found entity 1: divisor_datos File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/divisor_datos.vhd Line: 4
-Info (12021): Found 2 design units, including 1 entities, in source file muxentradas.vhd
-    Info (12022): Found design unit 1: muxEntradas-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/muxEntradas.vhd Line: 15
-    Info (12023): Found entity 1: muxEntradas File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/muxEntradas.vhd Line: 4
+    Info (12022): Found design unit 1: divisor_datos-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/divisor_datos.vhd Line: 15
+    Info (12023): Found entity 1: divisor_datos File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/divisor_datos.vhd Line: 4
+Info (12021): Found 2 design units, including 1 entities, in source file muxEntradas.vhd
+    Info (12022): Found design unit 1: muxEntradas-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/muxEntradas.vhd Line: 15
+    Info (12023): Found entity 1: muxEntradas File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/muxEntradas.vhd Line: 4
 Info (12021): Found 2 design units, including 1 entities, in source file clk_buttom.vhd
-    Info (12022): Found design unit 1: clk_buttom-Behavioral File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/clk_buttom.vhd Line: 14
-    Info (12023): Found entity 1: clk_buttom File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/clk_buttom.vhd Line: 6
+    Info (12022): Found design unit 1: clk_buttom-Behavioral File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/clk_buttom.vhd Line: 14
+    Info (12023): Found entity 1: clk_buttom File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/clk_buttom.vhd Line: 6
 Info (12127): Elaborating entity "practica6_2" for the top level hierarchy
 Info (12128): Elaborating entity "secuenciador" for hierarchy "secuenciador:inst"
 Info (12128): Elaborating entity "registro_mpc" for hierarchy "secuenciador:inst|registro_mpc:inst4"
 Info (12128): Elaborating entity "mux" for hierarchy "secuenciador:inst|mux:inst"
-Warning (10631): VHDL Process Statement warning at mux.vhd(18): inferring latch(es) for signal or variable "edop", which holds its previous value in one or more paths through the process File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 18
-Info (10041): Inferred latch for "edop[0]" at mux.vhd(18) File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 18
-Info (10041): Inferred latch for "edop[1]" at mux.vhd(18) File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 18
-Info (10041): Inferred latch for "edop[2]" at mux.vhd(18) File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 18
-Info (10041): Inferred latch for "edop[3]" at mux.vhd(18) File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 18
+Warning (10631): VHDL Process Statement warning at mux.vhd(18): inferring latch(es) for signal or variable "edop", which holds its previous value in one or more paths through the process File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 18
+Info (10041): Inferred latch for "edop[0]" at mux.vhd(18) File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 18
+Info (10041): Inferred latch for "edop[1]" at mux.vhd(18) File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 18
+Info (10041): Inferred latch for "edop[2]" at mux.vhd(18) File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 18
+Info (10041): Inferred latch for "edop[3]" at mux.vhd(18) File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 18
 Info (12128): Elaborating entity "logica" for hierarchy "secuenciador:inst|logica:inst1"
 Info (12128): Elaborating entity "incrementador" for hierarchy "secuenciador:inst|incrementador:inst2"
-Info (12128): Elaborating entity "clk_buttom" for hierarchy "clk_buttom:inst5"
 Info (12128): Elaborating entity "muxEntradas" for hierarchy "muxEntradas:inst6"
 Info (12128): Elaborating entity "divisor_datos" for hierarchy "divisor_datos:inst4"
 Info (12128): Elaborating entity "rom" for hierarchy "rom:inst3"
 Info (12128): Elaborating entity "registro_ri" for hierarchy "registro_ri:inst1"
 Info (12128): Elaborating entity "registro_rt" for hierarchy "registro_rt:inst2"
-Warning (14026): LATCH primitive "secuenciador:inst|mux:inst|edop[0]" is permanently enabled File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 18
-Warning (14026): LATCH primitive "secuenciador:inst|mux:inst|edop[1]" is permanently enabled File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 18
-Warning (14026): LATCH primitive "secuenciador:inst|mux:inst|edop[2]" is permanently enabled File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 18
-Warning (14026): LATCH primitive "secuenciador:inst|mux:inst|edop[3]" is permanently enabled File: C:/Users/perci/Desktop/9no_Semestre/LAB_OAyC/practica6_2/mux.vhd Line: 18
+Warning (14026): LATCH primitive "secuenciador:inst|mux:inst|edop[0]" is permanently enabled File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 18
+Warning (14026): LATCH primitive "secuenciador:inst|mux:inst|edop[1]" is permanently enabled File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 18
+Warning (14026): LATCH primitive "secuenciador:inst|mux:inst|edop[2]" is permanently enabled File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 18
+Warning (14026): LATCH primitive "secuenciador:inst|mux:inst|edop[3]" is permanently enabled File: /home/ivan/Documents/FI/Lab_oac/practica6_2/practica6_2/mux.vhd Line: 18
 Info (286030): Timing-Driven Synthesis is running
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Info (21057): Implemented 101 device resources after synthesis - the final resource count might be different
-    Info (21058): Implemented 9 input pins
+Info (21057): Implemented 58 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 8 input pins
     Info (21059): Implemented 8 output pins
-    Info (21061): Implemented 84 logic cells
+    Info (21061): Implemented 42 logic cells
 Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 7 warnings
-    Info: Peak virtual memory: 4856 megabytes
-    Info: Processing ended: Thu Oct 22 23:09:23 2026
-    Info: Elapsed time: 00:00:07
+    Info: Peak virtual memory: 427 megabytes
+    Info: Processing ended: Fri Oct 23 11:55:39 2026
+    Info: Elapsed time: 00:00:08
     Info: Total CPU time (on all processors): 00:00:17
 
 

@@ -1,13 +1,13 @@
-Analysis & Synthesis Status : Successful - Thu Oct 22 23:09:23 2026
-Quartus Prime Version : 23.1std.0 Build 991 11/28/2023 SC Lite Edition
+Analysis & Synthesis Status : Successful - Fri Oct 23 11:55:39 2026
+Quartus Prime Version : 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
 Revision Name : practica6_2
 Top-level Entity Name : practica6_2
 Family : MAX 10
-Total logic elements : 84
-    Total combinational functions : 84
-    Dedicated logic registers : 34
-Total registers : 34
-Total pins : 17
+Total logic elements : 42
+    Total combinational functions : 42
+    Dedicated logic registers : 4
+Total registers : 4
+Total pins : 16
 Total virtual pins : 0
 Total memory bits : 0
 Embedded Multiplier 9-bit elements : 0
