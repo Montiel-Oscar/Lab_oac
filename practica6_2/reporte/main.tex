@@ -342,12 +342,12 @@ El contador de microprograma (\texttt{mPC}) guarda la dirección presente. Esa d
 
 \subsection{Carta ASM y tamaño de la memoria}
 
-La Figura~\ref{fig:carta-asm} representa la carta ASM implementada. Los estados $E_0$ a $E_{14}$ forman la secuencia principal y la posición $E_{15}$ se incluyó como posición de seguridad de la ROM; su flujo regresa al estado inicial. Las cajas indican las salidas activas de cada estado y los rombos indican la entrada que decide el siguiente salto.
+La Figura~\ref{fig:carta-asm} representa la carta ASM implementada y conserva la distribución de la carta proporcionada: la rama izquierda corresponde a la prueba $X$, la rama central a la prueba $Y$ y la rama derecha a la interrupción. Los rombos marcados con $T$ representan los saltos de transformación. Desde $E_1$, $T=00,11$ llega a $E_2$, $T=01$ llega a $E_8$ y $T=10$ llega a $E_{13}$; desde $E_{11}$, $T=01$ llega a $E_7$ y los demás valores llegan a $E_{12}$. La posición $E_{15}$ se usa solamente como retorno de seguridad de la ROM, por lo que no forma parte de la carta ASM original.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{carta_asm_practica6_2.png}
-\caption{Carta ASM implementada mediante el secuenciador microprogramado.}
+\caption{Carta ASM del secuenciador microprogramado, redibujada a partir de la carta proporcionada.}
 \label{fig:carta-asm}
 \end{figure}
 
