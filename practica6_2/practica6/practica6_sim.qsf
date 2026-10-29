@@ -18,4 +18,4 @@ set_global_assignment -name VHDL_FILE muxDireccion.vhd
 set_global_assignment -name VHDL_FILE muxEntradas.vhd
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform_sim.vwf
 
-set_global_assignment -name LAST_QUARTUS_VERSION "25.1std.0 Lite Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "23.1std.0 Lite Edition"

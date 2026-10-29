@@ -1,0 +1,34 @@
+# vsim -c -lib /tmp/practica6_verify/work tb_practica6 -do "run 20 us; quit -f" 
+# Start time: 13:27:39 on Oct 16,2026
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading /tmp/practica6_verify/work.tb_practica6(sim)
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading /tmp/practica6_verify/work.practica6(estructural)
+# Loading /tmp/practica6_verify/work.paso_boton(behavioral)
+# Loading /tmp/practica6_verify/work.registro_mpc(behavioral)
+# Loading /tmp/practica6_verify/work.incrementador(behavioral)
+# Loading /tmp/practica6_verify/work.rom(behavioral)
+# Loading /tmp/practica6_verify/work.divisor_datos(behavioral)
+# Loading /tmp/practica6_verify/work.muxentradas(behavioral)
+# Loading /tmp/practica6_verify/work.logica(behavioral)
+# Loading /tmp/practica6_verify/work.registro_rt(behavioral)
+# Loading /tmp/practica6_verify/work.registro_ri(behavioral)
+# Loading /tmp/practica6_verify/work.muxdireccion(behavioral)
+# run 20 us
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_practica6/dut/memoria
+# ** Warning: CONV_INTEGER: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, and it has been converted to 0.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_practica6/dut/memoria
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_practica6/dut/incrementa
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_practica6/dut/incrementa
+# ** Note: Todas las rutas ASM alcanzables y las salidas iniciales pasaron
+#    Time: 12860 ns  Iteration: 0  Instance: /tb_practica6
+#  quit -f
+# End time: 13:27:39 on Oct 16,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 4
