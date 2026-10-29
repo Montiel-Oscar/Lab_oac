@@ -15,18 +15,16 @@ end mux;
 
 architecture Behavioral of mux is
 begin
-
-    process(mpc, liga, rt, ri, sel)
+process(mpc, liga, rt, ri, sel)
     begin
         if sel = "00" then
-            edop <= mpc;
+            edop <= mpc;  -- Paso continuo (mpc + 1)
         elsif sel = "01" then
-            edop <= rt;
+            edop <= liga; -- Salto condicional a Liga de la ROM
         elsif sel = "10" then
-            edop <= ri;
+            edop <= rt;   -- Salto a transformación (RT)
         elsif sel = "11" then
-            edop <= liga;
+            edop <= ri;   -- Salto a interrupción (RI)
         end if;
     end process;
-
 end Behavioral;

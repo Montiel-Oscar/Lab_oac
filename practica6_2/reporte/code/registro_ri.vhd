@@ -29,7 +29,7 @@ begin
                     if entrada_int = '0' then
                         ri <= "1110";
                     else
-                        ri <= "0000";
+                        ri <= "0001";
                     end if;
 
                 when others =>
