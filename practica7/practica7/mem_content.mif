@@ -1,0 +1,84 @@
+-- Copyright (C) 1991-2015 Altera Corporation. All rights reserved.
+-- Your use of Altera Corporation's design tools, logic functions 
+-- and other software and tools, and its AMPP partner logic 
+-- functions, and any output files from any of the foregoing 
+-- (including device programming or simulation files), and any 
+-- associated documentation or information are expressly subject 
+-- to the terms and conditions of the Altera Program License 
+-- Subscription Agreement, the Altera Quartus Prime License Agreement,
+-- the Altera MegaCore Function License Agreement, or other 
+-- applicable license agreement, including, without limitation, 
+-- that your use is for the sole purpose of programming logic 
+-- devices manufactured by Altera and sold by Altera or its 
+-- authorized distributors.  Please refer to the applicable 
+-- agreement for further details.
+
+-- Quartus Prime generated Memory Initialization File (.mif)
+
+WIDTH=8;
+DEPTH=256;
+
+ADDRESS_RADIX=UNS;
+DATA_RADIX=HEX;
+
+CONTENT BEGIN
+	--ejercicio 3
+	--0       :   F6; -- LDAB ext
+	--1       :   00;
+	--2       :   17; -- TMP = linea (0x17 -> 23)
+	--3       :   96; -- LDAA ext
+	--4       :   00;
+	--5       :   18; -- res = linea (0x18 -> 24)
+	--6       :   1C; -- CMP inh A-B
+	--7       :   7D; -- JE ext
+	--8       :   00;
+	--9       :   0F;
+	--10      :   86; -- LDAA imm
+	--11      :   48;
+	--12      :   A7; -- STAA ext
+	--13      :   00;
+	--14      :   18;
+	--15      :   86; -- LDAA imm
+	--16      :   63;
+	--17      :   A7; -- STAA ext
+	--18      :   00;
+	--19      :   18;
+	--20      :   7E; -- JMP ext 14H
+	--21      :   00;
+	--22      :   14;
+	--23      :   0A; -- Valor de temp 
+	--24      :   0S; -- Valor de res 
+	--[25..255] : 00;
+	--END;
+
+
+	-- Ejercicio 2
+	--0    :   D6; --LDAB inm
+	--1    :   05;
+	--2    :   86; --LDAA inm 
+	--3    :   09;
+	--4    :   1C; -- CMP inh A-B
+	--5    :   7D; -- JE Ext
+	--6    :   00;
+	--7    :   0A; 
+	--8    :   86; -- LDAA INM
+	--9    :   48;
+	--10   :   86; -- LDAA INM
+	--11   :   63;
+	--[12..255]    :   00;
+	--END;
+
+
+	-- Ejercicio 1
+    0    :   D6; --LDAB inm
+	1    :   02;
+	2    :   86; --LDAA inm 
+	3    :   00;
+	4    :   1B; -- ABA inh A+B
+	5    :   7E; -- JMP Ext
+	6    :   00;
+	7    :   08; -- poner 8 o 4
+	8    :   86; -- LDAA dir
+	9    :   FF;
+	[10..255]    :   00;
+END;
