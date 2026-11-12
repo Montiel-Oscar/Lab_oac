@@ -1,388 +1,636 @@
 % !TEX program = pdflatex
 \documentclass[letterpaper,12pt]{article}
-\usepackage[utf8]{inputenc}
 \usepackage[spanish,mexico]{babel}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern,amsmath,amssymb}
-\usepackage{graphicx,float,xcolor,array,booktabs,tabularx,ragged2e}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx,float,subcaption,xcolor,array,booktabs,tabularx,ragged2e}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,calc}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
 \usepackage{listings}
-\usepackage[left=25mm,right=25mm,top=30mm,bottom=25mm,headheight=15pt]{geometry}
-\usepackage{parskip,fancyhdr,pdflscape,microtype}
+\usepackage[left=25mm,right=25mm,top=35mm,bottom=30mm,headheight=15pt]{geometry}
+\usepackage{parskip,fancyhdr}
 \usepackage{hyperref}
+
 \graphicspath{{img/}{portada_img/}}
 \newcommand{\materia}{Laboratorio de Organización y Arquitectura de Computadoras}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[R]{\small\textsc{\materia}}
+\fancyhead[R]{\textsc{\materia}}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.8pt}
-\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black,
- pdftitle={Práctica 7. Procesador CISC 68HC11},
- pdfauthor={Espinoza Matamoros Percival Ulises; Montiel Juárez Oscar Iván; Veraza García Amy Valentina}}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=cyan}
+
 \definecolor{codebg}{rgb}{0.96,0.96,0.96}
 \definecolor{keyword}{rgb}{0.0,0.2,0.6}
-\definecolor{comment}{rgb}{0.20,0.40,0.28}
+\definecolor{comment}{rgb}{0.25,0.5,0.35}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\lstdefinestyle{estiloVHDL}{language=VHDL,basicstyle=\ttfamily\scriptsize,
- backgroundcolor=\color{codebg},commentstyle=\color{comment}\itshape,
- keywordstyle=\color{keyword}\bfseries,numbers=left,
- numberstyle=\tiny\color{codegray},frame=single,breaklines=true,
- breakatwhitespace=false,columns=fullflexible,
- literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1
- {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {Ñ}{{\~N}}1,
- keepspaces=true,showstringspaces=false,tabsize=2,
- xleftmargin=4mm,framexleftmargin=1mm,aboveskip=9pt,belowskip=8pt}
+\lstdefinestyle{estiloVHDL}{
+  language=VHDL,basicstyle=\ttfamily\scriptsize,
+  backgroundcolor=\color{codebg},commentstyle=\color{comment}\itshape,
+  keywordstyle=\color{keyword}\bfseries,numbers=left,
+  numberstyle=\tiny\color{codegray},frame=single,breaklines=true,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {←}{{$\leftarrow$}}1,
+  keepspaces=true,showstringspaces=false,tabsize=2,
+  morekeywords={library,use,all,entity,is,port,in,out,architecture,of,begin,end,signal,constant,process,if,then,else,elsif,case,when,others,std_logic,std_logic_vector}
+}
 \lstdefinestyle{mif}{style=estiloVHDL,language={},morecomment=[l]{--},numbers=none}
+\lstdefinestyle{asm}{style=estiloVHDL,language={},morecomment=[l]{;},numbers=none}
+\lstdefinestyle{pseudo}{style=estiloVHDL,language=C,morecomment=[l]{//},numbers=none}
+
 \newcommand{\hx}[1]{\texttt{#1}}
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
-\setlength{\emergencystretch}{2em}
-\begin{document}
 \renewcommand{\lstlistingname}{Código}
+\setlength{\emergencystretch}{2em}
+
+\begin{document}
 \input{portada.tex}
-\clearpage
+\newpage
 
+%==============================================================
 \section{Objetivo}
-Analizar y ampliar el funcionamiento de un procesador CISC de 8 bits basado en el 68HC11, mediante la preparación de su memoria de microprograma y la ejecución de programas en lenguaje máquina. Verificar en simulación las cargas de datos, la suma de acumuladores, la comparación, los saltos y las transferencias entre registros y memoria.
 
-\section{Introducción}
-Una instrucción del procesador requiere varias operaciones internas: colocar una dirección en el bus, leer un dato, seleccionar los operandos de la unidad de procesamiento aritmético (UPA), guardar el resultado y actualizar las banderas. En el proyecto utilizado, estas operaciones se coordinan mediante palabras de control almacenadas en la memoria del secuenciador.
+Diseñar un procesador CISC de 8 bits, específicamente un \texttt{clon} del miniprocesador 68HC11 de Motorola \textcopyright.
 
-La práctica se desarrolló a partir del proyecto base y de los materiales de apoyo del profesor. Se trabajó en dos niveles: la microprogramación define cómo se ejecuta cada instrucción y el código máquina determina qué instrucciones ejecuta el procesador. Se presentan tres ejercicios y seis pruebas: suma repetitiva y carga de \hx{FF}, comparación de registros con valores iguales y diferentes, y comparación con acceso a memoria en ambos casos.
-
+%==============================================================
 \section{Desarrollo}
-\subsection{Organización del procesador}
-La arquitectura dispone de dos acumuladores de 8 bits, $A$ y $B$, una UPA, un registro de códigos de condición (CCR), un contador de programa (PC), registros auxiliares y una unidad de control microprogramada. Los datos ocupan bytes de 8 bits y las direcciones que manejan el PC y los saltos extendidos tienen 16 bits. La RAM implementada contiene 256 posiciones de 8 bits; los programas utilizan el intervalo \hx{0000} a \hx{00FF}.
 
-El PC indica la dirección del programa en RAM. La señal \texttt{Edo\_Pres} indica la dirección de la microinstrucción dentro del secuenciador. Son direcciones distintas: el PC avanza según los bytes de la instrucción, mientras que el secuenciador recorre los pasos necesarios para ejecutarla.
+En esta práctica se proporcionó un proyecto de Quartus el cual contenía la arquitectura CISC del procesador \texttt{M68Hc11}, el que ya contaba con el ciclo de búsqueda y con las instrucciones \texttt{LDAB} y \texttt{LDAA} en modo inmediato, \texttt{ABA} en modo inherente y \texttt{JMP} en modo extendido. A partir de este proyecto se agregaron seis rutinas de microprograma: \texttt{LDAB} (INM) con el código \hx{D6}, \texttt{CMP} (INH), \texttt{JE} (EXT), \texttt{STAA} (EXT), \texttt{LDAA} (EXT) y \texttt{LDAB} (EXT). A partir de la implementación de estas instrucciones se implementaron tres programas que se cargaron en la memoria RAM mediante el archivo \texttt{mem\_content.mif}.
+
+\subsection{Arquitectura del procesador}
+
+Para la implementación de las rutinas requeridas se empleo como referencia la arquitectura del procesador CISC 68HC11, que se muestra en la Figura~\ref{fig:arquitectura}. Donde se puede observar que la arquitectura cuenta con dos acumuladores de 8 bits ($A$ y $B$), una unidad de procesamiento aritmético (UPA) y un registro de códigos de condición (CCR) para almacenar las banderas. Los registros de 16 bits ($X$, $Y$, registro auxiliar RA, apuntador de pila y contador de programa PC) se conectan a los buses internos $C$ (parte alta), $D$ (parte baja) y $E$ (bus de direcciones). La memoria externa se accede a través del registro de direcciones, que se carga con la señal $\overline{\text{CBD}}$.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[font=\small,
- block/.style={draw,rounded corners=2pt,align=center,minimum height=12mm,text width=33mm},
- arrow/.style={-{Latex[length=2mm]},thick}]
-\node[block] (ram) at (0,0) {RAM de programa\\\texttt{mem\_content.mif}};
-\node[block] (ri) at (5.0,0) {Registro de\\instrucciones};
-\node[block] (rom) at (10.0,0) {Memoria de control\\\texttt{memory.vhd}};
-\node[block] (pc) at (0,-2.0) {Contador de\\programa (PC)};
-\node[block] (seq) at (5.0,-2.0) {Secuenciador\\y selección de prueba};
-\node[block] (path) at (10.0,-2.0) {Acumuladores, UPA\\y banderas};
-\draw[arrow] (pc) -- (ram) node[midway,left,font=\scriptsize] {dirección};
-\draw[arrow] (ram) -- (ri) node[midway,above,font=\scriptsize] {opcode};
-\draw[arrow] (ri) -- (rom) node[midway,above,font=\scriptsize] {opcode $\Vert$ \hx{0}};
-\draw[arrow] (seq.north east) -- (rom.south west);
-\draw[arrow] (rom) -- (path) node[midway,right,font=\scriptsize] {control};
-\draw[arrow] (path) -- (seq) node[midway,above,font=\scriptsize] {condiciones};
-\draw[arrow] (seq) -- (pc) node[midway,above,font=\scriptsize] {control};
-\end{tikzpicture}
-\caption{Esquema funcional simplificado de la relación entre programa, microprograma y ruta de datos. Se omiten buses y conexiones auxiliares para destacar el flujo de control.}
+\includegraphics[width=\linewidth,trim=10 55 10 45,clip]{arquitectura_68hc11.pdf}
+\caption{Arquitectura del procesador CISC 68HC11 empleada en la práctica.}
 \label{fig:arquitectura}
 \end{figure}
 
-\subsection{Memoria de programa y memoria de control}
-El archivo \texttt{mem\_content.mif} inicializa la RAM declarada en \texttt{RAM/ram.vhd}. Cada posición contiene un opcode, un operando o un dato. Su enlace se establece con el atributo siguiente:
-\begin{lstlisting}[style=estiloVHDL,numbers=none]
-attribute ram_init_file : string;
-attribute ram_init_file of mem : signal is "mem_content.mif";
-\end{lstlisting}
-El archivo \texttt{Secuenciador/memory.vhd} contiene la memoria de microprograma. Recibe una dirección de 12 bits y entrega una palabra de 98 bits mediante condiciones \texttt{if/elsif}. Cambiar el MIF modifica el programa; cambiar esta memoria modifica las operaciones internas de las instrucciones.
-
-\subsection{Preparación de la microprogramación con la hoja del profesor}
-Para preparar las palabras de control se utilizó como referencia el archivo \nolinkurl{salidas_68HC11_CISC-practica7.xlsx}, proporcionado por el profesor \cite{hoja}. La hoja \texttt{salidas} reúne las microdirecciones y las señales de cada palabra. Las columnas separan los campos del secuenciador, los acumuladores, la UPA, los registros, la memoria, las interrupciones y el CCR. La columna final, \texttt{CW}, concatena los valores de cada fila para formar la cadena de 98 bits que se coloca en \texttt{memory.vhd}.
-
-La hoja \texttt{entradas} relaciona las condiciones con los códigos del campo de prueba; por ejemplo, la bandera $Z$ corresponde a \hx{10010}. Las hojas de instrucciones y de \textit{fetch} relacionan las señales con las transferencias entre registros. También se consultaron los diagramas de direccionamiento inmediato y extendido y la tabla de líneas de control \cite{diagramas,control}.
-
-El procedimiento consistió en identificar la operación de cada paso, seleccionar los buses y registros que participan, establecer las habilitaciones y escrituras, definir la condición de salida y revisar la cadena binaria resultante. Finalmente se asociaron esas cadenas con las microdirecciones de cada opcode. Las palabras de las rutinas compartidas de la hoja \texttt{salidas} coinciden con las utilizadas en el VHDL entregado.
-
-\begin{table}[H]
-\centering\small
-\caption{Campos principales de la palabra de microprograma.}
-\label{tab:campos}
-\begin{tabularx}{\linewidth}{l c c Y}
-\toprule
-Campo & Bits & Longitud & Función \\
-\midrule
-Prueba & $97:93$ & 5 & Selección de la condición que se evalúa. \\
-$VF$ & $92$ & 1 & Valor de referencia para la condición. \\
-Instrucción & $91:90$ & 2 & Selección del modo de secuenciamiento. \\
-Liga & $89:78$ & 12 & Dirección de destino de microprograma. \\
-Control & $77:0$ & 78 & Acumuladores, UPA, registros, memoria, interrupciones y banderas. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-El espacio lógico direccionable de la memoria de control es de $2^{12}=4096$ palabras de 98 bits, equivalentes a $401\,408$ bits lógicos. El VHDL describe únicamente las direcciones necesarias y una salida por defecto, por lo que esta cifra no representa por sí sola el consumo físico de memoria en la FPGA.
-
-\subsection{Búsqueda y decodificación de instrucciones}
-El ciclo de búsqueda utiliza las microdirecciones \hx{008}, \hx{009} y \hx{00A}. Primero se transfiere el PC al registro de direcciones; después se lee el opcode, se carga en el registro de instrucciones y se incrementa el PC. Finalmente se selecciona la entrada del microprograma correspondiente.
-
-El registro de instrucciones concatena el opcode con cuatro bits en cero:
+Donde el registro de estado presente (\texttt{Edo\_Pres}) direcciona la memoria de microprograma (\texttt{memory.vhd}), la palabra leída se captura en el registro de microinstrucción (\texttt{registro\_sec}) donde en cada flanco de reloj las señales de control asociadas a un estado se ejecutan durante el ciclo siguiente. La lógica de selección compara la entrada elegida por el campo de prueba con el bit $VF$ mediante una compuerta XNOR:
 \[
-\text{entrada de microprograma}=\text{opcode}\,\Vert\,\hx{0}.
+CC=\overline{\text{Prueba}\oplus VF},
 \]
-Por ejemplo, \hx{86} conduce a \hx{860} y \hx{1C} a \hx{1C0}. Los pasos siguientes ocupan direcciones consecutivas hasta regresar a la búsqueda. El retorno puede preparar de nuevo el registro de direcciones y continuar en \hx{009}, sin repetir siempre \hx{008}.
+
+donde el bloque \texttt{logica\_seleccion.vhd} interpreta los dos bits del campo de instrucción, según la Tabla[\ref{tab:inst-sec}].
 
 \begin{table}[H]
-\centering\small
-\caption{Instrucciones utilizadas en esta implementación.}
-\label{tab:instrucciones}
-\begin{tabularx}{\linewidth}{l c c l Y}
+\centering
+\small
+\caption{Códigos de instrucción del secuenciador.}
+\label{tab:inst-sec}
+\begin{tabularx}{\linewidth}{c l Y}
 \toprule
-Instrucción & Opcode & Bytes & Microdirecciones & Operación principal \\
+$I_1I_0$ & Nombre & Siguiente estado \\
 \midrule
-LDAB inmediato & \hx{D6} & 2 & \hx{D60--D63} & $B\leftarrow$ dato inmediato. \\
-LDAA inmediato & \hx{86} & 2 & \hx{860--863} & $A\leftarrow$ dato inmediato. \\
-ABA inherente & \hx{1B} & 1 & \hx{1B0--1B2} & $A\leftarrow A+B$. \\
-JMP extendido & \hx{7E} & 3 & \hx{7E0--7E5} & PC $\leftarrow$ dirección de 16 bits. \\
-CMP inherente & \hx{1C} & 1 & \hx{1C0--1C2} & Evaluación de $A-B$ y banderas. \\
-JE extendido & \hx{7D} & 3 & \hx{7D0--7D5} & Salto cuando $Z=1$. \\
-STAA extendido & \hx{A7} & 3 & \hx{A70--A77} & $M[\text{dirección}]\leftarrow A$. \\
-LDAA extendido & \hx{96} & 3 & \hx{960--967} & $A\leftarrow M[\text{dirección}]$. \\
-LDAB extendido & \hx{F6} & 3 & \hx{F60--F67} & $B\leftarrow M[\text{dirección}]$. \\
+\texttt{00} & Continuar & $N+1$. \\
+\texttt{01} & Salto condicional & Liga si $CC=1$; $N+1$ si $CC=0$. \\
+\texttt{10} & MAP (decodificación) & Dirección formada por el opcode concatenado con \hx{0}. \\
+\texttt{11} & Vector & Rutina de interrupción si $CC=1$; $N+1$ si $CC=0$. \\
 \bottomrule
 \end{tabularx}
 \end{table}
-Los opcodes de la Tabla~\ref{tab:instrucciones} corresponden al procesador del proyecto. La rutina \hx{D60--D63} reproduce la carga inmediata de B que ya existe en \hx{C60--C63}. La práctica del semestre anterior se consultó como referencia de organización \cite{anterior}; los programas de este reporte emplean las asignaciones verificadas en el VHDL actual.
 
-\subsection{Operaciones internas}
-En las cargas inmediatas se toma el byte que sigue al opcode, se guarda en el acumulador y se incrementa el PC. Para \texttt{ABA}, la UPA recibe $A$ y $B$, calcula su suma y escribe el resultado en $A$. El acumulador $B$ conserva su dato.
+\subsection{Formato y dimensionamiento de la memoria de microprograma}
 
-La instrucción \texttt{CMP} evalúa $A-B$ sin escribir el resultado en los acumuladores. La bandera $Z$ detecta si la resta fue cero. En \texttt{JE}, la microinstrucción \hx{7D3} selecciona la prueba \hx{10010}, correspondiente a $Z$. Si $Z=1$, se ejecuta el paso que carga la dirección de destino en el PC; si $Z=0$, se omite esa carga y el programa continúa después de los dos bytes de dirección.
+A partir de la arquitectura del procesador se identificó el formato de la palabra de microprograma y se dimensionó la memoria.
 
-En el modo extendido se leen primero el byte alto y el byte bajo de la dirección. Después se utiliza esa dirección para leer la RAM en \texttt{LDAA}/\texttt{LDAB}, escribirla en \texttt{STAA} o cargar el PC en \texttt{JMP}. Por ejemplo, \hx{00 18} representa la dirección \hx{0018}, equivalente a 24 en decimal.
+Donde cada palabra de la memoria de microprograma tiene la siguiente organización:
+\[
+\underbrace{P_4\ldots P_0}_{\text{prueba}}
+\;\underbrace{VF}_{\text{valor}}
+\;\underbrace{I_1\,I_0}_{\text{instrucción}}
+\;\underbrace{L_{11}\ldots L_0}_{\text{liga}}
+\;\underbrace{\overline{\text{CRI}}\ldots \text{ACCSEC}}_{\text{salidas de control}}.
+\]
 
-\section{Programas de prueba}
-Todos los MIF utilizan \texttt{WIDTH=8}, \texttt{DEPTH=256}, \texttt{ADDRESS\_RADIX=UNS} y \texttt{DATA\_RADIX=HEX}. Las direcciones a la izquierda de los dos puntos son decimales y los bytes a la derecha, hexadecimales. Cada prueba se coloca dentro de un único bloque \texttt{CONTENT BEGIN ... END;}.
+El número de bits por palabra es
+\[
+m=5+1+2+12+78=98\ \text{bits},
+\]
+y como la dirección del secuenciador tiene 12 bits, el espacio de la memoria es
+\[
+2^{12}\times 98=4096\times 98=401\,408\ \text{bits}.
+\]
 
-\subsection{Ejercicio 1: suma repetitiva y carga de FF}
-Se carga $B=\hx{02}$ y $A=\hx{00}$. Después se ejecuta \texttt{ABA} y se regresa a la dirección \hx{0004}, donde está la suma. El algoritmo esperado es:
-\begin{lstlisting}[style=mif]
+De forma que en el archivo \texttt{memory.vhd} sólo se describen las microdirecciones utilizadas, donde cualquier otra dirección entrega la palabra por omisión, la cuál es todas las salidas inactivas.
+
+\subsection{Ciclo de búsqueda y decodificación}
+
+Para la implementación de las rutinas se tomo como referencia la Figura [\ref{fig:asm-inm}], en la cuál muestra la carta ASM del ciclo de búsqueda y de las instrucciones en modo inmediato e inherente. En \hx{008H} el PC se copia al registro de direcciones, en \hx{009H} se lee el opcode, se guarda en el registro de instrucciones y se incrementa el PC, mientras que en \hx{00AH} la instrucción MAP salta a la dirección $\text{opcode}\,\Vert\,\hx{0}$. Por ejemplo, el opcode \hx{D6} conduce a \hx{D60H} y \hx{1C} a \hx{1C0H}. Al terminar, cada rutina regresa a \hx{009H} después de cargar nuevamente el registro de direcciones con el PC.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth,trim=28 38 28 38,clip]{asm_inmediato.pdf}
+\caption{Carta ASM del ciclo de búsqueda y de las instrucciones \texttt{LDAB} (INM), \texttt{LDAA} (INM) y \texttt{ABA} (INH).}
+\label{fig:asm-inm}
+\end{figure}
+
+Otra carta ASM que se uso de referencia, fue la Figura~\ref{fig:asm-ext} la cual muestra la carta ASM del modo extendido para \texttt{JMP} y \texttt{STAA}. En ambos casos los dos bytes que siguen al opcode se leen en el registro auxiliar. Primero la parte alta (con $BD=1$) y después la parte baja, en cada lectura se incrementa el PC. Con la dirección completa en \texttt{RA}, \texttt{JMP} la copia al PC y \texttt{STAA} la usa como dirección de escritura. Cabe señalar que, aunque el diagrama de referencia anota $Y_{\text{UPA}}\leftarrow A\oplus 0$ en \hx{7E0H}, las señales activas (\texttt{nEPC2}, \texttt{nCBD}) ejecutan la transferencia $\text{Reg. Dir}\leftarrow\text{PC}$, tal como se implementa en \texttt{memory.vhd}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth,trim=28 38 28 38,clip]{asm_extendido.pdf}
+\caption{Carta ASM de las instrucciones \texttt{JMP} (EXT) y \texttt{STAA} (EXT).}
+\label{fig:asm-ext}
+\end{figure}
+
+\subsection{Procedimiento para microprogramar las instrucciones}
+
+Para la implementación de las instrucciones se empleo la siguente metología, a partir de una hoja de cálculo junto con la carta ASM de referencia, se fueron colocando los valores correspondientes a cada palabra de control en la memoria de microprograma
+
+Por lo que la metodología para implementar cada instrucción fue la siguiente:
+
+\begin{enumerate}
+  \item Identificar en la carta ASM las transferencias de cada estado.
+  \item Copiar las filas de una instrucción ya implementada cuya secuencia fuera parecida.
+  \item Cambiar únicamente las salidas necesarias como salidas activas, escrituras, función de la UPA, banderas y, en su caso, los campos de prueba, $VF$, instrucción y liga.
+  \item Copiar la cadena resultante de concatenar los valores de cada fila al archivo \texttt{memory.vhd}, en una condición \texttt{elsif} con la microdirección correspondiente.
+\end{enumerate}
+
+Las Tablas[\ref{tab:ldabinm}] a [\ref{tab:ldabext}] muestran, para cada estado, la transferencia realizada y las señales que son diferentes de la palabra cuando se ejecuta la instrucción. Donde las señales con prefijo \texttt{n} indican que son activas en bajo. La columna \emph{Sec.} indica los campos de secuenciamiento como \texttt{prueba/VF/instrucción/liga}, por otro lado  el guion (\texttt{-}) indica \texttt{00000/0/00/000}.
+
+\subsubsection{LDAB (INM), opcode \texttt{D6}}
+
+Para la rutina \texttt{LDAB (INM)} se consideró que la carga inmediata de $B$ ya existía en las microdirecciones \hx{C60}--\hx{C63}. Se definió para esta rutina el opcode \hx{D6}, por lo que se copiaron las cuatro filas a \hx{D60}--\hx{D63} sin modificar ninguna salida. El estado \hx{D62} actualiza las banderas con los valores de $B$ ($B7$ y $B4$ seleccionan $N_B$ y $Z_B$) y $B2$ limpia $V$.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Microprograma de \texttt{LDAB} (INM) en \hx{D60}--\hx{D63}.}
+\label{tab:ldabinm}
+\begin{tabularx}{\linewidth}{c l Y l}
+\toprule
+Dir. & Transferencia & Señales activas & Sec. \\
+\midrule
+\hx{D60} & Reg. Dir $\leftarrow$ PC & nEPC2=0, nCBD=0 & -- \\
+\hx{D61} & $B\leftarrow$ Mem, PC $\leftarrow$ PC$+1$ & EB0=1, nWB=0, PC0=1, nAS=0 & -- \\
+\hx{D62} & $V\leftarrow 0$; $Z,N\leftarrow Z_B,N_B$ & B7, B4, B2, CN, CV, CZ & \texttt{01111/1/11/000} \\
+\hx{D63} & Reg. Dir $\leftarrow$ PC & nEPC2=0, nCBD=0 & \texttt{11000/0/01/009} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection{CMP (INH), opcode \texttt{1C}}
+
+La instrucción \texttt{CMP} realiza $A-B$ para actualizar las banderas, sin embargo no guarda el resultado. Se tomó como referencia la instrucción \texttt{ABA} (\hx{1B0}--\hx{1B2}), dado que ambas conectan los dos acumuladores a la UPA. Los cambios que se realizaron fueron los siguientes:
+
+\begin{itemize}
+  \item En \hx{1C0} se agregó \texttt{UPA5=1}, que cambia la función de la UPA de suma a resta $R-S-\overline{C_{in}}$ con $R=A$ y $S=B$, y \texttt{ACCSEC=1}, que selecciona el acarreo personalizado para que el resultado sea $A-B$.
+  \item En \hx{1C1} se eliminaron \texttt{EA0=1} y \texttt{nWA=0}, de modo que la salida de la UPA no se escribe en $A$. También se quitó \texttt{CH}, porque la comparación sólo actualiza $C$, $N$, $V$ y $Z$.
+  \item \hx{1C2} es igual a \hx{1B2}.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Microprograma de \texttt{CMP} (INH) en \hx{1C0}--\hx{1C2}.}
+\label{tab:cmp}
+\begin{tabularx}{\linewidth}{c l Y l}
+\toprule
+Dir. & Transferencia & Señales activas & Sec. \\
+\midrule
+\hx{1C0} & $Y_{UPA}\leftarrow A-B$ & EB1, EB0, EA1, EA0, \textbf{UPA5}, UPA0, selmux, \textbf{ACCSEC} & -- \\
+\hx{1C1} & $C,N,V,Z\leftarrow C,N,V,Z_{UPA}$ & nOEUPA=0, nDUPA=0, CC, CN, CV, CZ & \texttt{01111/1/11/000} \\
+\hx{1C2} & Reg. Dir $\leftarrow$ PC & nEPC2=0, nCBD=0 & \texttt{11000/0/01/009} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection{JE (EXT), opcode \texttt{7D}}
+
+Para la instrucción \texttt{JE} salta a la dirección de 16 bits que sigue al opcode cuando los operandos comparados son iguales ($Z=1$). Se copió la rutina de \texttt{JMP} (\hx{7E0}--\hx{7E5}) y se modificó sólo el campo de secuenciamiento de \hx{7D3}, se seleccionó la prueba \texttt{10010} ($Z$), con $VF=0$, instrucción \texttt{01} y liga \hx{7D5}. De forma que la palabra completa de \hx{7D3} queda de la siguiente manera:
+\[
+\underbrace{\texttt{10010}}_{Z}\;
+\underbrace{\texttt{0}}_{VF}\;
+\underbrace{\texttt{01}}_{\text{salto}}\;
+\underbrace{\texttt{0111\,1101\,0101}}_{\hx{7D5}}\;
+\underbrace{\texttt{1001001000\ldots0010}}_{\text{salidas iguales a \hx{7E3}}}.
+\]
+Si $Z=0$, la entrada coincide con $VF$, $CC=1$ y el secuenciador carga la liga \hx{7D5}, omitiendo \hx{7D4} por lo que el PC conserva la dirección siguiente al \texttt{JE}. Si $Z=1$, $CC=0$ y se continúa en \hx{7D4}, donde se ejecuta PC $\leftarrow$ RA. Las salidas de \hx{7D3} no cambian, por lo que el byte bajo de la dirección se lee en ambos casos y el PC siempre avanza tres bytes. La Figura [\ref{fig:asm-nuevas}] muestra las cartas ASM resultantes para \texttt{CMP} y \texttt{JE}.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Microprograma de \texttt{JE} (EXT) en \hx{7D0}--\hx{7D5}.}
+\label{tab:je}
+\begin{tabularx}{\linewidth}{c l Y l}
+\toprule
+Dir. & Transferencia & Señales activas & Sec. \\
+\midrule
+\hx{7D0} & Reg. Dir $\leftarrow$ PC & nEPC2=0, nCBD=0 & -- \\
+\hx{7D1} & RA$_{\text{ALTA}}\leftarrow$ Mem, PC $\leftarrow$ PC$+1$ & nERA1=0, RA2, PC0, nAS=0, BD & -- \\
+\hx{7D2} & Reg. Dir $\leftarrow$ PC & nEPC2=0, nCBD=0 & -- \\
+\hx{7D3} & RA$_{\text{BAJA}}\leftarrow$ Mem, PC $\leftarrow$ PC$+1$ & nERA0=0, RA1, RA0, PC0, nAS=0 & \textbf{\texttt{10010/0/01/7D5}} \\
+\hx{7D4} & PC $\leftarrow$ RA & nERA1=0, nERA0=0, nEPC1=0, nEPC0=0, PC2, PC0 & \texttt{01111/1/11/000} \\
+\hx{7D5} & Reg. Dir $\leftarrow$ PC & nEPC2=0, nCBD=0 & \texttt{11000/0/01/009} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\scriptsize,
+  st/.style={draw, rectangle, text width=4.5cm, minimum height=0.9cm, align=center, inner sep=2pt},
+  dec/.style={draw, diamond, aspect=2.2, inner sep=1pt, minimum height=0.75cm},
+  flow/.style={-{Stealth[length=2mm]}, line width=0.6pt},
+  addr/.style={font=\scriptsize\bfseries\color{red}},
+  con/.style={draw, circle, inner sep=1.5pt}]
+  % ---------------- CMP ----------------
+  \node[font=\small\bfseries] at (-3.1,1.1) {CMP (INH)};
+  \node[st, label={[addr]above left:1C0H}] (c0) at (-3.1,0) {EA1 EA0 EB1 EB0 UPA5 UPA0 selmux ACCSEC\\ $Y_{UPA}\leftarrow A-B$};
+  \node[st, label={[addr]above left:1C1H}] (c1) at (-3.1,-1.45) {\underline{OEUPA} \underline{DUPA} CC CN CV CZ\\ $C,N,V,Z_{CCR}\leftarrow C,N,V,Z_{UPA}$};
+  \node[dec] (ci) at (-3.1,-2.75) {INT};
+  \node[st, label={[addr]above left:1C2H}] (c2) at (-3.1,-4.05) {\underline{EPC2} \underline{CBD}\\ Reg. Dir $\leftarrow$ PC};
+  \node[con] (c9) at (-3.1,-5.2) {009H};
+  \node[align=center] (cint) at (-0.25,-2.75) {INTI\\INTX};
+  \draw[flow] (c0) -- (c1);
+  \draw[flow] (c1) -- (ci);
+  \draw[flow] (ci) -- node[left] {0} (c2);
+  \draw[flow] (ci.east) -- node[above] {1} (cint.west);
+  \draw[flow] (c2) -- (c9);
+  % ---------------- JE ----------------
+  \node[font=\small\bfseries] at (3.1,1.1) {JE (EXT)};
+  \node[st, label={[addr]above left:7D0H}] (j0) at (3.1,0) {\underline{EPC2} \underline{CBD}\\ Reg. Dir $\leftarrow$ PC};
+  \node[st, label={[addr]above left:7D1H}] (j1) at (3.1,-1.45) {\underline{AS} \underline{ERA1} RA2 BD PC0\\ RA$_{\text{ALTA}}\leftarrow$ Mem, PC $\leftarrow$ PC$+1$};
+  \node[st, label={[addr]above left:7D2H}] (j2) at (3.1,-2.9) {\underline{EPC2} \underline{CBD}\\ Reg. Dir $\leftarrow$ PC};
+  \node[st, label={[addr]above left:7D3H}] (j3) at (3.1,-4.35) {\underline{AS} \underline{ERA0} RA1 RA0 PC0\\ RA$_{\text{BAJA}}\leftarrow$ Mem, PC $\leftarrow$ PC$+1$};
+  \node[dec] (jz) at (3.1,-5.65) {$Z$};
+  \node[st, label={[addr]above left:7D4H}] (j4) at (3.1,-7.0) {\underline{ERA1} \underline{ERA0} \underline{EPC1} \underline{EPC0} PC2 PC0\\ PC $\leftarrow$ RA};
+  \node[dec] (ji) at (3.1,-8.35) {INT};
+  \node[st, label={[addr]above left:7D5H}] (j5) at (3.1,-9.8) {\underline{EPC2} \underline{CBD}\\ Reg. Dir $\leftarrow$ PC};
+  \node[con] (j9) at (3.1,-10.95) {009H};
+  \node[align=center] (jint) at (0.25,-8.35) {INTI\\INTX};
+  \draw[flow] (j0) -- (j1);
+  \draw[flow] (j1) -- (j2);
+  \draw[flow] (j2) -- (j3);
+  \draw[flow] (j3) -- (jz);
+  \draw[flow] (jz) -- node[left] {1} (j4);
+  \draw[flow] (jz.east) -- node[above] {0} ++(2.4,0) |- (j5.east);
+  \draw[flow] (j4) -- (ji);
+  \draw[flow] (ji) -- node[right] {0} (j5);
+  \draw[flow] (ji.west) -- node[above] {1} (jint.east);
+  \draw[flow] (j5) -- (j9);
+\end{tikzpicture}
+\caption{Cartas ASM de las instrucciones \texttt{CMP} (INH) y \texttt{JE} (EXT).  \\ NOTA: Las señales subrayadas son activas en bajo.}
+\label{fig:asm-nuevas}
+\end{figure}
+
+\subsubsection{STAA (EXT), opcode \texttt{A7}}
+
+En \texttt{STAA} se implementó directamente a partir de la carta ASM de la Figura[\ref{fig:asm-ext}]. Los estados \hx{A70}--\hx{A73} son iguales a \hx{7E0}--\hx{7E3}. En lugar de copiar RA al PC, en \hx{A74} se carga el registro de direcciones con RA ($\overline{\text{ERA2}}$, $\overline{\text{CBD}}$) y en \hx{A75} se escribe $A$ en la memoria ($\overline{\text{AS}}$, $\overline{\text{R/W}}$, EA0). El estado \hx{A76} actualiza $Z$ y $N$ con el valor de $A$ y limpia $V$, por lo que se copió la fila \hx{862}. Finalmente, \hx{A77} es igual a \hx{863}.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Microprograma de \texttt{STAA} (EXT) en \hx{A70}--\hx{A77}.}
+\label{tab:staa}
+\begin{tabularx}{\linewidth}{c l Y l}
+\toprule
+Dir. & Transferencia & Señales activas & Sec. \\
+\midrule
+\hx{A70}--\hx{A73} & Lectura de la dirección en RA & Iguales a \hx{7E0}--\hx{7E3} & -- \\
+\hx{A74} & Reg. Dir $\leftarrow$ RA & nERA2=0, nCBD=0 & -- \\
+\hx{A75} & Mem $\leftarrow A$ & EA0=1, nAS=0, nRW=0 & -- \\
+\hx{A76} & $V\leftarrow 0$; $Z,N\leftarrow Z_A,N_A$ & B6, B3, B2, CN, CV, CZ & \texttt{01111/1/11/000} \\
+\hx{A77} & Reg. Dir $\leftarrow$ PC & nEPC2=0, nCBD=0 & \texttt{11000/0/01/009} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection{LDAA (EXT), opcode \texttt{96}}
+
+La carga extendida de $A$ tiene la misma secuencia que \texttt{STAA}, excepto que la memoria se lee en lugar de escribirse. Por ello se copió la rutina \hx{A70}--\hx{A77} y sólo se modificó el sexto estado: en \hx{965} se regresó \texttt{nRW} a 1 (lectura) y se activó \texttt{nWA=0}, manteniendo \texttt{EA0=1} y \texttt{nAS=0}. Así se obtiene la transferencia $A\leftarrow$ Mem.
+
+\subsubsection{LDAB (EXT), opcode \texttt{F6}}
+
+Para la carga extendida de $B$ se copió la rutina de \texttt{LDAA} (EXT) y en \hx{F65} se cambiaron las señales del acumulador: se desactivaron \texttt{EA0} y \texttt{nWA} y se activaron \texttt{EB0=1} y \texttt{nWB=0}, para obtener $B\leftarrow$ Mem. El estado \hx{F66} se conservó igual a \hx{966}, por lo que evalúa $Z$ y $N$ con el contenido de $A$ (bits $B6$ y $B3$) y no con el de $B$. 
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Diferencias entre \texttt{STAA}, \texttt{LDAA} y \texttt{LDAB} en modo extendido. Los demás estados son iguales.}
+\label{tab:ldabext}
+\begin{tabularx}{\linewidth}{l c l Y}
+\toprule
+Instrucción & Sexto estado & Transferencia & Señales activas \\
+\midrule
+\texttt{STAA} (EXT) & \hx{A75} & Mem $\leftarrow A$ & EA0=1, nAS=0, \textbf{nRW=0} \\
+\texttt{LDAA} (EXT) & \hx{965} & $A\leftarrow$ Mem & EA0=1, nAS=0, \textbf{nWA=0} \\
+\texttt{LDAB} (EXT) & \hx{F65} & $B\leftarrow$ Mem & \textbf{EB0=1}, nAS=0, \textbf{nWB=0} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Módulos implementados en VHDL}
+
+A diferencia de las prácticas anteriores, la arquitectura base del procesador ya está descrita en el proyecto, por lo que únicamente se modificó la memoria de microprograma dentro del secuenciador.
+
+\paragraph{Memoria de microprograma (\texttt{memory.vhd}).} Almacena las palabras de control de 98 bits correspondientes a cada microdirección del secuenciador. El Código [\ref{lst:memoria}] muestra las rutinas agregadas en \texttt{memory.vhd}.
+
+\newpage
+
+\lstinputlisting[style=estiloVHDL,basicstyle=\ttfamily\fontsize{4.9}{6.2}\selectfont,
+  numberstyle=\tiny\color{codegray},numbersep=4pt,xleftmargin=4mm,
+  linerange={60-107},firstnumber=60,caption={Microinstrucciones agregadas en \texttt{memory.vhd}.},label={lst:memoria}]{code/memory.vhd}
+
+\subsection{Programas en ensamblador}
+
+Los programas se escribieron en \texttt{mem\_content.mif}, con \texttt{WIDTH=8}, \texttt{DEPTH=256}, direcciones en decimal (\texttt{ADDRESS\_RADIX=UNS}) y datos en hexadecimal (\texttt{DATA\_RADIX=HEX}). En los listados de ensamblador las direcciones se expresan en hexadecimal.
+
+Durante la práctica se realizaron tres ejercicios, los cuales se describen a continuación.
+
+\subsubsection{Ejercicio 1}
+
+\begin{lstlisting}[style=pseudo]
 B = 0x02;
 A = 0x00;
 while (1) {
     A = A + B;
 }
 \end{lstlisting}
-\begin{lstlisting}[style=mif,caption={Ejercicio 1: el byte de la posición 7 selecciona la variante.},label={lst:ej1}]
-WIDTH=8;
-DEPTH=256;
-ADDRESS_RADIX=UNS;
-DATA_RADIX=HEX;
+
+\begin{lstlisting}[style=asm,caption={Ejercicio 1 en ensamblador.},label={lst:asm1}]
+Dir.   Bytes      Instruccion
+0000   D6 02      LDAB #$02      ; B <- 02
+0002   86 00      LDAA #$00      ; A <- 00
+0004   1B         ABA            ; A <- A + B
+0005   7E 00 04   JMP  $0004     ; regresar a la suma
+\end{lstlisting}
+
+\begin{lstlisting}[style=mif,caption={Contenido de \texttt{mem\_content.mif} para el ejercicio 1.},label={lst:mif1}]
 CONTENT BEGIN
-    0 : D6; -- LDAB inmediato
-    1 : 02;
-    2 : 86; -- LDAA inmediato
-    3 : 00;
-    4 : 1B; -- A <- A + B
-    5 : 7E; -- JMP extendido
-    6 : 00;
-    7 : 04; -- 04: repetir suma; 08: ir a la carga de FF
-    8 : 86; -- LDAA inmediato
-    9 : FF;
+    0  : D6;   -- LDAB inm
+    1  : 02;
+    2  : 86;   -- LDAA inm
+    3  : 00;
+    4  : 1B;   -- ABA inh
+    5  : 7E;   -- JMP ext
+    6  : 00;
+    7  : 04;   -- 04: ciclo de suma; 08: salto a LDAA #FF
+    8  : 86;   -- LDAA inm
+    9  : FF;
     [10..255] : 00;
 END;
 \end{lstlisting}
-Para la segunda prueba se cambió únicamente el destino del salto: la posición 7 contiene \hx{08}. Se realiza una suma y después se ejecuta \texttt{LDAA} con el operando \hx{FF}. La copia del MIF incluida en \texttt{code} conserva esta segunda variante. El opcode \hx{86} tiene direccionamiento inmediato en el VHDL utilizado, aunque el comentario de la copia original lo identifica como directo.
 
-\subsection{Ejercicio 2: comparación de acumuladores}
-Se utilizaron \texttt{CMP} y \texttt{JE} para probar $B=\hx{05}$ con $A=\hx{05}$ y con $A=\hx{09}$. El salto condicional conduce a \hx{000A}, donde se carga \hx{63}. Si los datos son diferentes, primero se carga \hx{48} y después \hx{63}:
-\begin{lstlisting}[style=mif]
+Para implementar el ciclo del pseudocódigo se agregó la rutina de \texttt{LDAB (INM)} y se tradujo la secuencia a ensamblador. Primero se cargan $B=\hx{02}$ y $A=\hx{00}$; después, \texttt{ABA} suma ambos acumuladores y \texttt{JMP \$0004} regresa a la instrucción \texttt{ABA}, por lo que la suma se repite indefinidamente. En el archivo \texttt{mem\_content.mif}, la dirección \hx{0007} puede configurarse, en este caso el número es \texttt{4}.
+
+
+\subsubsection{Ejercicio 2}
+
+\begin{lstlisting}[style=pseudo]
 B = 0x05;
-A = valor_de_prueba;
+A = valor;          // 0x05 (iguales) o 0x09 (diferentes)
 if (A != B) {
     A = 0x48;
 }
 A = 0x63;
 \end{lstlisting}
-\begin{lstlisting}[style=mif,caption={Ejercicio 2 para valores diferentes. Para igualdad, la posición 3 contiene 05.},label={lst:ej2}]
-WIDTH=8;
-DEPTH=256;
-ADDRESS_RADIX=UNS;
-DATA_RADIX=HEX;
+
+La condición $A\neq B$ se implementa con \texttt{CMP (INH)} y \texttt{JE (EXT)} de formma quie fue necesaerio implementar estas rutinas. En el programa, si los acumuladores son iguales, \texttt{JE} salta directamente a la asignación final; si son diferentes, el programa continúa con la asignación de \hx{48}.
+
+\begin{lstlisting}[style=asm,caption={Ejercicio 2 en ensamblador.},label={lst:asm2}]
+Dir.   Bytes      Instruccion
+0000   D6 05      LDAB #$05      ; B <- 05
+0002   86 09      LDAA #$09      ; A <- 09 (05 para la prueba de igualdad)
+0004   1C         CMP            ; A - B, actualiza Z
+0005   7D 00 0A   JE   $000A     ; si A = B, saltar a FIN
+0008   86 48      LDAA #$48      ; A <- 48 (solo si A != B)
+000A   86 63      LDAA #$63      ; FIN: A <- 63
+\end{lstlisting}
+
+\begin{lstlisting}[style=mif,caption={Contenido de \texttt{mem\_content.mif} para el ejercicio 2.},label={lst:mif2}]
 CONTENT BEGIN
-    0 : D6; -- B <- 05
-    1 : 05;
-    2 : 86; -- A <- 09 (usar 05 para igualdad)
-    3 : 09;
-    4 : 1C; -- CMP: evaluar A - B
-    5 : 7D; -- JE a 000A
-    6 : 00;
-    7 : 0A;
-    8 : 86; -- Carga intermedia si A != B
-    9 : 48;
-    10 : 86; -- Carga comun a ambas rutas
+    0  : D6;   -- LDAB inm
+    1  : 05;
+    2  : 86;   -- LDAA inm
+    3  : 09;   -- 05 para la prueba de igualdad
+    4  : 1C;   -- CMP inh (A - B)
+    5  : 7D;   -- JE ext
+    6  : 00;
+    7  : 0A;
+    8  : 86;   -- LDAA inm
+    9  : 48;
+    10 : 86;   -- LDAA inm
     11 : 63;
     [12..255] : 00;
 END;
 \end{lstlisting}
-Este programa no corresponde a un \texttt{if/else} con resultados finales distintos. Las dos rutas terminan en \hx{63}; la diferencia se reconoce por el paso intermedio por \hx{48}, por $Z$ después de \texttt{CMP} y por el recorrido del PC.
 
-\subsection{Ejercicio 3: comparación y almacenamiento en RAM}
-Se emplearon \texttt{LDAB}, \texttt{LDAA} y \texttt{STAA} extendidos para trabajar con \texttt{temp} y \texttt{res}, ubicadas en \hx{0017} y \hx{0018}. Estas direcciones corresponden a las posiciones decimales 23 y 24 del MIF.
+Para este ejercicio se cargó $B$ con \hx{05} y $A$ con \hx{09}; para probar la igualdad basta cambiar el dato de la dirección decimal 3 a \hx{05}. La instrucción \texttt{CMP} calcula $A-B$ y actualiza la bandera $Z$. Si los acumuladores son iguales, $Z=1$ y \texttt{JE \$000A} salta directamente a la asignación final, evitando la instrucción ubicada en \hx{0008}. Si son diferentes, $Z=0$, el salto no se toma y \texttt{LDAA \#\$48} se ejecuta antes de cargar \hx{63} en $A$. Así, el resultado final siempre es $A=\hx{63}$, pero el valor intermedio \hx{48} sólo aparece en la prueba de desigualdad. 
 
-En la prueba de igualdad ambas variables tienen \hx{0A}; en la de diferencia, \texttt{temp}=\hx{0A} y \texttt{res}=\hx{1B}. Si son diferentes se escribe \hx{48} en \texttt{res}. Posteriormente, ambas rutas escriben \hx{63} y ejecutan un salto a \hx{0014}, que mantiene al programa en un bucle final.
-\begin{lstlisting}[style=mif]
-B = memoria[0x0017]; // temp
-A = memoria[0x0018]; // res
-if (A != B) {
-    A = 0x48;
-    memoria[0x0018] = A;
+\subsubsection{Ejercicio 3}
+
+Para este ejercicio las variables \texttt{temp} y \texttt{res} se encuentran en la RAM, en las direcciones \hx{0017} y \hx{0018} (posiciones 23 y 24). Por ello se emplean las cargas y el almacenamiento en modo extendido.
+
+\begin{lstlisting}[style=pseudo]
+temp = 0x0A;
+res  = valor;       // 0x0A (iguales) o 0x1B (diferentes)
+if (res != temp) {
+    res = 0x48;
 }
-A = 0x63;
-memoria[0x0018] = A;
-while (1) { }          // JMP a 0x0014
+res = 0x63;
+while (1) { }
 \end{lstlisting}
-\clearpage
-\begin{lstlisting}[style=mif,caption={Ejercicio 3 para valores diferentes. Para igualdad, la posición 24 contiene 0A.},label={lst:ej3}]
-WIDTH=8;
-DEPTH=256;
-ADDRESS_RADIX=UNS;
-DATA_RADIX=HEX;
+
+\begin{lstlisting}[style=asm,caption={Ejercicio 3 en ensamblador.},label={lst:asm3}]
+Dir.   Bytes      Instruccion
+0000   F6 00 17   LDAB $0017     ; B <- temp
+0003   96 00 18   LDAA $0018     ; A <- res
+0006   1C         CMP            ; A - B, actualiza Z
+0007   7D 00 0F   JE   $000F     ; si res = temp, saltar a FIN
+000A   86 48      LDAA #$48      ; A <- 48
+000C   A7 00 18   STAA $0018     ; res <- 48
+000F   86 63      LDAA #$63      ; FIN: A <- 63
+0011   A7 00 18   STAA $0018     ; res <- 63
+0014   7E 00 14   JMP  $0014     ; ciclo final
+0017   0A                        ; temp
+0018   1B                        ; res (0A para la prueba de igualdad)
+\end{lstlisting}
+
+\begin{lstlisting}[style=mif,caption={Contenido de \texttt{mem\_content.mif} para el ejercicio 3.},label={lst:mif3}]
 CONTENT BEGIN
-    0 : F6; -- LDAB: B <- M[0017]
-    1 : 00;
-    2 : 17;
-    3 : 96; -- LDAA: A <- M[0018]
-    4 : 00;
-    5 : 18;
-    6 : 1C; -- CMP
-    7 : 7D; -- JE a 000F
-    8 : 00;
-    9 : 0F;
-    10 : 86; -- A <- 48 si los datos son diferentes
+    0  : F6;   -- LDAB ext
+    1  : 00;
+    2  : 17;   -- temp (0x17 -> 23)
+    3  : 96;   -- LDAA ext
+    4  : 00;
+    5  : 18;   -- res (0x18 -> 24)
+    6  : 1C;   -- CMP inh (A - B)
+    7  : 7D;   -- JE ext
+    8  : 00;
+    9  : 0F;
+    10 : 86;   -- LDAA inm
     11 : 48;
-    12 : A7; -- M[0018] <- A
+    12 : A7;   -- STAA ext
     13 : 00;
     14 : 18;
-    15 : 86; -- A <- 63 en ambas rutas
+    15 : 86;   -- LDAA inm
     16 : 63;
-    17 : A7; -- M[0018] <- A
+    17 : A7;   -- STAA ext
     18 : 00;
     19 : 18;
-    20 : 7E; -- JMP a 0014 (bucle final)
+    20 : 7E;   -- JMP ext a 0x14
     21 : 00;
     22 : 14;
-    23 : 0A; -- temp
-    24 : 1B; -- res: usar 0A para igualdad
+    23 : 0A;   -- temp
+    24 : 1B;   -- res (0A para la prueba de igualdad)
     [25..255] : 00;
 END;
 \end{lstlisting}
 
-\section{Simulación y análisis de resultados}
-Las pruebas se realizaron con el editor de formas de onda de Quartus y ModelSim. Se utilizó un reloj de 10 ns de periodo y un intervalo de observación de 1000 ns. En las capturas, \texttt{RESET}, \texttt{IRQn} y \texttt{XIRQn} permanecen en uno; el reinicio es activo en cero y no se aplicaron solicitudes externas de interrupción. Las señales \texttt{ACCA\_D}, \texttt{ACCB\_D}, \texttt{PC\_D} y \texttt{Edo\_Pres} permiten seguir los resultados y las secuencias internas.
+Para este ejercicio se agregaron las rutinas de \texttt{LDAB (EXT)}, \texttt{LDAA (EXT)} y \texttt{STAA (EXT)}, debido a que los operandos se almacenan en memoria y no forman parte del flujo inmediato de instrucciones. Primero, \texttt{LDAB \$0017} carga en $B$ el valor de \texttt{temp}, mientras que \texttt{LDAA \$0018} carga en $A$ el valor de \texttt{res}. Después, \texttt{CMP} compara ambos acumuladores. Si son iguales, \texttt{JE \$000F} salta directamente a la asignación de \hx{63}, en caso de ser diferentes, se carga \hx{48} en $A$ y \texttt{STAA \$0018} lo almacena temporalmente en \texttt{res}. En ambos casos se ejecuta después \texttt{LDAA \#\$63} y se guarda \hx{63} en \texttt{res} mediante \texttt{STAA \$0018}. Finalmente, \texttt{JMP \$0014} salta a sí misma para mantener el programa en un ciclo infinito. En el archivo MIF, las direcciones \hx{0017} y \hx{0018} corresponden a las posiciones decimales 23 y 24, respectivamente.
 
-Para cada prueba se guardó el programa, se recompiló el proyecto y se generó una nueva simulación funcional. Durante la preparación se detectó que los cambios del MIF se guardaban en una copia de la carpeta del reporte, mientras Quartus compilaba la copia del proyecto. Al actualizar el archivo utilizado en la compilación, las formas de onda reflejaron el ejercicio seleccionado.
+%==============================================================
+\section{Simulación}
 
-Las figuras siguientes se presentan en páginas horizontales para conservar la legibilidad de los buses. Se interpretan las transiciones de los acumuladores, las direcciones y la bandera $Z$, además del valor final.
+Para la ejecución de las simulaciones funcionales se realizaron en Quartu (ModelSim) con un reloj de 10\,[ns] de periodo, \texttt{RESET=1} e \texttt{IRQn=XIRQn=1}, es decir, sin solicitudes de interrupción. En las salidas se observan los acumuladores (\texttt{ACCA\_D}, \texttt{ACCB\_D}), el registro auxiliar (\texttt{AUX\_D}), el contador de programa (\texttt{PC\_D}), la habilitación de la RAM (\texttt{csnn}, activa en bajo), la bandera $Z$ y el estado presente del secuenciador (\texttt{Edo\_Pres}).
 
-\clearpage
-\newgeometry{left=18mm,right=18mm,top=23mm,bottom=20mm,headheight=15pt}
-\begin{landscape}
-\subsection{Ejercicio 1: suma repetitiva}
-\begin{figure}[H]\centering
-\includegraphics[width=\linewidth]{ejercicio1.png}
-\caption{Suma repetitiva con $B=\hx{02}$ y salto a \hx{0004}.}\label{fig:ej1}
+Cada estado presente dura un ciclo de reloj (10\,ns), las señales de control generadas en un estado se reflejan en la ruta de datos durante el ciclo siguiente.
+
+\subsection{Ejercicio 1}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{SIM_1.png}
+\caption{Simulación del ejercicio 1 con salto a \hx{0004}.}
+\label{fig:ej1}
 \end{figure}
-En la Figura~\ref{fig:ej1}, B se carga con \hx{02} y conserva ese valor. A sigue la secuencia \hx{00}, \hx{02}, \hx{04}, \hx{06}, \hx{08}, \hx{0A}, \hx{0C} y \hx{0E}. El PC vuelve a \hx{0004} después de leer el salto y sus operandos. Esto permite ejecutar \texttt{ABA} repetidamente sin volver a cargar $A=0$.
 
-Los intervalos entre cambios de A incluyen la búsqueda, la suma y el salto. Por ello, el resultado no cambia en cada periodo del reloj. La captura verifica el incremento de dos en dos durante la ventana observada; no se alcanzó el desbordamiento del acumulador de 8 bits.
+Al inicio de la gráfica obtenida de la simulación en la Figura [\ref{fig:ej1}], el secuenciador (\texttt{Edo\_Pres}) inicia en \hx{000}, cuya liga lleva a \hx{008}, después recorre \hx{009} y \hx{00A}, y el PC pasa de \hx{0000} a \hx{0001}. La instrucción MAP lleva el opcode \hx{D6} a \hx{D60}. Durante \hx{D60}--\hx{D63} se lee el operando y $B$ cambia a \hx{02}. El segundo grupo de cuatro estados corresponde a \hx{860}--\hx{863}: $A$ se carga con \hx{00} y, como el resultado es cero, $Z$ cambia a 1  tras ejecutarse \hx{862}.
 
-\clearpage
-\subsection{Ejercicio 1: salto a la carga de FF}
-\begin{figure}[H]\centering
-\includegraphics[width=\linewidth]{ejercicio1_ff.png}
-\caption{Variante con destino \hx{0008}: después de una suma se carga \hx{FF}.}\label{fig:ej1ff}
+Posteriormente aparecen tres estados \texttt{B} (\hx{1B0}--\hx{1B2}). Al concluir \hx{1B1}, la salida de la UPA se escribe en $A$, que cambia a \hx{02}, y $Z$ regresa a 0. Después siguen seis estados \texttt{E} (\hx{7E0}--\hx{7E5}): en \hx{7E1} y \hx{7E3} se leen los bytes \hx{00} y \hx{04}, respectivamente. Durante \hx{7E3}, el PC se incrementa para avanzar a la siguiente posición y muestra \hx{0008} de forma transitoria, de forma que \texttt{AUX\_D} toma el valor \hx{0004} al capturar el segundo byte. Finalmente, en \hx{7E4} se ordena $\text{PC}\leftarrow\text{RA}$ y el PC queda en \hx{0004}, que es la dirección destino del salto.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{SIM_1_2.png}
+\caption{Simulación del ejercicio 1 con salto a \hx{0004} - Parte 2.}
+\label{fig:ej1_2}
 \end{figure}
-En la Figura~\ref{fig:ej1ff}, A pasa de \hx{00} a \hx{02} y después a \hx{FF}; B permanece en \hx{02}. El destino \hx{0008} impide regresar a la suma y permite ejecutar la carga inmediata ubicada en las posiciones 8 y 9.
 
-Después de esta carga, el PC continúa por la región inicializada con ceros. La permanencia de A en \hx{FF} no corresponde a una instrucción de alto: no se programó un bucle final en esta variante. El resultado permite comprobar el destino del salto y la carga del operando.
+A partir de ese punto la secuencia de estados presentes se repite: \hx{009}, \hx{00A}, \hx{1B0}--\hx{1B2}, \hx{009}, \hx{00A}, \hx{7E0}--\hx{7E5}. Son 13 estados por iteración En el PC se repite el patrón \hx{0005}, \hx{0006}, \hx{0007}, \hx{0008}, \hx{0004}, y $B$ permanece en \hx{02}.
 
-\clearpage
-\subsection{Ejercicio 2: acumuladores iguales}
-\begin{figure}[H]\centering
-\includegraphics[width=\linewidth,trim=0 0 0 105,clip]{ejercicio_2_iguales.png}
-\caption{Comparación de $A=\hx{05}$ y $B=\hx{05}$: se omite la carga de \hx{48}.}\label{fig:ej2igual}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{SIM_1_3.png}
+\caption{Simulación del ejercicio 1 con salto a \hx{0004} - Parte 3.}
+\label{fig:ej1_3}
 \end{figure}
-En la Figura~\ref{fig:ej2igual}, ambos acumuladores reciben \hx{05}. Después de la comparación, $Z$ toma el valor uno y \texttt{JE} conduce al programa a \hx{000A}. A cambia directamente de \hx{05} a \hx{63}; no aparece \hx{48}. Se comprueba que el salto se toma cuando los operandos son iguales.
 
-La bandera $Z$ vuelve a cambiar después de cargar \hx{63}, porque esa instrucción también actualiza las banderas. La condición de igualdad debe revisarse entre \texttt{CMP} y \texttt{JE}, en lugar de usar únicamente el valor final de $Z$.
+En la Figura [\ref{fig:ej1ff}] la secuencia es idéntica hasta el primer \texttt{JMP}, pero ahora \texttt{AUX\_D} toma \hx{0008} en  y el PC salta a esa dirección. Después del salto aparece un grupo de cuatro estados (\hx{860}--\hx{863}) y $A$ cambia de \hx{02} a \hx{FF}. Desde \hx{000A} la memoria contiene \hx{00}, la instrucción MAP lleva ese opcode a la microdirección \hx{000}, cuya liga regresa a \hx{008}. Por ello \texttt{Edo\_Pres} sólo muestra estados (\hx{000}, \hx{008}, \hx{009}, \hx{00A}) y el PC aumenta en uno cada cuatro ciclos, sin modificar los acumuladores.
 
-\clearpage
-\subsection{Ejercicio 2: acumuladores diferentes}
-\begin{figure}[H]\centering
-\includegraphics[width=\linewidth,trim=0 0 0 105,clip]{ejercicio_2_diferentes.png}
-\caption{Comparación de $A=\hx{09}$ y $B=\hx{05}$: A pasa por \hx{48} y termina en \hx{63}.}\label{fig:ej2dif}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{SIM_1_4.png}
+\caption{Simulación del ejercicio 1 con salto a \hx{0008} - Parte 1.}
+\label{fig:ej1ff}
 \end{figure}
-En la Figura~\ref{fig:ej2dif}, B conserva \hx{05} y A se carga con \hx{09}. La comparación deja $Z=0$, de modo que no se toma el salto a \hx{000A}. Se ejecuta primero la carga de \hx{48} y luego la de \hx{63}, en concordancia con el Listado~\ref{lst:ej2}.
 
-La diferencia respecto a la prueba anterior es el valor intermedio \hx{48} y el recorrido por las posiciones 8 y 9. El valor final \hx{63} es común a ambas pruebas; observarlo de manera aislada no permite decidir si el salto condicional funcionó.
-
-\clearpage
-\subsection{Ejercicio 3: variables iguales}
-\begin{figure}[H]\centering
-\includegraphics[width=\linewidth,trim=0 0 0 150,clip]{ejercico_3_iguales.png}
-\caption{Lectura de \hx{0A} desde ambas variables y salto a la carga común de \hx{63}.}\label{fig:ej3igual}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{SIM_1_5.png}
+\caption{Simulación del ejercicio 1 con salto a \hx{0008} - Parte 2.}
+\label{fig:ej11ff}
 \end{figure}
-En la Figura~\ref{fig:ej3igual}, ambos acumuladores se cargan con \hx{0A} mediante acceso extendido. La comparación activa $Z$ y se omite la ruta que carga y almacena \hx{48}. A cambia de \hx{0A} a \hx{63}; B mantiene \hx{0A}. Al final, el PC recorre repetidamente el \texttt{JMP} situado en \hx{0014}.
 
-El recorrido es consistente con la ejecución de \texttt{STAA} para escribir \hx{63} en \hx{0018}. La captura no muestra directamente el contenido interno de la RAM: el dato escrito se deduce del acumulador y de la secuencia de instrucciones, sin una lectura posterior de verificación.
+\subsection{Ejercicio 2}
 
-\clearpage
-\subsection{Ejercicio 3: variables diferentes}
-\begin{figure}[H]\centering
-\includegraphics[width=\linewidth,trim=0 0 0 105,clip]{ejercico_3_diferentes.png}
-\caption{Lectura de $B=\hx{0A}$ y $A=\hx{1B}$, seguida por las cargas de \hx{48} y \hx{63}.}\label{fig:ej3dif}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{sim_2_1.png}
+\caption{Simulación del ejercicio 2 con $A=B=\hx{05}$. - Parte 1}
+\label{fig:ej2igual}
 \end{figure}
-En la Figura~\ref{fig:ej3dif}, \texttt{LDAB} obtiene \hx{0A} de \hx{0017} y \texttt{LDAA} obtiene \hx{1B} de \hx{0018}. No se cumple la igualdad. Se recorre la ruta que carga \hx{48} y ejecuta \texttt{STAA}; después se carga \hx{63} y se ejecuta el segundo almacenamiento. La secuencia visible en A es \hx{00}, \hx{1B}, \hx{48}, \hx{63}.
 
-El bucle final mantiene el PC alrededor de \hx{0014--0016}, correspondientes al opcode \texttt{JMP} y sus operandos. La evidencia permite seguir la ruta de escritura y el dato en A; la captura no incluye una observación directa de la celda \hx{0018}.
-\end{landscape}
-\restoregeometry
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{sim2_2.png}
+\caption{Simulación del ejercicio 2 con $A=B=\hx{05}$. - Parte 2}
+\label{fig:ej2igual2}
+\end{figure}
 
-\section{Discusión de resultados}
-\begin{table}[H]\centering\small
-\caption{Resultados observados en las seis pruebas.}
-\begin{tabularx}{\linewidth}{l Y Y}
-\toprule
-Prueba & Secuencia en A & Comprobación principal \\
-\midrule
-1: suma & \hx{00,02,04,06,08,0A,0C,0E} & Repetición de \texttt{ABA} con $B=\hx{02}$. \\
-1: carga de FF & \hx{00,02,FF} & Salto a \hx{0008} y carga inmediata. \\
-2: iguales & \hx{00,05,63} & \texttt{JE} omite la carga de \hx{48}. \\
-2: diferentes & \hx{00,09,48,63} & Continuación por la ruta intermedia. \\
-3: iguales & \hx{00,0A,63} & Lecturas extendidas y omisión de la primera escritura. \\
-3: diferentes & \hx{00,1B,48,63} & Lecturas extendidas y recorrido por ambas escrituras. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-Las formas de onda muestran la coordinación entre el PC y las microdirecciones. La suma requiere varias transiciones internas antes de actualizar A. Una instrucción extendida debe obtener dos bytes de dirección antes de realizar el acceso o el salto. Esta diferencia explica por qué una instrucción del programa ocupa varios ciclos del secuenciador.
+En la Figura[\ref{fig:ej2igual}] los dos primeros grupos de estados cargan $B=\hx{05}$ y $A=\hx{05}$. Después aparecen tres estados \texttt{C} (\hx{1C0}--\hx{1C2}), donde  en \hx{1C1} se actualizan las banderas con $A-B=0$ y $Z$ cambia a 1, mientras $A$ conserva \hx{05}.
 
-Las pruebas de comparación muestran que una bandera describe el resultado de la operación que la actualizó más recientemente. Después de \texttt{CMP}, $Z$ sirve para decidir el salto; después de una carga puede cambiar. También se observó que dos ejecuciones pueden terminar con el mismo acumulador y haber seguido rutas distintas, como ocurre con \hx{63} en los ejercicios 2 y 3.
+El grupo siguiente tiene seis estados \texttt{D}: \hx{7D0}--\hx{7D5}. En \hx{7D3} se prueba $Z$; como $Z=1$ y $VF=0$, $CC=0$ y el secuenciador continúa en \hx{7D4}, donde el PC se carga con \texttt{AUX\_D}$=\hx{000A}$. En \texttt{PC\_D} se observa la secuencia \hx{0006}, \hx{0007}, \hx{0008}, \hx{000A}: la dirección \hx{0008} aparece sólo durante un ciclo  por el incremento efectuado en \hx{7D3}, pero \hx{7D4} se sobrescribe de inmediato con \hx{000A}, de modo que la instrucción en \hx{0008} nunca se busca ni se ejecuta. Finalmente se ejecuta \hx{860}--\hx{863}, $A$ cambia directamente de \hx{05} a \hx{63} y $Z$ regresa a 0, debido a que el dato cargado es distinto de cero.
 
-El alcance de la comprobación es la simulación funcional. Las imágenes no documentan una implementación física ni una lectura de retorno de la RAM. La referencia anterior incluye un cuarto ejercicio; éste no se presenta como realizado porque los códigos y las capturas disponibles corresponden a los tres ejercicios descritos.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{sim2_3.png}
+\caption{Simulación del ejercicio 2 con $A=\hx{09}$ y $B=\hx{05}$ - Parte 1.}
+\label{fig:ej2dif}
+\end{figure}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{sim2_4.png}
+\caption{Simulación del ejercicio 2 con $A=\hx{09}$ y $B=\hx{05}$ - Parte 2.}
+\label{fig:ej2dif2}
+\end{figure}
+
+
+En la Figura [\ref{fig:ej2dif}] se carga $A=\hx{09}$. La comparación produce $A-B=\hx{04}$, por lo que $Z$ permanece en 0 durante toda la simulación. En este caso el grupo de estados \texttt{D} tiene sólo cinco estados: en \hx{7D3}, $Z=0$ coincide con $VF=0$, $CC=1$ y se carga la liga \hx{7D5}, omitiendo \hx{7D4}. Aunque \texttt{AUX\_D} también recibe \hx{000A}, esa dirección no se copia al PC, que continúa secuencialmente en \hx{0008} y \hx{0009}.
+
+Después del \texttt{JE} (\texttt{7D}) se observan dos grupos de cuatro estados \texttt{86X}: el primero carga \hx{48} y el segundo \hx{63}. El valor final de $A$ es \hx{63} en los dos casos, sin embargo la diferencia principal entre ellos se identifica por la rama del secuenciador, el recorrido del PC y el valor intermedio \hx{48}.
+
+\subsection{Ejercicio 3}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{sim3_1.png}
+\caption{Simulación del ejercicio 3 con \texttt{temp}$=$\texttt{res}$=\hx{0A}$. - Parte 1}
+\label{fig:ej3igual}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{sim3_2.png}
+\caption{Simulación del ejercicio 3 con \texttt{temp}$=$\texttt{res}$=\hx{0A}$. - Parte 2}
+\label{fig:ej3igua2}
+\end{figure}
+
+En la Figura [\ref{fig:ej3igual}] el primer grupo de ocho estados corresponde a \hx{F60}--\hx{F67}. En \hx{F61} y \hx{F63} se leen los bytes de dirección y \texttt{AUX\_D} toma \hx{0017}, después en \hx{F64} el registro de direcciones se carga con RA y en \hx{F65} el dato \hx{0A} se escribe en $B$. En \hx{F66}, $Z$ cambia a 1, aunque $B=\hx{0A}$: como este estado se copió de \hx{966}, las banderas se calculan con $A$, que todavía vale \hx{00}. La corrección consiste en usar $B7$ y $B4$ en lugar de $B6$ y $B3$, como en \hx{D62}. Este detalle no afecta al programa, porque $Z$ se vuelve a calcular en \texttt{CMP} antes de usarse.
+
+El segundo grupo de ocho estados (\hx{960}--\hx{967}) lee la dirección \hx{0018} (\texttt{AUX\_D}$=\hx{0018}$) y carga $A=\hx{0A}$; $Z$ regresa a 0. En los tres estados \texttt{C} (\hx{960}--\hx{962}) la comparación da cero y $Z$ cambia a 1. Por ello el grupo de estados \texttt{D} tiene seis estados (\hx{7D0} - \hx{7D5}): se ejecuta \hx{7D4} y el PC salta a \hx{000F}  (tras el valor transitorio \hx{0010} de \hx{7D3}), a la vez que \texttt{AUX\_D} contiene \hx{000F}. Se ejecuta \texttt{LDAA \#\$63} ($A=\hx{63}$, $Z=0$) y luego un solo grupo de ocho estados \texttt{7} (\hx{A70}--\hx{A77}), en el que \texttt{AUX\_D} vuelve a \hx{0018}y en \hx{A75} se habilita la escritura (\texttt{csnn=0}) para guardar \hx{63} en \texttt{res}.
+
+Finalmente aparece el ciclo de \texttt{JMP}: \texttt{AUX\_D} toma \hx{0014} y \texttt{Edo\_Pres} repite \hx{7E0}--\hx{7E5}, \hx{009}, \hx{00A}, mientras el PC recorre \hx{0015}, \hx{0016}, \hx{0017}, \hx{0014}. La simulación no muestra directamente el contenido interno de la RAM por lo que la escritura se verifica por la ejecución de \hx{A75}, el pulso de \texttt{csnn}, la dirección en RA y el valor de $A$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{sim3_3.png}
+\caption{Simulación del ejercicio 3 con \texttt{temp}$=\hx{0A}$ y \texttt{res}$=\hx{1B}$ - Parte 1}
+\label{fig:ej3dif}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{sim3_5.png}
+\caption{Simulación del ejercicio 3 con \texttt{temp}$=\hx{0A}$ y \texttt{res}$=\hx{1B}$ - Parte 2}
+\label{fig:ejd3dif}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{sim3_4.png}
+\caption{Simulación del ejercicio 3 con \texttt{temp}$=\hx{0A}$ y \texttt{res}$=\hx{1B}$ - Parte 3}
+\label{fig:ej3diDf}
+\end{figure}
+
+En la Figura [\ref{fig:ej3dif}] las cargas extendidas producen $B=\hx{0A}$ (105\,ns) y $A=\hx{1B}$ . La bandera $Z$ se activa en \hx{F66} por la misma razón descrita en la prueba anterior y regresa a 0 al cargar $A=\hx{1B}$, posteriormente de \texttt{CMP} se mantiene en 0 porque $\hx{1B}-\hx{0A}\neq 0$. El grupo de estados \texttt{D} tiene cinco estados, donde en \hx{7D3} se carga la liga \hx{7D5} y el PC continúa en \hx{000A}, aunque \texttt{AUX\_D} contiene \hx{000F}.
+
+A diferencia del caso anterior, se observan dos pares de rutinas \texttt{LDAA}/\texttt{STAA}: un grupo de cuatro estados (\hx{860}-\hx{863}) carga $A=\hx{48}$, un grupo de ocho estados (\hx{A70} - \hx{A77}) lo guarda en \hx{0018} (\texttt{csnn=0}). Posteriormente  otro grupo de cuatro estados (\hx{860}-\hx{863})  carga $A=\hx{63}$ y un segundo grupo de estados (\hx{A70} - \hx{A77})lo escribe en la misma dirección (\texttt{csnn=0}). Por ello \texttt{AUX\_D} permanece en \hx{0018} durante ambos almacenamientos. Al final, el programa entra al mismo ciclo de \texttt{JMP} a \hx{0014}.
+
+%==============================================================
 \clearpage
-\section{Conclusiones}
-\paragraph{Percival Ulises Espinoza Matamoros.}
-La práctica permitió relacionar las instrucciones del programa con las operaciones internas del procesador. La hoja de cálculo del profesor fue útil para organizar las señales y revisar las palabras de microprograma antes de colocarlas en VHDL. Al seguir las microdirecciones y los acumuladores, se pudo comprobar cómo una carga, una suma o un salto requieren varios pasos coordinados.
+\section{Conclusión}
 
-\paragraph{Oscar Iván Montiel Juárez.}
-En esta práctica comprendimos la diferencia entre cambiar el programa de la RAM y modificar la memoria de control. También fue necesario comprobar qué archivo utilizaba Quartus, ya que editar otra copia del MIF mantenía los mismos resultados aunque se volviera a compilar. Una vez corregida la ruta, las pruebas mostraron la suma repetitiva, la carga de \hx{FF} y las dos rutas de comparación según $Z$.
+\paragraph{Percival Ulises Espinoza Matamoros.} Gracias a la reealizacipon de está práctica pude poner en práctica conocimientos adquirodos en prácticas anteriores, sin embargo al implementar rutinas como \texttt{LDAB (INM)}, \texttt{CMP (INH)} y \texttt{JE (EXT)}, \texttt{STAA(EXT)} y \texttt{LDAA (EXT)} a partir de las cartas ASM proporcionadas así como en alguinos casos a partir de rutinas ya implementadas, me permitió comprender mejor el funcionamiento del procesador, además al usar las rutinas que se implementaron para escribir código en ensamblador me permitió tener una mejor comprensión de la forma en que se ejecutan las instrucciones desde el alto nivel hasta el microprograma, así como la forma en que se ejecutan las instrucciones y cómo se modifican los registros y las banderas de estado. Por otro lado en la simulación de los programas en ensamblador se pudo observar cómo se ejecutan las instrucciones analizando el estado presente del secuenciador, el contenido de los registros y las banderas de estado comprobando así el funcionamiento de los programas y la correcta implementación de las rutinas.
 
-\paragraph{Amy Valentina Veraza García.}
-Las pruebas con datos iguales y diferentes ayudaron a interpretar \texttt{CMP} y \texttt{JE}. El valor final de A no fue suficiente para distinguir las rutas, porque ambas terminaban en \hx{63}; fue necesario observar el paso por \hx{48}, la bandera y el PC. El direccionamiento extendido permitió relacionar las variables con sus direcciones en RAM y con las instrucciones de carga y almacenamiento.
+\paragraph{Oscar Iván Montiel Juárez.} En esta práctica se diferenció claramente entre modificar el programa en la RAM y modificar el microprograma. Con \texttt{mem\_content.mif} se escribieron los programas en ensamblador, mientras que en \texttt{memory.vhd} se definió qué hace internamente cada instrucción. Las simulaciones mostraron que el número de estados de cada rutina determina el tiempo de ejecución; en el ejercicio 1 cada iteración de la suma requiere 13 ciclos de reloj, y en \texttt{JE} la condición falsa ahorra un ciclo al omitir \hx{7D4}.
 
-\begin{thebibliography}{9}
-\bibitem{hoja} Cruz Estrada, J. C. \textit{salidas\_68HC11\_CISC-practica7.xlsx}. Material de apoyo del Laboratorio de Organización y Arquitectura de Computadoras. Hojas \texttt{salidas}, \texttt{entradas}, \texttt{LDAB(INM)}, \texttt{LDAA(INM)} y \texttt{fetch}.
-\bibitem{diagramas} Laboratorio de Organización y Arquitectura de Computadoras. \textit{Diagramas de direccionamiento inmediato y extendido}. Archivos \texttt{inmediato.pdf} y \texttt{extendido.pdf}, material proporcionado por el profesor.
-\bibitem{control} Laboratorio de Organización y Arquitectura de Computadoras. \textit{Líneas de control y arquitectura del procesador 68HC11}. Archivos \texttt{lineas\_de\_control\_update.pdf} y \texttt{68HC11.pdf}, material proporcionado por el profesor.
-\bibitem{anterior} Jiménez Treviño, E. C., y Martinez Perez, B. E. \textit{Práctica 7. Procesador CISC 68HC11}. Reporte del semestre 2026-1, 18 de noviembre de 2025. Referencia de organización y ejercicios.
-\end{thebibliography}
+\paragraph{Amy Valentina Veraza García.} La implementación de \texttt{CMP} y \texttt{JE} ayudó a comprender cómo se construye una decisión en el procesador: \texttt{CMP} sólo actualiza las banderas y \texttt{JE} utiliza $Z$ mediante la prueba, el bit $VF$ y la liga del secuenciador. Con el modo extendido fue posible trabajar con variables almacenadas en memoria. También se observó que copiar una rutina sin revisar todas sus salidas puede producir efectos no deseados, como la actualización de $Z$ con el acumulador $A$ en \texttt{LDAB} (EXT).
 
-\clearpage
-\appendix
-\section{Código de la memoria de control}
-El listado incorpora directamente \texttt{code/memory.vhd}. Se omite únicamente el encabezado de comentarios de formato y ejemplos que precede a los estados activos; se conservan la declaración de la entidad y todas las rutinas implementadas. La numeración corresponde al listado mostrado.
-\lstinputlisting[style=estiloVHDL,basicstyle=\ttfamily\fontsize{7}{8.5}\selectfont,
- linerange={1-16,27-113},caption={Memoria de microprograma de la práctica.},label={lst:memoria}]{code/memory.vhd}
 \end{document}
