@@ -1,0 +1,159 @@
+-- Copyright (C) 1991-2015 Altera Corporation. All rights reserved.
+-- Your use of Altera Corporation's design tools, logic functions 
+-- and other software and tools, and its AMPP partner logic 
+-- functions, and any output files from any of the foregoing 
+-- (including device programming or simulation files), and any 
+-- associated documentation or information are expressly subject 
+-- to the terms and conditions of the Altera Program License 
+-- Subscription Agreement, the Altera Quartus Prime License Agreement,
+-- the Altera MegaCore Function License Agreement, or other 
+-- applicable license agreement, including, without limitation, 
+-- that your use is for the sole purpose of programming logic 
+-- devices manufactured by Altera and sold by Altera or its 
+-- authorized distributors.  Please refer to the applicable 
+-- agreement for further details.
+
+-- Quartus Prime generated Memory Initialization File (.mif)
+
+WIDTH=8;
+DEPTH=256;
+
+ADDRESS_RADIX=UNS;
+DATA_RADIX=HEX;
+
+CONTENT BEGIN
+	--ejercicio 3
+	--0       :   F6; -- LDAB ext
+	--1       :   00;
+	--2       :   17; -- TMP = linea (0x17 -> 23)
+	--3       :   96; -- LDAA ext
+	--4       :   00;
+	--5       :   18; -- res = linea (0x18 -> 24)
+	--6       :   1C; -- CMP inh A-B
+	--7       :   7D; -- JE ext
+	--8       :   00;
+	--9       :   0F;
+	--10      :   86; -- LDAA imm
+	--11      :   48;
+	--12      :   A7; -- STAA ext
+	--13      :   00;
+	--14      :   18;
+	--15      :   86; -- LDAA imm
+	--16      :   63;
+	--17      :   A7; -- STAA ext
+	--18      :   00;
+	--19      :   18;
+	--20      :   7E; -- JMP ext 14H
+	--21      :   00;
+	--22      :   14;
+	--23      :   0A; -- Valor de temp 
+	--24      :   0S; -- Valor de res 
+	--[25..255] : 00;
+	--END;
+
+
+	-- Ejercicio 2
+	--0    :   D6; --LDAB inm
+	--1    :   05;
+	--2    :   86; --LDAA inm 
+	--3    :   09;
+	--4    :   1C; -- CMP inh A-B
+	--5    :   7D; -- JE Ext
+	--6    :   00;
+	--7    :   0A; 
+	--8    :   86; -- LDAA INM
+	--9    :   48;
+	--10   :   86; -- LDAA INM
+	--11   :   63;
+	--[12..255]    :   00;
+	--END;
+
+
+	-- Ejercicio 1
+    --0    :   D6; --LDAB inm
+	--1    :   02;
+	--2    :   86; --LDAA inm 
+	--3    :   00;
+	--4    :   1B; -- ABA inh A+B
+	--5    :   7E; -- JMP Ext
+	--6    :   00;
+	--7    :   08; -- poner 8 o 4
+	--8    :   86; -- LDAA dir
+	--9    :   FF;
+	--[10..255]    :   00;
+
+	--Ejercicio 4
+    
+    0  : 96; -- LDAA $0031 (L[0])
+    1  : 00;
+    2  : 31;
+
+    -- Comparacion con L[1]
+    3  : F6; -- LDAB $0032  (L[1])
+    4  : 00;
+    5  : 32;
+    6  : 1C; -- CMP
+    7  : 7C; -- JAE $000D
+    8  : 00;
+    9  : 0D;
+    10 : 96; -- LDAA $0032
+    11 : 00;
+    12 : 32;
+
+    -- Comparacion con L[2]
+    13 : F6; -- LDAB $0033 (L[2])
+    14 : 00;
+    15 : 33;
+    16 : 1C; -- CMP
+    17 : 7C; -- JAE $0017
+    18 : 00;
+    19 : 17;
+    20 : 96; -- LDAA $0033
+    21 : 00;
+    22 : 33;
+
+    -- Comparacion con L[3]
+    23 : F6; -- LDAB $0034 (L[3])
+    24 : 00;
+    25 : 34;
+    26 : 1C; -- CMP
+    27 : 7C; -- JAE $0021
+    28 : 00;
+    29 : 21;
+    30 : 96; -- LDAA $0034
+    31 : 00;
+    32 : 34;
+
+    -- Comparacion con L[4]
+    33 : F6; -- LDAB $0035 (L[4])
+    34 : 00;
+    35 : 35;
+    36 : 1C; -- CMP
+    37 : 7C; -- JAE $002B
+    38 : 00;
+    39 : 2B;
+    40 : 96; -- LDAA $0035
+    41 : 00;
+    42 : 35;
+
+    -- Sobreescritura de res
+    43 : A7; -- STAA $0036
+    44 : 00;
+    45 : 36;
+
+    -- Ciclo final
+    46 : 7E; -- JMP $002E
+    47 : 00;
+    48 : 2E;
+
+    -- Lista de valores
+    49 : 03; -- L[0], dir. 0031H
+    50 : 02; -- L[1], dir. 0032H
+    51 : 09; -- L[2], dir. 0033H
+    52 : 0C; -- L[3], dir. 0034H
+    53 : 0B; -- L[4], dir. 0035H
+    54 : 00; -- Res,  dir. 0036H
+
+    [55..255] : 00;
+	END;
+
