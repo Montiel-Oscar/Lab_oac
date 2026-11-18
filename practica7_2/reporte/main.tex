@@ -49,19 +49,29 @@
 
 %==============================================================
 \section{Objetivo}
-
-Obtener el mayor de cinco números de 8 bits sin signo y guardarlo en \texttt{Res}, mediante un programa para el procesador CISC 68HC11 y la implementación del salto condicional \texttt{JAE}.
+Diseñar un procesador CISC de 8 bits, específicamente un \texttt{clon} del miniprocesador 68HC11 de Motorola \copyright. Implementar las rutinas necesarias para poder implementar un algoritmo que obtenga el mayor de una lista de 5 números.
 
 %==============================================================
 \section{Desarrollo}
 
-Se agregó \texttt{JAE} en \texttt{Secuenciador/memory.vhd} y se cargaron el programa y los datos en RAM mediante \texttt{mem\_content.mif}. Se reutilizaron las instrucciones de carga, comparación y almacenamiento del proyecto de Quartus.
+Para el desarrollo de esta práctica se partió del mismo proyecto base de Quartus utilizado en la primera parte, el cual contiene la descripción de la arquitectura del procesador CISC 68HC11 y las rutinas de microprogramación previamente implementadas, de forma en un inicio ya se contaba con el siguiente conjunto de instrucciones: \texttt{LDAB(IMM)}, \texttt{LDAA(IMM)}, \texttt{ABA(INH)}, \texttt{JMP(EXT)}, CMP(\texttt{INH}), \texttt{JE(EXT)}, \texttt{STAA(EXT)}, \texttt{LDAA(EXT)} y \texttt{LDAB(EXT)}.
 
-\subsection{Lógica para obtener el número mayor}
+Para esta práctica se solicitó implementar las rutinas necesarias con la finalidad de poder implementar un programa para obtener el número mayor de una lista de 5 números, para ello se implementó la instrucción \texttt{JAE(EXT)} y se utilizó el conjunto de instrucciones previamente implementadas.
 
-$A$ conserva el mayor encontrado y $B$ recibe el siguiente elemento. Se carga $L[0]$ en $A$ y se compara con los otros cuatro valores: si $B>A$, se actualiza $A$; al terminar, se copia a \texttt{Res}.
+Esta última instrucción que se implemento (\texttt{JAE(EXT)}) con la finalidad de poder realizar la comparación sin signo y controlar el flujo del programa sin modificar los acumuladores, ya que la instrucción \texttt{JE(EXT)} solo permite realizar comparaciones con signo. De forma que la instrucción \texttt{JAE(EXT)} se implemento como las instrucciones anteriores en el archivo \texttt{memory.vhd} y se le asigno el código de operación \hx{7C}, mientras que el programa correspondiente se añadió en el archivo de inicialización de memoria RAM (\texttt{mem\_content.mif}).
 
-\begin{lstlisting}[style=pseudo,caption={Lógica del algoritmo para una lista de cinco números.},label={lst:logica}]
+
+\subsection{Planteamiento del algoritmo y lógica para obtener el número mayor}
+
+Antes de implementar la instrucción \texttt{JAE(EXT)} se analizó el programa solicitado con la finalidad de determinar la lógica que se debía implementar en el procesador, para ello se planteó el siguiente problema.
+
+Dada una lista $L = [L[0], L[1], L[2], L[3], L[4]]$ compuesta por cinco números enteros de 8 bits sin signo, asumiendo que se encuentran alojados en localidades consecutivas de la memoria RAM, se debe de determinar el valor máximo de la lista y escribirlo en la localidad reservada para la variable \texttt{Res}.
+
+El programa anteriormente descrito se puede expresar en código tipo C como se muestra en el Código [\ref{lst:logica}].
+
+\newpage
+
+\begin{lstlisting}[style=pseudo,caption={Lógica del algoritmo para una lista de cinco números sin signo.},label={lst:logica}]
 L = [0x05, 0x09, 0x01, 0x02, 0x06];
 mayor = L[0];
 for (i = 1; i < 5; i++) {
@@ -72,135 +82,164 @@ for (i = 1; i < 5; i++) {
 Res = mayor;
 \end{lstlisting}
 
-En ensamblador, el ciclo del Código~\ref{lst:logica} se implementó con cuatro bloques consecutivos, sin contador de iteraciones. Los datos se representan en hexadecimal y se interpretan sin signo, de 0 a 255.
-
-\subsection{Instrucciones utilizadas}
-
-La Tabla~\ref{tab:instrucciones} resume las instrucciones del programa. La única rutina nueva fue \texttt{JAE}, con el opcode \hx{7C}.
-
-\begin{table}[H]
-\centering
-\small
-\caption{Instrucciones empleadas para encontrar y almacenar el mayor.}
-\label{tab:instrucciones}
-\begin{tabularx}{\linewidth}{c l c Y}
-\toprule
-Opcode & Instrucción & Modo & Función en el programa \\
-\midrule
-\hx{96} & \texttt{LDAA} & EXT & Cargar el primer elemento en $A$ o actualizar el mayor. \\
-\hx{F6} & \texttt{LDAB} & EXT & Cargar el siguiente elemento de la lista en $B$. \\
-\hx{1C} & \texttt{CMP} & INH & Calcular $A-B$ para actualizar las banderas, sin modificar los acumuladores. \\
-\hx{7C} & \texttt{JAE} & EXT & Saltar si $A\geq B$, omitiendo la actualización de $A$. \\
-\hx{A7} & \texttt{STAA} & EXT & Guardar el mayor de $A$ en \texttt{Res}. \\
-\hx{7E} & \texttt{JMP} & EXT & Mantener el programa en un ciclo final. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-Cada bloque ejecuta \texttt{LDAB}, \texttt{CMP} y \texttt{JAE}. Si $A\geq B$, el salto omite el \texttt{LDAA} siguiente; si $A<B$, esa carga actualiza el mayor.
-
-\subsection{Comparación y bandera de acarreo}
-
-\texttt{CMP} calcula $A-B$ y actualiza las banderas sin modificar los acumuladores. En esta UPA, el bit adicional de la resta determina $C$:
-\[
-C=\begin{cases}
-1, & A<B,\\
-0, & A\geq B.
-\end{cases}
-\]
-
-Por ello, \texttt{JAE} toma el salto cuando $C=0$. Se usa $C$ porque la comparación es sin signo; $N$ por sí sola no determina el orden en todo el intervalo de 8 bits. Las señales con prefijo \texttt{n} se habilitan en bajo; las demás señales indicadas en la Tabla~\ref{tab:cmp-control} valen 1.
-
-\begin{table}[H]
-\centering
-\scriptsize
-\caption{Señales de control utilizadas por \texttt{CMP}.}
-\label{tab:cmp-control}
-\begin{tabularx}{\linewidth}{c Y Y}
-\toprule
-Estado & Señales & Función \\
-\midrule
-\hx{1C0} & EA1, EA0, EB1, EB0, UPA5, UPA0, selmux, ACCSEC & EA y EB conectan los acumuladores a la UPA. UPA0 selecciona $A$ y $B$; UPA5 selecciona la resta. selmux y ACCSEC fijan $C_{in}=1$ para obtener $A-B$. \\
-\hx{1C1} & nOEUPA=0, nDUPA=0, CC, CN, CV, CZ & Se conserva la salida registrada de la UPA y se cargan las banderas. nWA=nWB=1 evitan modificar los acumuladores. \\
-\hx{1C2} & nEPC2=0, nCBD=0 & Se prepara la siguiente búsqueda y se regresa a \hx{009}. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\subsection{Implementación de JAE}
-
-Se copiaron las seis microinstrucciones de \texttt{JE} a \hx{7C0}--\hx{7C5}, conservando las transferencias y cambiando la condición y la liga en \hx{7C3}. MAP dirige el opcode \hx{7C} a \hx{7C0}; después se leen los dos bytes del destino, primero el alto y luego el bajo, en RA.
-
-La palabra de microprograma tiene 98 bits: 20 de secuenciamiento y 78 de control. En \hx{7C3} se definieron estos campos:
-\[
-\underbrace{\texttt{10000}}_{\text{prueba de }C}\;
-\underbrace{\texttt{1}}_{VF}\;
-\underbrace{\texttt{01}}_{\text{salto condicional}}\;
-\underbrace{\texttt{0111\,1100\,0101}}_{\text{liga }\hx{7C5}}.
-\]
-
-El secuenciador evalúa $CC_{\text{sec}}=\overline{C\oplus VF}$. Con instrucción \texttt{01}, carga la liga si hay coincidencia; de lo contrario, continúa al siguiente microestado:
+Para implementar el algoritmo en el procesador, los acumuladores se plantearon de la siguiente manera:
 \begin{itemize}
-  \item $C=1$ ($A<B$): salta a \hx{7C5}, omite la carga del PC y continúa con el \texttt{LDAA} que actualiza $A$.
-  \item $C=0$ ($A\geq B$): ejecuta \hx{7C4}, carga $\text{PC}\leftarrow\text{RA}$ y omite la actualización de $A$.
+  \item El acumulador $A$ conserva el número mayor encontrado hasta el momento (\texttt{mayor}), por lo que se inicializa con el primer elemento de la lista ($A \leftarrow L[0]$).
+  \item El acumulador $B$ actúa como registro temporal para recibir secuencialmente cada uno de los cuatro elementos restantes ($B \leftarrow L[i]$, para $i = 1, 2, 3, 4$).
 \end{itemize}
 
-Así, saltar internamente a \hx{7C5} evita tomar el salto del programa. $CC_{\text{sec}}$ es la condición del secuenciador; la señal \texttt{CC} de \texttt{CMP} habilita la carga de la bandera de acarreo.
+Al implementar el algoritmo en lenguaje ensamblador para el subconjunto de instrucciones implementado, se consideró que las operaciones de acceso a RAM disponibles emplean modo de direccionamiento extendido (\texttt{EXT}) con direcciones explícitas de 16 bits y no direccionamiento indexado con un registro contador de iteraciones, por lo que se optó por desenrollar el ciclo \texttt{for} en cuatro bloques consecutivos e independientes de comparación y actualización condicional.
+
+Donde cada bloque implementa la misma secuencia de cuatro pasos:
+\begin{enumerate}
+  \item Carga en el acumulador $B$ el candidato $L[i]$ desde su dirección fija en RAM mediante \texttt{LDAB} (\texttt{EXT}).
+  \item Compara el máximo actual almacenado en $A$ contra el candidato en $B$ mediante \texttt{CMP} (\texttt{INH}), ejecutando en la UPA la resta $A - B$ únicamente para actualizar las banderas del registro de códigos de condición, sin alterar $A$ ni $B$.
+  \item Evalúa el salto condicional \texttt{JAE} (\texttt{EXT}): si $A \ge B$, el valor contenido en $A$ sigue siendo mayor o igual que el elemento actual, de modo que el salto desvía la ejecución hacia el inicio del siguiente bloque, omitiendo la actualización de $A$. En cambio, si $A < B$, el salto no se toma y se ejecuta la instrucción inmediata siguiente.
+  \item Cuando $A < B$, se ejecuta \texttt{LDAA} (\texttt{EXT}) sobre la misma dirección de $L[i]$, reemplazando el contenido de $A$ con el nuevo máximo antes de pasar al siguiente bloque.
+\end{enumerate}
+
+Al concluir los cuatro bloques de comparación, \texttt{STAA} (\texttt{EXT}) escribe el valor definitivo de $A$ en la dirección asignada a \texttt{Res}.
+
+\subsection{Conjunto de instrucciones utilizadas}
+
+Una vez definido el algoritmo y la lógica de comparación, se implementó el programa en lenguaje ensamblador para el subconjunto de instrucciones disponibles como se muestra en la Tabla[\ref{tab:instrucciones}].
 
 \begin{table}[H]
 \centering
 \scriptsize
-\caption{Transferencias y señales de control de \texttt{JAE} (EXT).}
-\label{tab:jae-control}
-\begin{tabularx}{\linewidth}{c Y Y}
+\caption{Conjunto de instrucciones empleadas para buscar y almacenar el mayor.}
+\label{tab:instrucciones}
+\begin{tabularx}{\linewidth}{c l c c c Y}
 \toprule
-Estado & Transferencia & Señales y motivo \\
+Opcode & Mnemónico & Modo & Bytes & Estados & Función en el programa \\
 \midrule
-\hx{7C0} & Reg. Dir $\leftarrow$ PC & nEPC2=0 habilita el PC en el bus de direcciones; nCBD=0 captura su valor. \\
-\hx{7C1} & RA$_{\text{ALTA}}\leftarrow$ Mem; PC $\leftarrow$ PC$+1$ & nAS=0 y nRW=1 leen memoria. BD=1, nERA1=0 y RA2=1 cargan el byte alto. PC0=1 incrementa el PC. \\
-\hx{7C2} & Reg. Dir $\leftarrow$ PC & nEPC2=0 y nCBD=0 preparan la dirección del segundo byte. \\
-\hx{7C3} & RA$_{\text{BAJA}}\leftarrow$ Mem; PC $\leftarrow$ PC$+1$; prueba de $C$ & nAS=0 y nRW=1 leen memoria. BD=0, nERA0=0 y RA1=RA0=1 cargan el byte bajo. PC0=1 incrementa el PC. \\
-\hx{7C4} & PC $\leftarrow$ RA, sólo si $C=0$ & nERA1=nERA0=0 habilitan RA en ambos buses. nEPC1=nEPC0=0 y PC2=PC0=1 cargan los 16 bits del PC. \\
-\hx{7C5} & Reg. Dir $\leftarrow$ PC & nEPC2=0 y nCBD=0 preparan la búsqueda de la siguiente instrucción. \\
+\hx{96} & \texttt{LDAA} & EXT & 3 & 8 (\hx{960}--\hx{967}) & Cargar el primer elemento $L[0]$ en $A$ o actualizar el máximo cuando $A < B$. \\
+\hx{F6} & \texttt{LDAB} & EXT & 3 & 8 (\hx{F60}--\hx{F67}) & Cargar en $B$ el siguiente candidato $L[i]$ desde la RAM. \\
+\hx{1C} & \texttt{CMP}  & INH & 1 & 3 (\hx{1C0}--\hx{1C2}) & Calcular $A-B$ en la UPA para actualizar las banderas del CCR sin alterar $A$ ni $B$. \\
+\hx{7C} & \texttt{JAE}  & EXT & 3 & 6 (\hx{7C0}--\hx{7C5}) & Saltar a la dirección de 16 bits destino si $A \ge B$ ($C=0$), omitiendo el \texttt{LDAA} de actualización. \\
+\hx{A7} & \texttt{STAA} & EXT & 3 & 8 (\hx{A70}--\hx{A77}) & Escribir el valor máximo acumulado en $A$ dentro de la localidad \texttt{Res}. \\
+\hx{7E} & \texttt{JMP}  & EXT & 3 & 6 (\hx{7E0}--\hx{7E5}) & Mantener el procesador en un ciclo infinito sobre el final del programa. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\hx{7C4} conserva la prueba de interrupciones \texttt{01111/1/11/000}; \hx{7C5} usa \texttt{11000/0/01/009} para volver a la búsqueda. El Código~\ref{lst:jae} muestra las palabras agregadas antes del \texttt{else} final de \texttt{memory.vhd}.
+\subsection{Diseño e implementación de la instrucción \texttt{JAE} (\texttt{EXT})}
 
-\begin{lstlisting}[style=estiloVHDL,caption={Microprograma agregado para JAE con opcode 7C.},label={lst:jae}]
--- JAE (EXT): salta si A >= B, es decir, C = 0
-elsif(dir= X"7C0") then data <=
-  "00000" & "0" & "00" & "000000000000" &
-  "100100100000000000110111000011100011100001100001111110000000000000000000000010";
-elsif(dir= X"7C1") then data <=
-  "00000" & "0" & "00" & "000000000000" &
-  "100100100000000000110111000010110011100011100111111011000000000000000000000010";
-elsif(dir= X"7C2") then data <=
-  "00000" & "0" & "00" & "000000000000" &
-  "100100100000000000110111000011100011100001100001111110000000000000000000000010";
-elsif(dir= X"7C3") then data <=
-  "10000" & "1" & "01" & "011111000101" &
-  "100100100000000000110111000011001111100011100111111010000000000000000000000010";
-elsif(dir= X"7C4") then data <=
-  "01111" & "1" & "11" & "000000000000" &
-  "100100100000000000110111000010000011100010010111111110000000000000000000000010";
-elsif(dir= X"7C5") then data <=
-  "11000" & "0" & "01" & "000000001001" &
-  "100100100000000000110111000011100011100001100001111110000000000000000000000010";
-\end{lstlisting}
+Se agregó la instrucción \texttt{JAE} (\texttt{EXT}) con el código \hx{7C}, tomando como referencia la instrucción \texttt{JE} de la primera parte. La nueva instrucción permite comparar los valores sin signo y decidir si se conserva el valor actual o se actualiza con uno mayor.
 
-\subsection{Programa y distribución de la RAM}
+Para incorporarla, se añadió su rutina al archivo \texttt{memory.vhd} y se actualizaron las instrucciones del programa en \texttt{mem\_content.mif}
 
-El programa ocupa las posiciones decimales 0--48, la lista las posiciones 49--53 (\hx{0031}--\hx{0035}) y \texttt{Res} la posición 54 (\hx{0036}). Cada \texttt{JAE} apunta al siguiente bloque o al almacenamiento final. Las direcciones del Código~\ref{lst:ensamblador} están en hexadecimal.
+La Figura[\ref{fig:asm-cmp-jae}] muestra las cartas ASM completas de \texttt{CMP} (\texttt{INH}) y \texttt{JAE} (\texttt{EXT}), que se implementaron, en la Tabla~\ref{tab:jae-control} resume las transferencias y campos de cada microestado de \texttt{JAE}, y el Código [\ref{lst:jae}] presenta las microinstrucciones incorporadas en \texttt{memory.vhd}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\scriptsize,
+  st/.style={draw, rectangle, text width=4.6cm, minimum height=0.9cm, align=center, inner sep=2pt},
+  dec/.style={draw, diamond, aspect=2.2, inner sep=1pt, minimum height=0.75cm},
+  flow/.style={-{Stealth[length=2mm]}, line width=0.6pt},
+  addr/.style={font=\scriptsize\bfseries\color{red}},
+  con/.style={draw, circle, inner sep=1.5pt}]
+  % ---------------- CMP ----------------
+  \node[font=\small\bfseries] at (-3.1,1.1) {CMP (INH)};
+  \node[st, label={[addr]above left:1C0H}] (c0) at (-3.1,0) {EA1 EA0 EB1 EB0 UPA5 UPA0 selmux ACCSEC\\ $Y_{\text{UPA}}\leftarrow A-B$};
+  \node[st, label={[addr]above left:1C1H}] (c1) at (-3.1,-1.45) {\underline{OEUPA} \underline{DUPA} CC CN CV CZ\\ $C,N,V,Z_{\text{CCR}}\leftarrow C,N,V,Z_{\text{UPA}}$};
+  \node[dec] (ci) at (-3.1,-2.75) {INT};
+  \node[st, label={[addr]above left:1C2H}] (c2) at (-3.1,-4.05) {\underline{EPC2} \underline{CBD}\\ Reg. Dir $\leftarrow$ PC};
+  \node[con] (c9) at (-3.1,-5.2) {009H};
+  \node[align=center] (cint) at (-0.25,-2.75) {INTI\\INTX};
+  \draw[flow] (c0) -- (c1);
+  \draw[flow] (c1) -- (ci);
+  \draw[flow] (ci) -- node[left] {0} (c2);
+  \draw[flow] (ci.east) -- node[above] {1} (cint.west);
+  \draw[flow] (c2) -- (c9);
+  % ---------------- JAE ----------------
+  \node[font=\small\bfseries] at (3.1,1.1) {JAE (EXT)};
+  \node[st, label={[addr]above left:7C0H}] (j0) at (3.1,0) {\underline{EPC2} \underline{CBD}\\ Reg. Dir $\leftarrow$ PC};
+  \node[st, label={[addr]above left:7C1H}] (j1) at (3.1,-1.45) {\underline{AS} \underline{ERA1} RA2 BD PC0\\ RA$_{\text{ALTA}}\leftarrow$ Mem, PC $\leftarrow$ PC$+1$};
+  \node[st, label={[addr]above left:7C2H}] (j2) at (3.1,-2.9) {\underline{EPC2} \underline{CBD}\\ Reg. Dir $\leftarrow$ PC};
+  \node[st, label={[addr]above left:7C3H}] (j3) at (3.1,-4.35) {\underline{AS} \underline{ERA0} RA1 RA0 PC0\\ RA$_{\text{BAJA}}\leftarrow$ Mem, PC $\leftarrow$ PC$+1$};
+  \node[dec] (jc) at (3.1,-5.65) {$C$};
+  \node[st, label={[addr]above left:7C4H}] (j4) at (3.1,-7.0) {\underline{ERA1} \underline{ERA0} \underline{EPC1} \underline{EPC0} PC2 PC0\\ PC $\leftarrow$ RA};
+  \node[dec] (ji) at (3.1,-8.35) {INT};
+  \node[st, label={[addr]above left:7C5H}] (j5) at (3.1,-9.8) {\underline{EPC2} \underline{CBD}\\ Reg. Dir $\leftarrow$ PC};
+  \node[con] (j9) at (3.1,-10.95) {009H};
+  \node[align=center] (jint) at (0.25,-8.35) {INTI\\INTX};
+  \draw[flow] (j0) -- (j1);
+  \draw[flow] (j1) -- (j2);
+  \draw[flow] (j2) -- (j3);
+  \draw[flow] (j3) -- (jc);
+  \draw[flow] (jc) -- node[left] {0} (j4);
+  \draw[flow] (jc.east) -- node[above] {1} ++(2.4,0) |- (j5.east);
+  \draw[flow] (j4) -- (ji);
+  \draw[flow] (ji) -- node[right] {0} (j5);
+  \draw[flow] (ji.west) -- node[above] {1} (jint.east);
+  \draw[flow] (j5) -- (j9);
+\end{tikzpicture}
+\caption{Cartas ASM de las instrucciones \texttt{CMP} (INH) y \texttt{JAE} (EXT).\\NOTA: Las señales subrayadas son activas en bajo.}
+\label{fig:asm-cmp-jae}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Microprograma de \texttt{JAE} (EXT) en \hx{7C0}--\hx{7C5}.}
+\label{tab:jae-control}
+\begin{tabularx}{\linewidth}{c l Y l}
+\toprule
+Dir. & Transferencia & Señales activas y motivo & Sec. \\
+\midrule
+\hx{7C0} & Reg. Dir $\leftarrow$ PC & \texttt{nEPC2=0} habilita el PC en el bus de direcciones y \texttt{nCBD=0} captura su valor. & \texttt{00000/0/00/000} \\
+\hx{7C1} & RA$_{\text{ALTA}}\leftarrow$ Mem; PC $\leftarrow$ PC$+1$ & \texttt{nAS=0} (\texttt{nRW=1}) lee la RAM; \texttt{BD=1}, \texttt{nERA1=0} y \texttt{RA2=1} cargan el byte alto en RA; \texttt{PC0=1} incrementa el PC. & \texttt{00000/0/00/000} \\
+\hx{7C2} & Reg. Dir $\leftarrow$ PC & \texttt{nEPC2=0} y \texttt{nCBD=0} preparan la dirección del segundo byte del destino. & \texttt{00000/0/00/000} \\
+\hx{7C3} & RA$_{\text{BAJA}}\leftarrow$ Mem; PC $\leftarrow$ PC$+1$ & \texttt{nAS=0} (\texttt{nRW=1}) lee la RAM; \texttt{BD=0}, \texttt{nERA0=0}, \texttt{RA1=RA0=1} cargan el byte bajo en RA; \texttt{PC0=1} incrementa el PC. Evalúa $C$. & \textbf{\texttt{10000/1/01/7C5}} \\
+\hx{7C4} & PC $\leftarrow$ RA (si $C=0$) & \texttt{nERA1=nERA0=0} habilitan RA en los buses internos; \texttt{nEPC1=nEPC0=0} y \texttt{PC2=PC0=1} escriben los 16 bits en el PC. & \texttt{01111/1/11/000} \\
+\hx{7C5} & Reg. Dir $\leftarrow$ PC & \texttt{nEPC2=0} y \texttt{nCBD=0} preparan la búsqueda de la siguiente instrucción y retornan a \hx{009}. & \texttt{11000/0/01/009} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\lstinputlisting[style=estiloVHDL,basicstyle=\ttfamily\fontsize{4.9}{6.2}\selectfont,
+  numberstyle=\tiny\color{codegray},numbersep=4pt,xleftmargin=4mm,
+  linerange={109-115},firstnumber=109,caption={Microprograma agregado para \texttt{JAE} (EXT) en \texttt{Secuenciador/memory.vhd}.},label={lst:jae}]{code/memory.vhd}
+
+\subsection{Programa en ensamblador y distribución de la memoria RAM}
+
+El programa y los datos se cargaron en la memoria RAM de 256 localidades de 8 bits mediante el archivo \texttt{mem\_content.mif} (\texttt{WIDTH=8}, \texttt{DEPTH=256}, direcciones decimales con \texttt{ADDRESS\_RADIX=UNS} y contenido hexadecimal con \texttt{DATA\_RADIX=HEX}).
+
+El código implementado ocupa las primeras 49 localidades de memoria (direcciones \hx{0000}--\hx{0030} (0-48)). Posteriormente se reservan cinco bytes contiguos para la lista $L[0]$--$L[4]$ (\hx{0031}--\hx{0035} (49-53)) y un byte inmediatamente posterior para la variable de salida \texttt{Res} (\hx{0036} (54)), inicializada en \hx{00}. El resto de la memoria se rellena con ceros. 
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Distribución del programa y los datos en la memoria RAM (\texttt{mem\_content.mif}).}
+\label{tab:mapa-ram}
+\begin{tabularx}{\linewidth}{c c c Y}
+\toprule
+Dir. Hex & Pos. MIF (dec.) & Bytes & Contenido / Función \\
+\midrule
+\hx{0000}--\hx{0002} & 0--2   & 3  & Inicialización: \texttt{LDAA \$0031} ($A \leftarrow L[0]$). \\
+\hx{0003}--\hx{000C} & 3--12  & 10 & Bloque 1: compara $A$ con $L[1]$ (\hx{0032}) y salta a \hx{000D} si $A \ge L[1]$. \\
+\hx{000D}--\hx{0016} & 13--22 & 10 & Bloque 2: compara $A$ con $L[2]$ (\hx{0033}) y salta a \hx{0017} si $A \ge L[2]$. \\
+\hx{0017}--\hx{0020} & 23--32 & 10 & Bloque 3: compara $A$ con $L[3]$ (\hx{0034}) y salta a \hx{0021} si $A \ge L[3]$. \\
+\hx{0021}--\hx{002A} & 33--42 & 10 & Bloque 4: compara $A$ con $L[4]$ (\hx{0035}) y salta a \hx{002B} si $A \ge L[4]$. \\
+\hx{002B}--\hx{002D} & 43--45 & 3  & Almacenamiento final: \texttt{STAA \$0036} ($\text{Res} \leftarrow A$). \\
+\hx{002E}--\hx{0030} & 46--48 & 3  & Ciclo infinito de retención: \texttt{JMP \$002E}. \\
+\hx{0031}--\hx{0035} & 49--53 & 5  & Arreglo de entrada $L[0]$ a $L[4]$ de 8 bits sin signo. \\
+\hx{0036}            & 54     & 1  & Variable \texttt{Res} (valor inicial \hx{00}). \\
+\hx{0037}--\hx{00FF} & 55--255& 201& Relleno sin uso (\hx{00}). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+El Código [\ref{lst:ensamblador}] muestra el programa completo en lenguaje ensamblador con las direcciones hexadecimales de cada instrucción y los destinos exactos de cada salto \texttt{JAE}.
 
 \begin{lstlisting}[style=asm,caption={Programa en ensamblador para obtener el mayor de cinco elementos.},label={lst:ensamblador}]
 Dir.   Bytes      Instruccion
 0000   96 00 31   LDAA $0031    ; A = L[0]
 0003   F6 00 32   LDAB $0032    ; B = L[1]
-0006   1C         CMP           ; comparar A-B
-0007   7C 00 0D   JAE  $000D    ; conservar A si A >= B
-000A   96 00 32   LDAA $0032    ; actualizar el mayor
+0006   1C         CMP           ; calcular A - B y actualizar C
+0007   7C 00 0D   JAE  $000D    ; si A >= B, conservar A
+000A   96 00 32   LDAA $0032    ; si A < B, actualizar mayor con L[1]
 000D   F6 00 33   LDAB $0033    ; B = L[2]
 0010   1C         CMP
 0011   7C 00 17   JAE  $0017
@@ -214,20 +253,75 @@ Dir.   Bytes      Instruccion
 0025   7C 00 2B   JAE  $002B
 0028   96 00 35   LDAA $0035
 002B   A7 00 36   STAA $0036    ; Res = A
-002E   7E 00 2E   JMP  $002E    ; ciclo final
+002E   7E 00 2E   JMP  $002E    ; ciclo final de retencion
 \end{lstlisting}
 
-\texttt{STAA \$0036} sobrescribe \texttt{Res} con $A$: en \hx{A74}, nERA2=0 y nCBD=0 cargan la dirección desde RA; en \hx{A75}, EA0=1 coloca el dato en el bus y nAS=nRW=0 permiten escribirlo en RAM. Después, \texttt{JMP \$002E} repite el salto sin modificar el resultado y evita ejecutar la lista como instrucciones.
+Al llegar a \hx{002B}, la instrucción \texttt{STAA \$0036} sobrescribe la posición 54 (\texttt{Res}) con el valor máximo contenido en $A$: en \hx{A74} coloca \hx{0036} desde \texttt{RA} hacia el registro de direcciones (\texttt{nERA2=0}, \texttt{nCBD=0}), y en \hx{A75} habilita $A$ sobre el bus de datos interno (\texttt{EA0=1}) y activa la escritura en RAM (\texttt{nAS=0}, \texttt{nRW=0}). Posteriormente, \texttt{JMP \$002E} redirige el contador de programa continuamente a \hx{002E}, manteniendo intacto el contenido de \texttt{Res} e impidiendo que el procesador busque como instrucciones los bytes de datos ubicados desde \hx{0031}.
 
-En \texttt{mem\_content.mif} se usan \texttt{WIDTH=8}, \texttt{DEPTH=256}, \texttt{ADDRESS\_RADIX=UNS} y \texttt{DATA\_RADIX=HEX}. Las posiciones 0--48 contienen los bytes del Código~\ref{lst:ensamblador}; el fragmento siguiente completa los datos y el relleno de la RAM:
+En el Código [\ref{lst:datos1}] se muestra el contenido completo de \texttt{mem\_content.mif} configurado para la ejecución del programa anteriormente descrito.
 
-\begin{lstlisting}[style=mif,caption={Datos y relleno final del archivo MIF para el primer ejemplo.},label={lst:datos1}]
-    49 : 05; -- L[0]
-    50 : 09; -- L[1]
-    51 : 01; -- L[2]
-    52 : 02; -- L[3]
-    53 : 06; -- L[4]
-    54 : 00; -- Res: valor inicial
+\begin{lstlisting}[style=mif,caption={Contenido completo de \texttt{mem\_content.mif} para la búsqueda del número mayor.},label={lst:datos1}]
+WIDTH=8;
+DEPTH=256;
+ADDRESS_RADIX=UNS;
+DATA_RADIX=HEX;
+
+CONTENT BEGIN
+    0  : 96; -- LDAA $0031 (L[0])
+    1  : 00;
+    2  : 31;
+    3  : F6; -- Bloque 1: LDAB $0032 (L[1])
+    4  : 00;
+    5  : 32;
+    6  : 1C; -- CMP
+    7  : 7C; -- JAE $000D
+    8  : 00;
+    9  : 0D;
+    10 : 96; -- LDAA $0032
+    11 : 00;
+    12 : 32;
+    13 : F6; -- Bloque 2: LDAB $0033 (L[2])
+    14 : 00;
+    15 : 33;
+    16 : 1C; -- CMP
+    17 : 7C; -- JAE $0017
+    18 : 00;
+    19 : 17;
+    20 : 96; -- LDAA $0033
+    21 : 00;
+    22 : 33;
+    23 : F6; -- Bloque 3: LDAB $0034 (L[3])
+    24 : 00;
+    25 : 34;
+    26 : 1C; -- CMP
+    27 : 7C; -- JAE $0021
+    28 : 00;
+    29 : 21;
+    30 : 96; -- LDAA $0034
+    31 : 00;
+    32 : 34;
+    33 : F6; -- Bloque 4: LDAB $0035 (L[4])
+    34 : 00;
+    35 : 35;
+    36 : 1C; -- CMP
+    37 : 7C; -- JAE $002B
+    38 : 00;
+    39 : 2B;
+    40 : 96; -- LDAA $0035
+    41 : 00;
+    42 : 35;
+    43 : A7; -- STAA $0036 (Res)
+    44 : 00;
+    45 : 36;
+    46 : 7E; -- JMP $002E (ciclo final)
+    47 : 00;
+    48 : 2E;
+    49 : 05; -- L[0], dir. 0031H (03 para el ejemplo 2)
+    50 : 09; -- L[1], dir. 0032H (02 para el ejemplo 2)
+    51 : 01; -- L[2], dir. 0033H (09 para el ejemplo 2)
+    52 : 02; -- L[3], dir. 0034H (0C para el ejemplo 2)
+    53 : 06; -- L[4], dir. 0035H (0B para el ejemplo 2)
+    54 : 00; -- Res,  dir. 0036H (valor inicial)
     [55..255] : 00;
 END;
 \end{lstlisting}
@@ -235,77 +329,150 @@ END;
 %==============================================================
 \section{Simulación}
 
-Se simuló en Quartus mediante ModelSim con un reloj de 10\,ns, \texttt{RESET=1} e \texttt{IRQn=XIRQn=1}. Se observaron los acumuladores, RA, PC, \texttt{Edo\_Pres} y \texttt{csnn}. Se amplió la duración para incluir la última comparación, la escritura y el ciclo final; las transferencias se reflejan un ciclo después del estado que genera sus señales.
+Las simulaciones funcionales se realizaron en Quartus mediante ModelSim, con un periodo de reloj de $10\,\text{ns}$, \texttt{RESET=1} e \texttt{IRQn=XIRQn=1}. En las gráficas se revisaron los acumuladores, el contador de programa, el registro auxiliar, el resultado de la comparación, la escritura en RAM y los estados del secuenciador.
 
 \subsection{Ejemplo 1: lista [05,09,01,02,06]}
 
+La Figura[\ref{fig:ejemplo1}] muestra la simulación completa de la ejecución para la lista \texttt{[05, 09, 01, 02, 06]}, mientras que en la Tabla [\ref{tab:ejemplo1}] se resumen las cuatro comparaciones realizadas, el valor de $A-B$ observable en \texttt{Debug\_Yupa} y la trayectoria seguida por \texttt{Edo\_Pres} en cada \texttt{JAE}.
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{ejemplo_1.png}
-\caption{Simulación de la búsqueda del mayor para la lista [05,09,01,02,06].}
+\includegraphics[width=\linewidth]{Ej1_10.png}
+\caption{Vista general de la simulación del primer ejemplo para la lista [05,09,01,02,06].}
 \label{fig:ejemplo1}
 \end{figure}
 
-En la Figura~\ref{fig:ejemplo1}, $A$ carga \hx{05} y cambia a \hx{09} al compararse con el segundo elemento. Después conserva \hx{09} frente a \hx{01}, \hx{02} y \hx{06}, como resume la Tabla~\ref{tab:ejemplo1}. Finalmente, \texttt{STAA} guarda \hx{09} en \texttt{Res}.
-
 \begin{table}[H]
 \centering
-\small
-\caption{Comparaciones realizadas en el primer ejemplo.}
+\scriptsize
+\caption{Comparaciones y recorridos de \texttt{Edo\_Pres} en el primer ejemplo.}
 \label{tab:ejemplo1}
-\begin{tabularx}{\linewidth}{c c c Y c}
+\begin{tabularx}{\linewidth}{c c c c c Y}
 \toprule
-$A$ antes & $B$ & $C$ & Acción & $A$ después \\
+$A$ antes & $B$ & $A-B$ (\texttt{Debug\_Yupa}) & $C$ & Estados de \texttt{JAE} & Acción sobre $A$ \\
 \midrule
-\hx{05} & \hx{09} & 1 & Actualizar $A$. & \hx{09} \\
-\hx{09} & \hx{01} & 0 & Conservar $A$. & \hx{09} \\
-\hx{09} & \hx{02} & 0 & Conservar $A$. & \hx{09} \\
-\hx{09} & \hx{06} & 0 & Conservar $A$. & \hx{09} \\
+\hx{05} & \hx{09} & \hx{FC} (\texttt{11111100}) & 1 & \hx{7C0}--\hx{7C3}, \hx{7C5} (omite \hx{7C4}) & No salta; \texttt{LDAA \$0032} actualiza $A \leftarrow \hx{09}$. \\
+\hx{09} & \hx{01} & \hx{08} (\texttt{00001000}) & 0 & \hx{7C0}--\hx{7C5} (incluye \hx{7C4}) & Salta a \hx{0017}; conserva $A = \hx{09}$. \\
+\hx{09} & \hx{02} & \hx{07} (\texttt{00000111}) & 0 & \hx{7C0}--\hx{7C5} (incluye \hx{7C4}) & Salta a \hx{0021}; conserva $A = \hx{09}$. \\
+\hx{09} & \hx{06} & \hx{03} (\texttt{00000011}) & 0 & \hx{7C0}--\hx{7C5} (incluye \hx{7C4}) & Salta a \hx{002B}; conserva $A = \hx{09}$. \\
 \bottomrule
 \end{tabularx}
 \end{table}
-
-\subsection{Ejemplo 2: lista [03,02,09,0C,0B]}
-
-Se cambiaron únicamente los cinco datos de la lista, conservando el programa y las direcciones.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{ejemplo_2.png}
-\caption{Simulación de la búsqueda del mayor para la lista [03,02,09,0C,0B].}
+\includegraphics[width=\linewidth]{Ej1_1.png}
+\caption{Ejemplo 1 ($0$--$315\,\text{ns}$): carga inicial $L[0]=\hx{05}$, lectura de $L[1]=\hx{09}$ y primera comparación (\hx{1C0}--\hx{1C2}).}
+\label{fig:ej1_1}
+\end{figure}
+
+En la Figura [\ref{fig:ej1_1}] se observa cómo se carga el primer elemento de la lista, \hx{05}, en $A$ y después se carga \hx{09} en $B$. La instrucción \texttt{CMP} realiza la comparación y muestra que el segundo valor es mayor, por lo que \texttt{JAE} permite continuar con la actualización de $A$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{Ej1_2.png}
+\caption{Ejemplo 1 ($305$--$615\,\text{ns}$): transición \hx{7C3}$\rightarrow$\hx{7C5}, actualización $A\leftarrow\hx{09}$ y segunda comparación ($A-B=\hx{08}$).}
+\label{fig:ej1_2}
+\end{figure}
+
+En la Figura [\ref{fig:ej1_2}], como \hx{09} es mayor que \hx{05}, se actualiza $A$ con el nuevo valor. Después se carga \hx{01} en $B$ y la nueva comparación muestra que el valor de $A$ se conserva.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{Ej1_3.png}
+\caption{Ejemplo 1 ($600$--$905\,\text{ns}$): saltos tomados mediante \hx{7C4} en los bloques 2 y 3 ($L[2]=\hx{01}$ y $L[3]=\hx{02}$).}
+\label{fig:ej1_3}
+\end{figure}
+
+Por otro lado en la Figura [\ref{fig:ej1_3}] se puede observar cómo se realiza la comparación del máximo actual, \hx{09}, con \hx{01} y después con \hx{02}. En ambos casos $A$ es mayor, por lo que \texttt{JAE} salta al siguiente bloque sin modificar el acumulador.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{Ej1_4.png}
+\caption{Ejemplo 1 ($900\,\text{ns}$--$1.21\,\mu\text{s}$): comparación con $L[4]=\hx{06}$, salto tomado hacia \hx{002B} e inicio de \texttt{STAA \$0036}.}
+\label{fig:ej1_4}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{Ej1_5.png}
+\caption{Ejemplo 1 ($1.12$--$1.43\,\mu\text{s}$): escritura de \hx{09} en \texttt{Res} (\hx{A70}--\hx{A77}) y entrada al ciclo \texttt{JMP \$002E} (\hx{7E0}--\hx{7E5}).}
+\label{fig:ej1_5}
+\end{figure}
+
+Finalmente en las Figura[\ref{fig:ej1_4}] y [\ref{fig:ej1_5}] se compara \hx{09} con \hx{06}. Como el primer valor continúa siendo mayor, se conserva en $A$ y se almacena como resultado en \texttt{Res}. Finalmente, el programa entra en el ciclo de espera.
+
+\subsection{Ejemplo 2: lista [03,02,09,0C,0B]}
+
+Para la segunda prueba se modificaron únicamente los datos de las localidades 49--53 en \texttt{mem\_content.mif} por \texttt{[03, 02, 09, 0C, 0B]}, manteniendo sin cambios el programa y sus direcciones. La Figura~\ref{fig:ejemplo2} presenta la vista general de la simulación y la Tabla~\ref{tab:ejemplo2} resume las cuatro decisiones observadas.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{Ej2_10.png}
+\caption{Vista general de la simulación del segundo ejemplo para la lista [03,02,09,0C,0B].}
 \label{fig:ejemplo2}
 \end{figure}
 
-En la Figura~\ref{fig:ejemplo2}, $A$ conserva \hx{03} frente a \hx{02}; luego se actualiza a \hx{09} y a \hx{0C}. La última comparación con \hx{0B} conserva \hx{0C}, que se guarda en \texttt{Res}. La Tabla~\ref{tab:ejemplo2} muestra las cuatro decisiones.
-
 \begin{table}[H]
 \centering
-\small
-\caption{Comparaciones realizadas en el segundo ejemplo.}
+\scriptsize
+\caption{Comparaciones y recorridos de \texttt{Edo\_Pres} en el segundo ejemplo.}
 \label{tab:ejemplo2}
-\begin{tabularx}{\linewidth}{c c c Y c}
+\begin{tabularx}{\linewidth}{c c c c c Y}
 \toprule
-$A$ antes & $B$ & $C$ & Acción & $A$ después \\
+$A$ antes & $B$ & $A-B$ (\texttt{Debug\_Yupa}) & $C$ & Estados de \texttt{JAE} & Acción sobre $A$ \\
 \midrule
-\hx{03} & \hx{02} & 0 & Conservar $A$. & \hx{03} \\
-\hx{03} & \hx{09} & 1 & Actualizar $A$. & \hx{09} \\
-\hx{09} & \hx{0C} & 1 & Actualizar $A$. & \hx{0C} \\
-\hx{0C} & \hx{0B} & 0 & Conservar $A$. & \hx{0C} \\
+\hx{03} & \hx{02} & \hx{01} (\texttt{00000001}) & 0 & \hx{7C0}--\hx{7C5} (incluye \hx{7C4}) & Salta a \hx{000D}; conserva $A = \hx{03}$. \\
+\hx{03} & \hx{09} & \hx{FA} (\texttt{11111010}) & 1 & \hx{7C0}--\hx{7C3}, \hx{7C5} (omite \hx{7C4}) & No salta; \texttt{LDAA \$0033} actualiza $A \leftarrow \hx{09}$. \\
+\hx{09} & \hx{0C} & \hx{FD} (\texttt{11111101}) & 1 & \hx{7C0}--\hx{7C3}, \hx{7C5} (omite \hx{7C4}) & No salta; \texttt{LDAA \$0034} actualiza $A \leftarrow \hx{0C}$. \\
+\hx{0C} & \hx{0B} & \hx{01} (\texttt{00000001}) & 0 & \hx{7C0}--\hx{7C5} (incluye \hx{7C4}) & Salta a \hx{002B}; conserva $A = \hx{0C}$. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\subsection{Verificación del almacenamiento}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{Ej2_1.png}
+\caption{Ejemplo 2 ($0$--$315\,\text{ns}$): carga inicial $L[0]=\hx{03}$, lectura de $L[1]=\hx{02}$ y primera comparación ($A-B=\hx{01}$).}
+\label{fig:ej2_1}
+\end{figure}
 
-Las capturas muestran el mayor en $A$; \texttt{Res} es el contenido de RAM en \hx{0036}. Su escritura se verifica en \hx{A75}, con nAS=nRW=0, dirección \hx{0036} y el dato de $A$. \texttt{csnn} por sí sola no distingue lectura de escritura.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{Ej2_2.png}
+\caption{Ejemplo 2 ($295$--$605\,\text{ns}$): salto tomado en bloque 1 (\hx{7C4} presente) y salto omitido en bloque 2 (\hx{7C3}$\rightarrow$\hx{7C5}).}
+\label{fig:ej2_2}
+\end{figure}
 
-Después, el \texttt{JMP} final carga RA con \hx{002E}, visible como \texttt{0000000000101110} en \texttt{AUX\_D}. El PC repite \hx{002F}, \hx{0030}, \hx{0031} y \hx{002E}; \hx{0031} es transitorio y la lista no se ejecuta. El resultado permanece en RAM: \hx{09} para la primera prueba y \hx{0C} para la segunda.
+En la Figura [\ref{fig:ej2_1}] se  puede apreciar como se carga \hx{03} en $A$ y se compara con \hx{02}, dado que $A$ es mayor, el programa salta al siguiente bloque y conserva el valor. Después se carga \hx{09} en $B$, que es mayor que el valor actual, por lo que \texttt{JAE} permite actualizar $A$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{Ej2_3.png}
+\caption{Ejemplo 2 ($600$--$915\,\text{ns}$): actualización $A\leftarrow\hx{09}$, comparación con $L[3]=\hx{0C}$ ($A-B=\hx{FD}$) y transición \hx{7C3}$\rightarrow$\hx{7C5}.}
+\label{fig:ej2_3}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{Ej2_4.png}
+\caption{Ejemplo 2 ($905\,\text{ns}$--$1.21\,\mu\text{s}$): actualización $A\leftarrow\hx{0C}$, comparación con $L[4]=\hx{0B}$ ($A-B=\hx{01}$) y ejecución de \hx{7C4}.}
+\label{fig:ej2_4}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{Ej2_5.png}
+\caption{Ejemplo 2 ($1.18$--$1.50\,\mu\text{s}$): salto hacia \hx{002B}, escritura de \hx{0C} en \texttt{Res} (\hx{A70}--\hx{A77}) y ciclo \texttt{JMP \$002E}.}
+\label{fig:ej2_5}
+\end{figure}
+
+Por último en las Figuras[\ref{fig:ej2_3}] y [\ref{fig:ej2_4}] se observa que \hx{09} se actualiza a \hx{0C}, porque el tercer valor es mayor. En la última comparación, \hx{0C} es mayor que \hx{0B}, por lo que se conserva y se guarda en \texttt{Res}. La simulación termina en el ciclo de espera mostrado en la Figura [\ref{fig:ej2_5}].
 
 %==============================================================
-\clearpage
 \section{Conclusión}
 
-\paragraph{Percival Ulises Espinoza Matamoros.} En esta práctica pude relacionar la búsqueda del mayor de una lista con las instrucciones que ejecuta el procesador. La implementación de \texttt{JAE} me permitió comprender cómo las banderas y el secuenciador deciden si se conserva o se actualiza un dato. Al probar dos listas, observé que el programa obtiene distintos resultados sin cambiar sus instrucciones.
+\paragraph{Percival Ulises Espinoza Matamoros.} Gracias a la realización de esta práctica y a la implementación del ejercicio propuesto, comprendí con mayor claridad la importancia de las banderas de comparación y su influencia en el flujo de control del programa. Al implementar la instrucción \texttt{JAE} tomando como referencia \texttt{JE}, pude identificar cómo la bandera de acarreo determina si se conserva el valor mayor o se actualiza con un nuevo valor. Además, al revisar los cambios en los registros $A$ y $B$ durante la simulación, pude verificar cómo se mantiene el valor máximo y cómo finalmente se almacena en la variable \texttt{Res}.
 
 \paragraph{Oscar Iván Montiel Juárez.} En esta práctica entendimos de manera más clara cómo una comparación puede cambiar el recorrido de nuestro programa. Al implementar \texttt{JAE} relacionamos la bandera de acarreo con las líneas de control que permiten cargar el PC. He de mencionar también que revisar los cambios de $A$ y $B$ en la simulación nos ayudó a comprobar cómo se conserva el mayor y cómo se guarda finalmente en \texttt{Res}.
 
